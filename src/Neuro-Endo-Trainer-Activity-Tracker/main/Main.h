@@ -30,6 +30,11 @@
 #include "RingBox.h"
 #include "ContourFeature.hpp"
 #include "pegBox.h"
+#include <opencv2/core/core.hpp>
+#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
+#include <opencv/cv.h>
+#include "params.h"
 #include <string>
 #include <sstream>
 
@@ -38,6 +43,8 @@ using namespace nets;
 using namespace cv;
 #define SSTR( x ) dynamic_cast< std::ostringstream & >( \
 	( std::ostringstream() << std::dec << x ) ).str()
+
+typedef map<int, unsigned int> CounterMap;
 
 enum Retval
 {
@@ -53,7 +60,18 @@ public:
 	nets::Gui *gui;
 	int seed;
 	bool showOutput;
+	Rect pegGroupROI;
+	double hueThreshVal_ring;
+	int pegThresh_valSaturation;
+	string status;
+	cv::Mat element[1];
+	
+	pegBox _pegBox;
+	RingBox _ringBox;
 
+
+	CounterMap count_pegCode_contour;
+	CounterMap count_contour_pegCode;
 public:
 	Main()
     {
@@ -61,6 +79,11 @@ public:
 		gui = NULL;
 		seed = 0;
 		showOutput = true;
+		pegGroupROI = Rect(PEGBOUNDINGBOX_X, PEGBOUNDINGBOX_Y, PEGBOUNDINGBOX_WIDTH, PEGBOUNDINGBOX_HEIGHT);
+		hueThreshVal_ring = HUE_THRESHVAL_RING;
+		pegThresh_valSaturation = PEGSATURATION_MINVALUE;
+		status = STATIONARY;
+		element[0] = getStructuringElement(MORPH_ELLIPSE, Size(8, 8), Point(0, 0));
 	}
 
     ~Main()
@@ -68,7 +91,14 @@ public:
 	}
 
 	void run();
-
+	void initializeBoundingBox(IplImage* img);
+	void initializePegBox(IplImage* img);
+	void initializeRingBox(IplImage* img);
+	void activityDetection(IplImage* img);
+	void ringSegmentation(IplImage* img, Mat &fgmask);
+	void ringSegmentation(const Mat &img, Mat &fgmask);
+	
+	
 };
 
 #endif /* MAIN_H_ */

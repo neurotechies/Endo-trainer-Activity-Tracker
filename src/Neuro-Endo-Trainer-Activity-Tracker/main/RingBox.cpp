@@ -29,73 +29,75 @@ namespace nets
 {
 
 	
-	bool RingBox::init(const cv::Mat &inp)
+	bool RingBox::init(const cv::Mat &inp, const pegBox &pegBox)
 	{
+		assert(pegBox.pegs.size() == 12);
 		vector<vector<Point> > contours_ring;
 		Mat initial_ring_mask = inp.clone();
 		vector<Vec4i> hierarchy_ring;
-		vector<Point2f> centre;
 		vector<Rect> initial_roi;
-		vector<float> radius;
 
 
 		findContours(initial_ring_mask, contours_ring, hierarchy_ring, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
+
+		for (int i = contours_ring.size() - 1; i >= 0; i--)
+		{
+			if (contours_ring[i].size() < 50)
+			{
+				contours_ring.erase(contours_ring.begin() + i);
+			}
+		}
 		unsigned int No_of_ring = contours_ring.size();
-		vector<bool> markedRing(No_of_ring, true);
 
-		for (int i = 0; i < No_of_ring; ++i)
+		if (No_of_ring == 6)
 		{
-			if (contours_ring[i].size() < 35)
+			vector<vector<Point> > contours_poly(No_of_ring);
+			vector<Point2f>center_poly(No_of_ring);
+			vector<float>radius_poly(No_of_ring);
+
+			for (int i = 0; i < No_of_ring; ++i)
 			{
-				markedRing[i] = false;
-			}
-		}
-		unsigned int count = 0;
-		for (int i = 0; i < No_of_ring; ++i)
-		{
-			if (markedRing[i])
-			{
+
 				ContourFeature cFeat(contours_ring[i]);
-				centre.push_back(cFeat.getCentre()); //centre.y += 10;
-
-				initial_roi.push_back(boundingRect(contours_ring[i])); // This is a OpenCV function
-				radius.push_back(sqrt(pow(boundingRect(contours_ring[i]).width, 2.0) + pow(boundingRect(contours_ring[i]).height, 2.0)) / 2);
-				++count;
+				approxPolyDP(Mat(contours_ring[i]), contours_poly[i], 3, true);
+				minEnclosingCircle((Mat)contours_poly[i], center_poly[i], radius_poly[i]);
+				initial_roi.push_back(boundingRect(contours_ring[i])); 
 			}
-		}
-		if (count == 6)
-		{
+			
+			
+			
 			const int size_rings = 6;
 			for (int i = 0; i < size_rings; ++i)
 			{
 				Ring r;
-				r.center = centre[i];
-				r.radius = radius[i];
+				r.center = center_poly[i];
+				r.radius = radius_poly[i];
 				r.roi = initial_roi[i];
-				rings[i] = r;
+				r.velocity = 0; 
+				r.status = STATIONARY;
+				for (auto it_peg = pegBox.pegs.begin(); it_peg != pegBox.pegs.end(); ++it_peg)
+				{
+					Rect q = it_peg->second.roi;
+					if (util::rectOverlap(r.roi, q))
+					{
+						rings[it_peg->first] = r;
+						break;
+					}
+				}	
 			}
-			return true;
+			if (rings.size() == 6)
+			{
+				return true;
+			}
+			else
+			{
+				cout << "There is some problem in overlapping\n";
+				return false;
+			}
 		}
 		else
 		{
 			return false;
-		}
-	}
-
-	void RingBox::updateKeys(const pegBox &pegBox)
-	{
-		for (auto it_ring = rings.begin(); it_ring != rings.end(); ++it_ring)
-		{
-			Ring p = it_ring->second;
-			for (auto it_peg = pegBox.pegs.begin(); it_peg != pegBox.pegs.end(); ++it_peg)
-			{
-				Rect q = it_peg->second.roi;
-				if (util::rectOverlap(p.roi, q))
-				{
-					rings.erase(it_ring->first);
-					rings[it_peg->first] = p;
-				}
-			}
 		}
 	}
 }

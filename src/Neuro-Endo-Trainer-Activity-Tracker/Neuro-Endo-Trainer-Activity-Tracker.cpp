@@ -35,7 +35,7 @@ int main(int argc, char **argv)
 
     // get the path of the video file
 	v->method = IMACQ_VID;
-	v->imgPath = "D:/Data/Endo-trainer/DrBaskar_0_Deg_ST_Aux.avi";
+	v->imgPath = "E:/data/Endo-trainer/DrAndre_1_0_Deg_ST_Aux.avi";
 
 	main->gui = gui;
     main->imAcq = v;

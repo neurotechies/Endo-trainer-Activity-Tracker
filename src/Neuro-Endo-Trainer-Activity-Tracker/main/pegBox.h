@@ -59,17 +59,17 @@ namespace nets
 
 	public:
 		// initialize pegs;
-		bool init(const cv::Mat &inp, int min_peg_threshold);
+		bool init(const cv::Mat &inp);
 
 		// print the pegs
 		void print();
 
-		// to be removed later
-		void updateRoiCenter(vector<pair<Rect, int> > &rois);
 
 		// update the roi of given peg
 		bool update(int code, const Rect &r);
 		
+		// update the roi; 
+		void roi_update(const vector<pair<Rect, int> > &rings);
 
 
 		pegBox(){}

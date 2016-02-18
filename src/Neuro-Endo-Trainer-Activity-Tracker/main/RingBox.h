@@ -33,6 +33,7 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #include "pegBox.h"
 #include "util.h"
+#include "params.h"
 #include <unordered_map>
 #include <cassert>
 using namespace std;
@@ -48,16 +49,14 @@ namespace nets
 			cv::Rect roi;
 			Point2f center;
 			float radius;
+			float velocity;
+			string status;
 		};
 
-		// 
-	private:
 		unordered_map<int, Ring> rings;
 
-
 	public:
-		bool init(const cv::Mat &inp);
-		void updateKeys(const pegBox &pegBox);
+		bool init(const cv::Mat &inp, const pegBox &pegBox);
 
 		RingBox(){}
 		~RingBox(){}

@@ -36,7 +36,7 @@ namespace nets
 {
 
 	Gui::Gui() :
-		m_window_name("tld")
+		m_window_name("Neuro-Endo-Trainer-Activity-Tracker")
 	{
 	}
 
