@@ -343,9 +343,10 @@ void Main::activityDetection(const Mat &prev_frame, const Mat &curr_frame, const
 			//Mat pegRing = 
 			Mat temp = maskRing(r);
 			double sumPixels = cv::sum(cv::sum(temp)).val[0];
-			if (sumPixels == 0)
+			if (sumPixels > 1e3)
 			{
 				status = "moving";
+
 				for (auto it = _ringBox.rings.begin(); it != _ringBox.rings.end(); ++it)
 				{
 					if (it->second.status == "picking")
@@ -410,17 +411,14 @@ void Main::activityDetection(const Mat &prev_frame, const Mat &curr_frame, const
 						Rect roi = it->second.roi;
 						string s = it->second.status;
 						float vel = it->second.velocity;
-						int  id = it->second.id;
 
 						_ringBox.rings.erase(it->first);
 
 						_ringBox.rings[index_peg].center = p;
 						_ringBox.rings[index_peg].radius = r;
 						_ringBox.rings[index_peg].roi = roi;
-						_ringBox.rings[index_peg].status = status;
+						_ringBox.rings[index_peg].status = s;
 						_ringBox.rings[index_peg].velocity = vel;
-						_ringBox.rings[index_peg].id = id;
-						break;
 						
 					}
 				}
@@ -780,10 +778,11 @@ void Main::run()
 			int count = 0;
 			for (auto it = _ringBox.rings.begin(); it != _ringBox.rings.end(); ++it)
 			{
-				std::string text = "Ring " + SSTR(it->second.id) + " On the Peg " + SSTR(it->first) + "  (with Status " + it->second.status + ")";
+				std::string text = "Ring " + SSTR(count) + " On the Peg " + SSTR(it->first) + "  (with Status " + it->second.status + ")";
 				cvPutText(img, text.c_str(), cvPoint(10, (count++ * 15) + 50), &font, white);
 			}
 			count = 0;
+
 			std::string text = "Hitting Detection Value ->" + SSTR(hittingDetectionVal);
 			cvPutText(img, text.c_str(), Point(10, (6 * 15) + 50), &font, red);
 			if (showForeground)

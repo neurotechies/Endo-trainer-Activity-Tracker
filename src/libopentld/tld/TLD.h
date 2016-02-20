@@ -63,6 +63,9 @@ public:
 
     TLD();
     virtual ~TLD();
+
+	void learnPatch(const cv::Mat &img, cv::Rect *bb);
+
     void release();
     void selectObject(const cv::Mat &img, cv::Rect *bb);
     void processImage(const cv::Mat &img);

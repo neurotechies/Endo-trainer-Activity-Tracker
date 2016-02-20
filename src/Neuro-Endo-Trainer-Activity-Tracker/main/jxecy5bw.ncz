@@ -305,7 +305,6 @@ void Main::activityDetection(const Mat &prev_frame, const Mat &curr_frame, const
 									if (intersect)
 									{
 										_ringBox.rings[code].status = status;
-										break;
 									}
 								}
 							}
@@ -343,9 +342,10 @@ void Main::activityDetection(const Mat &prev_frame, const Mat &curr_frame, const
 			//Mat pegRing = 
 			Mat temp = maskRing(r);
 			double sumPixels = cv::sum(cv::sum(temp)).val[0];
-			if (sumPixels == 0)
+			if (sumPixels > 1e3)
 			{
 				status = "moving";
+
 				for (auto it = _ringBox.rings.begin(); it != _ringBox.rings.end(); ++it)
 				{
 					if (it->second.status == "picking")
@@ -410,17 +410,14 @@ void Main::activityDetection(const Mat &prev_frame, const Mat &curr_frame, const
 						Rect roi = it->second.roi;
 						string s = it->second.status;
 						float vel = it->second.velocity;
-						int  id = it->second.id;
 
 						_ringBox.rings.erase(it->first);
 
 						_ringBox.rings[index_peg].center = p;
 						_ringBox.rings[index_peg].radius = r;
 						_ringBox.rings[index_peg].roi = roi;
-						_ringBox.rings[index_peg].status = status;
+						_ringBox.rings[index_peg].status = s;
 						_ringBox.rings[index_peg].velocity = vel;
-						_ringBox.rings[index_peg].id = id;
-						break;
 						
 					}
 				}
@@ -528,10 +525,6 @@ void Main::run()
 	IplImage *img1 = cvCloneImage(img);
 	Mat grey(img->height, img->width, CV_8UC1);
 	cvtColor(cvarrToMat(img), grey, CV_BGR2GRAY);
-	
-	tld->detectorCascade->imgWidth = grey.cols;
-	tld->detectorCascade->imgHeight = grey.rows;
-	tld->detectorCascade->imgWidthStep = grey.step;
 
 	// Get the bounding box around the frame
 	initializeBoundingBox(img);
@@ -755,12 +748,11 @@ void Main::run()
 				cvCircle(img, cvPoint(tld->currBB->br().x /*- (tld->currBB->width / 2.0)*/, tld->currBB->br().y + 40), 10, red, 3, 8, 0);
 			}
 			CvFont font;
-			cvInitFont(&font, CV_FONT_HERSHEY_SIMPLEX, .5, .5, 0, 1, 8);
+			cvInitFont(&font, CV_FONT_HERSHEY_SIMPLEX, .5, .5, 0, 3, 8);
 			//cvRectangle(img, cvPoint(0, 0), cvPoint(img->width, 50), black, CV_FILLED, 8, 0);
 			cvPutText(img, string, cvPoint(25, 25), &font, white);
 
 			// Draw peg Box
-			cvInitFont(&font, CV_FONT_HERSHEY_SIMPLEX, .5, .5, 0, 3, 8);
 			for (auto it = _pegBox.pegs.begin(); it != _pegBox.pegs.end(); ++it)
 			{
 				std::string text = SSTR(it->first);
@@ -769,21 +761,22 @@ void Main::run()
 				cvPutText(img, text.c_str(), cvPoint(it->second.center.x, it->second.center.y), &font, blue);
 			}
 
-			cvInitFont(&font, CV_FONT_HERSHEY_SIMPLEX, .5, .5, 0, 1, 8);
+
 			// plot the moving ring
 			if (mvRingROI.width > 0)
 			{
 				cvRectangle(img, cvPoint(mvRingROI.x, mvRingROI.y),
 					cvPoint(mvRingROI.br().x, mvRingROI.br().y), cyan, 1, 8, 0);
-				cvPutText(img, "moving ring", cvPoint(mvRingROI.x + mvRingROI.width / 2, mvRingROI.y + mvRingROI.height / 2), &font, cyan);
+				cvPutText(img, "moving ring", cvPoint(mvRingROI.x + mvRingROI.width / 2, mvRingROI.y + mvRingROI.height / 2), &font, blue);
 			}
 			int count = 0;
 			for (auto it = _ringBox.rings.begin(); it != _ringBox.rings.end(); ++it)
 			{
-				std::string text = "Ring " + SSTR(it->second.id) + " On the Peg " + SSTR(it->first) + "  (with Status " + it->second.status + ")";
+				std::string text = "Ring " + SSTR(count) + " On the Peg " + SSTR(it->first) + "  (with Status " + it->second.status + ")";
 				cvPutText(img, text.c_str(), cvPoint(10, (count++ * 15) + 50), &font, white);
 			}
 			count = 0;
+
 			std::string text = "Hitting Detection Value ->" + SSTR(hittingDetectionVal);
 			cvPutText(img, text.c_str(), Point(10, (6 * 15) + 50), &font, red);
 			if (showForeground)

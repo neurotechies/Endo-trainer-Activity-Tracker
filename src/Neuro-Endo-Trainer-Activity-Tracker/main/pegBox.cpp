@@ -184,6 +184,4 @@ namespace nets
 			exit(0);
 		}
 	}
-
-
 }

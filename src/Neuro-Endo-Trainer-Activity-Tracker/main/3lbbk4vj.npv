@@ -275,6 +275,13 @@ void Main::activityDetection(const Mat &prev_frame, const Mat &curr_frame, const
 				count1++;
 			}
 		}
+		for (auto it = graySum.begin(); it != graySum.end(); ++it)
+		{
+			if (it->second > 1.2e6)
+			{
+				count2++;
+			}
+		}
 
 		if (count1 >= 6)
 		{
@@ -301,10 +308,25 @@ void Main::activityDetection(const Mat &prev_frame, const Mat &curr_frame, const
 								{
 									int code = it->first;
 									Rect roi = it->second.roi;
-									bool intersect = util::rectOverlap(roi, mvRingROI);
+
+								}
+
+
+								for (int i = 0; i < _pegBox.pegs.size(); ++i)
+								{
+									Rect r = _pegBox.pegs[i].roi;
+									int code = _pegBox.pegs[i].code;
+									bool intersect = _ringBox.rectOverlap(r, mvRingROI);
 									if (intersect)
 									{
-										_ringBox.rings[code].status = status;
+										for (int p = 0; p < _ringBox.rings.size(); ++p)
+										{
+											if (code == _ringBox.rings[p].getCode())
+											{
+												_ringBox.rings[p].setStatus(status);
+												break;
+											}
+										}
 										break;
 									}
 								}
@@ -327,30 +349,39 @@ void Main::activityDetection(const Mat &prev_frame, const Mat &curr_frame, const
 	
 	else if (status == "picking")
 	{
-		int code = -1;
-
-		for (auto it = _ringBox.rings.begin(); it != _ringBox.rings.end(); ++it)
+		int code = -1, index = -1;
+		for (int i = 0; i < _ringBox.rings.size(); ++i)
 		{
-			if (it->second.status == "picking")
+			if (_ringBox.rings[i].getStatus() == "picking")
 			{
-				code = it->first;
+				code = _ringBox.rings[i].getCode();
 				break;
 			}
 		}
-		if (code >= 0)
+
+		for (int i = 0; i < _pegBox.pegs.size(); ++i)
 		{
-			Rect r = _pegBox.pegs[code].roi;
+			if (code == _pegBox.pegs[i].code)
+			{
+				index = i;
+				break;
+			}
+		}
+		if (index >= 0)
+		{
+			Rect r = _pegBox.pegs[index].roi;
 			//Mat pegRing = 
 			Mat temp = maskRing(r);
 			double sumPixels = cv::sum(cv::sum(temp)).val[0];
 			if (sumPixels == 0)
 			{
 				status = "moving";
-				for (auto it = _ringBox.rings.begin(); it != _ringBox.rings.end(); ++it)
+				//updateModel = true;
+				for (int i = 0; i < _ringBox.rings.size(); ++i)
 				{
-					if (it->second.status == "picking")
+					if (_ringBox.rings[i].getStatus() == "picking")
 					{
-						it->second.status = status;
+						_ringBox.rings[i].setStatus(status);
 						break;
 					}
 				}
@@ -364,10 +395,17 @@ void Main::activityDetection(const Mat &prev_frame, const Mat &curr_frame, const
 		{
 			status = "picking";
 		}
+		
 	}
-
 	else if (status == "moving")
 	{
+		for (auto it = graySum.begin(); it != graySum.end(); ++it)
+		{
+			if (it->second == 0)
+			{
+				count1++;
+			}
+		}
 		for (auto it = graySum.begin(); it != graySum.end(); ++it)
 		{
 			if (it->second > 0.5e6)
@@ -386,50 +424,36 @@ void Main::activityDetection(const Mat &prev_frame, const Mat &curr_frame, const
 			if(v)
 			{
 				status = "stationary";
-				updateBackgroundModel = true;
+				updateModel = true;
 
 				int index_peg = 0;
-				for (auto it = _pegBox.pegs.begin(); it != _pegBox.pegs.end(); ++it)
+				for (int i = 0; i < _pegBox.pegs.size(); ++i)
 				{
-					int code = it->first;
-					Rect roi = it->second.roi;
-					bool intersect = util::rectOverlap(roi, mvRingROI);
+					Rect r = _pegBox.pegs[i].roi;
+					int code = _pegBox.pegs[i].code;
+					bool intersect = _ringBox.rectOverlap(r, mvRingROI);
 					if (intersect)
 					{
-						index_peg = it->first;
+						index_peg = i;
 						break;
 					}
 				}
-
-				for (auto it = _ringBox.rings.begin(); it != _ringBox.rings.end(); ++it)
+				// update the code and status of the ring
+				for (int i = 0; i < _ringBox.rings.size(); ++i)
 				{
-					if (it->second.status == "moving")
+					if (_ringBox.rings[i].getStatus() == "moving")
 					{
-						Point2f p = it->second.center;
-						float r = it->second.radius;
-						Rect roi = it->second.roi;
-						string s = it->second.status;
-						float vel = it->second.velocity;
-						int  id = it->second.id;
-
-						_ringBox.rings.erase(it->first);
-
-						_ringBox.rings[index_peg].center = p;
-						_ringBox.rings[index_peg].radius = r;
-						_ringBox.rings[index_peg].roi = roi;
-						_ringBox.rings[index_peg].status = status;
-						_ringBox.rings[index_peg].velocity = vel;
-						_ringBox.rings[index_peg].id = id;
+						_ringBox.rings[i].setStatus(status);
+						_ringBox.rings[i].setCode(_pegBox.pegs[index_peg].code);
 						break;
-						
 					}
 				}
-
 			}
 			else
 			{
 				status = "moving";
 			}
+
 		}
 	}
 	cout << "status -> " << status << endl << endl;
@@ -525,13 +549,8 @@ void Main::run()
 {
 	// Read the current frame and convert to the grayscale
 	IplImage *img = imAcqGetImg(imAcq);
-	IplImage *img1 = cvCloneImage(img);
 	Mat grey(img->height, img->width, CV_8UC1);
 	cvtColor(cvarrToMat(img), grey, CV_BGR2GRAY);
-	
-	tld->detectorCascade->imgWidth = grey.cols;
-	tld->detectorCascade->imgHeight = grey.rows;
-	tld->detectorCascade->imgWidthStep = grey.step;
 
 	// Get the bounding box around the frame
 	initializeBoundingBox(img);
@@ -586,19 +605,11 @@ void Main::run()
 		// 
 		fprintf(resultsFile, "Output-File for the video -> %s\n", imAcq->imgPath);
 		fprintf(resultsFile, "Locations and code of the Pegs (x,y,width,height,code)\n");
-		int pp = 0;
-		for (auto it = _pegBox.pegs.begin(); it != _pegBox.pegs.end(); ++it)
+		for (int i = 0; i < _pegBox.pegs.size(); ++i)
 		{
-			fprintf(resultsFile, "peg %d ->  %d  %d  %d  %d  %d\n", pp + 1, 
-				it->second.roi.x, 
-				it->second.roi.y,
-				it->second.roi.width,
-				it->second.roi.height,
-				it->first);
-
+			fprintf(resultsFile, "peg %d ->  %d  %d  %d  %d  %d\n", i + 1, _pegBox.pegs[i].roi.x, _pegBox.pegs[i].roi.y, _pegBox.pegs[i].roi.width, _pegBox.pegs[i].roi.height, _pegBox.pegs[i].code);
 		}
-		pp = 0;
-		fprintf(resultsFile, "\n\nFrame-No,      Ring1-Status,      Ring1-Code,      Ring2-Status,      Ring2-Code,      Ring3-Status,      Ring3-Code,      Ring4-Status,      Ring4-Code,      Ring5-Status,      Ring5-Code,      Ring6-Status,      Ring6-Code,      Hitting-Detection-Output,      Tracking-Output,      Tracking-Output-Confidence\n");
+		fprintf(resultsFile, "\n\nFrame-No, Ring1-Status, Ring1-Code, Ring2-Status, Ring2-Code, Ring3-Status, Ring3-Code, Ring4-Status, Ring4-Code, Ring5-Status, Ring5-Code, Ring6-Status, Ring6-Code, Hitting-Detection-Output, Tracking-Output, Tracking-Output-Confidence\n");
 	}
 	gui->showImageByDestroyingWindow(img);
 
@@ -690,21 +701,16 @@ void Main::run()
 		// Writing results
 		if (printResults != NULL)
 		{
-			vector<pair<string, int> > vv;
-			for (auto it = _ringBox.rings.begin(); it != _ringBox.rings.end(); ++it)
-			{
-				vv.push_back(make_pair(it->second.status, it->first));
-			}
 			if (tld->currBB != NULL)
 			{
 				fprintf(resultsFile, "%d  %s  %d  %s  %d  %s  %d  %s  %d  %s  %d  %s  %d  %d  %.2d  %.2d  %.2d  %.2d  %lf\n",
 					imAcq->currentFrame - 1,
-					vv[0].first.c_str(), vv[0].second,
-					vv[1].first.c_str(), vv[1].second,
-					vv[2].first.c_str(), vv[2].second,
-					vv[3].first.c_str(), vv[3].second,
-					vv[4].first.c_str(), vv[4].second,
-					vv[5].first.c_str(), vv[5].second,
+					_ringBox.rings[0].getStatus().c_str(), _ringBox.rings[0].getCode(),
+					_ringBox.rings[1].getStatus().c_str(), _ringBox.rings[1].getCode(),
+					_ringBox.rings[2].getStatus().c_str(), _ringBox.rings[2].getCode(),
+					_ringBox.rings[3].getStatus().c_str(), _ringBox.rings[3].getCode(),
+					_ringBox.rings[4].getStatus().c_str(), _ringBox.rings[4].getCode(),
+					_ringBox.rings[5].getStatus().c_str(), _ringBox.rings[5].getCode(),
 					frameHitData.size(),
 					tld->currBB->x, tld->currBB->y, tld->currBB->width, tld->currBB->height,
 					tld->currConf);
@@ -713,12 +719,12 @@ void Main::run()
 			{
 				fprintf(resultsFile, "%d  %s  %d  %s  %d  %s  %d  %s  %d  %s  %d  %s  %d  %d  -1  -1  -1  -1  -1 \n",
 					imAcq->currentFrame - 1,
-					vv[0].first.c_str(), vv[0].second,
-					vv[1].first.c_str(), vv[1].second,
-					vv[2].first.c_str(), vv[2].second,
-					vv[3].first.c_str(), vv[3].second,
-					vv[4].first.c_str(), vv[4].second,
-					vv[5].first.c_str(), vv[5].second,
+					_ringBox.rings[0].getStatus().c_str(), _ringBox.rings[0].getCode(),
+					_ringBox.rings[1].getStatus().c_str(), _ringBox.rings[1].getCode(),
+					_ringBox.rings[2].getStatus().c_str(), _ringBox.rings[2].getCode(),
+					_ringBox.rings[3].getStatus().c_str(), _ringBox.rings[3].getCode(),
+					_ringBox.rings[4].getStatus().c_str(), _ringBox.rings[4].getCode(),
+					_ringBox.rings[5].getStatus().c_str(), _ringBox.rings[5].getCode(),
 					frameHitData.size());
 			}
 		}
@@ -760,30 +766,27 @@ void Main::run()
 			cvPutText(img, string, cvPoint(25, 25), &font, white);
 
 			// Draw peg Box
-			cvInitFont(&font, CV_FONT_HERSHEY_SIMPLEX, .5, .5, 0, 3, 8);
-			for (auto it = _pegBox.pegs.begin(); it != _pegBox.pegs.end(); ++it)
+			for (int i = 0; i < _pegBox.pegs.size(); ++i)
 			{
-				std::string text = SSTR(it->first);
-				cvRectangle(img, cvPoint(it->second.roi.tl().x, it->second.roi.tl().y),
-					cvPoint(it->second.roi.br().x, it->second.roi.br().y), green, 1, 8, 0);
-				cvPutText(img, text.c_str(), cvPoint(it->second.center.x, it->second.center.y), &font, blue);
+				std::string text = SSTR(_pegBox.pegs[i].code);
+				cvRectangle(img, cvPoint(_pegBox.pegs[i].roi.tl().x, _pegBox.pegs[i].roi.tl().y),
+					cvPoint(_pegBox.pegs[i].roi.br().x, _pegBox.pegs[i].roi.br().y), green, 1, 8, 0);
+				cvPutText(img, text.c_str(), cvPoint(_pegBox.pegs[i].center.x, _pegBox.pegs[i].center.y), &font, blue);
 			}
 
-			cvInitFont(&font, CV_FONT_HERSHEY_SIMPLEX, .5, .5, 0, 1, 8);
 			// plot the moving ring
 			if (mvRingROI.width > 0)
 			{
 				cvRectangle(img, cvPoint(mvRingROI.x, mvRingROI.y),
 					cvPoint(mvRingROI.br().x, mvRingROI.br().y), cyan, 1, 8, 0);
-				cvPutText(img, "moving ring", cvPoint(mvRingROI.x + mvRingROI.width / 2, mvRingROI.y + mvRingROI.height / 2), &font, cyan);
+				cvPutText(img, "moving ring", cvPoint(mvRingROI.x + mvRingROI.width / 2, mvRingROI.y + mvRingROI.height / 2), &font, blue);
 			}
-			int count = 0;
-			for (auto it = _ringBox.rings.begin(); it != _ringBox.rings.end(); ++it)
+
+			for (int i = 0; i < _ringBox.rings.size(); ++i)
 			{
-				std::string text = "Ring " + SSTR(it->second.id) + " On the Peg " + SSTR(it->first) + "  (with Status " + it->second.status + ")";
-				cvPutText(img, text.c_str(), cvPoint(10, (count++ * 15) + 50), &font, white);
+				std::string text = "Ring " + SSTR(i) + " On the Peg " + SSTR(_ringBox.rings[i].getCode()) + "  (with Status " + _ringBox.rings[i].getStatus() + ")";
+				cvPutText(img, text.c_str(), cvPoint(10, (i * 15) + 50), &font, white);
 			}
-			count = 0;
 			std::string text = "Hitting Detection Value ->" + SSTR(hittingDetectionVal);
 			cvPutText(img, text.c_str(), Point(10, (6 * 15) + 50), &font, red);
 			if (showForeground)

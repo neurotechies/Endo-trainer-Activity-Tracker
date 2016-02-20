@@ -46,11 +46,21 @@ namespace nets
 	public:
 		struct Ring
 		{
+			int id;
 			cv::Rect roi;
 			Point2f center;
 			float radius;
 			float velocity;
 			string status;
+			Ring()
+			{
+				id = -1;
+				roi = Rect(0, 0, 0, 0);
+				center = Point2f(0, 0);
+				radius = 0;
+				velocity = 0;
+				status = "";
+			}
 		};
 
 		unordered_map<int, Ring> rings;

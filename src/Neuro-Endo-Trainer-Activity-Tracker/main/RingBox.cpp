@@ -75,6 +75,7 @@ namespace nets
 				r.roi = initial_roi[i];
 				r.velocity = 0; 
 				r.status = STATIONARY;
+				r.id = i;
 				for (auto it_peg = pegBox.pegs.begin(); it_peg != pegBox.pegs.end(); ++it_peg)
 				{
 					Rect q = it_peg->second.roi;
