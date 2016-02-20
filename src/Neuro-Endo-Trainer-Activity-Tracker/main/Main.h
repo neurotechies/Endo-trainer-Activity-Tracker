@@ -35,6 +35,7 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv/cv.h>
 #include "params.h"
+#include "TLD.h"
 #include <string>
 #include <sstream>
 
@@ -55,6 +56,11 @@ enum Retval
 class Main
 {
 public:
+	tld::TLD *tld;
+	
+	
+	
+	
 	// gui and image acquisiton objects;
 	ImAcq *imAcq;
 	nets::Gui *gui;

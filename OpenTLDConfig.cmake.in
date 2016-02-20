@@ -4,6 +4,9 @@ set(bin_dir "@PROJECT_BINARY_DIR@")
 set(src_dir "@PROJECT_SOURCE_DIR@")
 
 set(Neuro-Endo-Trainer-Activity-Tracker_INCLUDE_DIRS
+	${src_dir}/src/3rdparty/cvblobs
+	${src_dir}/src/libopentld/tld
+	${src_dir}/src/libopentld/mftracker
 	${src_dir}/src/libopentld/imacq
     ${src_dir}/src/opentld/main)
 INCLUDE_DIRECTORIES(${Neuro-Endo-Trainer-Activity-Tracker_INCLUDE_DIRS})
@@ -11,7 +14,7 @@ INCLUDE_DIRECTORIES(${Neuro-Endo-Trainer-Activity-Tracker_INCLUDE_DIRS})
 SET(Neuro-Endo-Trainer-Activity-Tracker_LIB_DIRS ${LIBRARY_OUTPUT_PATH})
 LINK_DIRECTORIES(${Neuro-Endo-Trainer-Activity-Tracker_LIB_DIRS})
 
-set(OPENTLD_LIBS libopentld)
+set(OPENTLD_LIBS cvblobs libopentld)
 
 
 

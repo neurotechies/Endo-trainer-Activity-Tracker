@@ -1,0 +1,14 @@
+#ifndef PARAMS_Included
+#define PARAMS_Included
+
+#define PEGBOUNDINGBOX_X   160
+#define PEGBOUNDINGBOX_Y    240
+#define PEGBOUNDINGBOX_WIDTH  830
+#define PEGBOUNDINGBOX_HEIGHT  550
+#define PEGSATURATION_MINVALUE  120
+#define MIN_PEG_SIZE  25
+#define HUE_THRESHVAL_RING 20.0
+#define STATIONARY  "stationary"
+#define STABLE_COUNT 5
+
+#endif

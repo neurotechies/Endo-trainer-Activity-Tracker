@@ -63,5 +63,6 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)
 
 add_subdirectory(src/Neuro-Endo-Trainer-Activity-Tracker)
 add_subdirectory(src/libopentld)
+add_subdirectory(src/3rdparty/cvblobs)
 
 configure_file("${PROJECT_SOURCE_DIR}/OpenTLDConfig.cmake.in" "${PROJECT_BINARY_DIR}/OpenTLDConfig.cmake" @ONLY)

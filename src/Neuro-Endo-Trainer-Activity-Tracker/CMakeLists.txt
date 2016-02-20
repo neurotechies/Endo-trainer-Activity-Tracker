@@ -3,6 +3,9 @@ link_directories(${OpenCV_LIB_DIR})
 
 include_directories(main
 	../libopentld/imacq
+	../libopentld/mftracker
+    ../libopentld/tld
+    ../3rdparty/cvblobs
     ${OpenCV_INCLUDE_DIRS})
 
 
@@ -15,22 +18,23 @@ add_library(main
     main/Gui.cpp
     main/Main.cpp
 	main/util.cpp
+	main/Trajectory.cpp
 	
 	main/ringBox.h
     main/pegBox.h
 	main/ContourFeature.hpp
     main/Gui.h
     main/Main.h
-	main/util.h)
+	main/util.h
+	main/Trajectory.h)
 
-target_link_libraries(main libopentld ${OpenCV_LIBS})
+target_link_libraries(main libopentld cvblobs ${OpenCV_LIBS})
 
-#-------------------------------------------------------------------------------
-# opentld
+
 add_executable(Neuro-Endo-Trainer-Activity-Tracker
     Neuro-Endo-Trainer-Activity-Tracker.cpp)
 
-target_link_libraries(Neuro-Endo-Trainer-Activity-Tracker main libopentld ${OpenCV_LIBS})
+target_link_libraries(Neuro-Endo-Trainer-Activity-Tracker main libopentld cvblobs ${OpenCV_LIBS})
 
 install(TARGETS Neuro-Endo-Trainer-Activity-Tracker DESTINATION bin)
 
