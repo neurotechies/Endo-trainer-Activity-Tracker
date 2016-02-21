@@ -77,12 +77,12 @@ public:
 	Rect pegGroupROI;
 	string status;
 	cv::Mat element[4];
-	vector<vector<unsigned int> > hittingData;
 	pegBox _pegBox;
 	RingBox _ringBox;
 	Mat prv_frame, curr_frame;
 	cv::BackgroundSubtractor* pMOG;
 	bool updateBackgroundModel;
+	bool updateBackgroundModel2;
 	bool firstTimeRingDetection;
 	Rect mvRingROI;
 	bool first_tracking_failed_detection;
@@ -127,6 +127,7 @@ public:
         imAcq = NULL;
 		pMOG = new BackgroundSubtractorMOG2(20, 100, false);
 		updateBackgroundModel = false;
+		updateBackgroundModel2 = false;
 		dist = 0;
 		temp = 0;
 		firstTimeRingDetection = false;

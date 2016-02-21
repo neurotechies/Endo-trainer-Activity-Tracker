@@ -65,7 +65,7 @@ bool Main::AllRingStable(const Mat &prv_frame, const Mat &curr_frame, const Rect
 		findContours(mask_out, contours, hierarchy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
 		if (contours.size() == 0)
 		{
-			if (StableFrameCount == 25)
+			if (StableFrameCount == STATIONARY_FRAME_COUNT)
 			{
 				StableFrameCount = 0;
 				retVal = true;
@@ -78,7 +78,7 @@ bool Main::AllRingStable(const Mat &prv_frame, const Mat &curr_frame, const Rect
 					update__RingStability = false;
 					StableFrameCount++;
 				}
-				if (imAcq->currentFrame - prvFrameNo_RingStability > 10)
+				if (imAcq->currentFrame - prvFrameNo_RingStability > CONSECUTIVE_FRAME_COUNT)
 				{
 					StableFrameCount = 0;
 					update__RingStability = true;
@@ -91,7 +91,7 @@ bool Main::AllRingStable(const Mat &prv_frame, const Mat &curr_frame, const Rect
 			}
 		}
 	}
-	//cout << "frameCount ->" << StableFrameCount << endl;
+	cout << "StableFrameCount ->" << StableFrameCount << endl;
 	//cout << "prvFrameNo_RingStability ->" << prvFrameNo_RingStability << endl;
 	return retVal;
 }
@@ -101,8 +101,8 @@ void Main::HittingDetection(const Mat &prv_frame, const Mat &curr_frame, vector<
 	// constants
 	int thresh = 50;
 	Mat kernel = (Mat_<uchar>(3, 3) << 0, 1, 0, 1, 1, 1, 0, 1, 0);
-	int smallImage_width = int(pegGroupROI.width / 10.0);
-	int smallImage_height = int(pegGroupROI.height / 10.0);
+	int smallImage_width = int(pegGroupROI.width / (float) NO_OF_IMAGES_HITTING_DETECTION);
+	int smallImage_height = int(pegGroupROI.height / (float) NO_OF_IMAGES_HITTING_DETECTION);
 	vector<vector<Point> > contours;
 	vector<Vec4i> hierarchy;
 	// vars declaration
@@ -112,7 +112,7 @@ void Main::HittingDetection(const Mat &prv_frame, const Mat &curr_frame, vector<
 
 	// absolute diffrence between successive frames
 	cv::absdiff(prv_frame, curr_frame, diff);
-
+	diff = diff(pegGroupROI);
 	// edge detection and normalization
 	cv::Canny(diff, canny_output, thresh, thresh * 4, 3);
 	cv::normalize(canny_output, canny_output, 0, 1, cv::NORM_MINMAX);
@@ -122,7 +122,6 @@ void Main::HittingDetection(const Mat &prv_frame, const Mat &curr_frame, vector<
 	cv::dilate(dst, dst, kernel);
 	cv::normalize(dst, dst, 0, 255, cv::NORM_MINMAX);
 
-	dst = dst(pegGroupROI);
 	// divide image int 10x10 blocks and calculate contours on each subwindow
 	for (int y = 0; y < dst.rows - smallSize.height+1; y += smallSize.height)
 	{
@@ -150,9 +149,29 @@ Rect Main::getmovingRingROI(const Mat &curr_frame)
 	pMOG->operator()(curr_frame, fgMask, 0);
 	if (updateBackgroundModel)
 	{
+		cout << "updating Background Model when all rings stationary \n";
+		waitKey(0);
 		pMOG->operator()(curr_frame, fgMask, 0.5);
 		updateBackgroundModel = false;
 	}
+	if (updateBackgroundModel2)
+	{
+		cout << "updating Background Model when distance between previous and current ring is more than 150 \n";
+		waitKey(0);
+		Mat curr_frame2 = curr_frame.clone();
+		for (int y = prevmvRingROI.y; y < prevmvRingROI.height; y++)
+		{
+			for (int x = prevmvRingROI.x; x < prevmvRingROI.width; x++)
+			{
+				curr_frame2.at<Vec3b>(Point(x, y)) = Vec3b(0, 0, 0);
+			}
+		}
+
+		pMOG->operator()(curr_frame2, fgMask, 0.5);
+		updateBackgroundModel2 = false;
+		prevmvRingROI = Rect(0, 0, 0, 0);
+	}
+
 	Mat movingToolRing, movingToolRing_hsv;
 	curr_frame.copyTo(movingToolRing, fgMask);
 
@@ -168,10 +187,10 @@ Rect Main::getmovingRingROI(const Mat &curr_frame)
 		cv::threshold(fgMaskMovingRing, fgMaskMovingRing, 1, 255, THRESH_BINARY); //b1((b1 > 0))= 255;
 
 		erode(fgMaskMovingRing, fgMaskMovingRing, element[0]);
+		dilate(fgMaskMovingRing, fgMaskMovingRing, element[1]);
 		erode(fgMaskMovingRing, fgMaskMovingRing, element[0]);
 		dilate(fgMaskMovingRing, fgMaskMovingRing, element[1]);
-		dilate(fgMaskMovingRing, fgMaskMovingRing, element[1]);
-		dilate(fgMaskMovingRing, fgMaskMovingRing, element[1]);
+		erode(fgMaskMovingRing, fgMaskMovingRing, element[0]);
 		dilate(fgMaskMovingRing, fgMaskMovingRing, element[1]);
 		dilate(fgMaskMovingRing, fgMaskMovingRing, element[1]);
 
@@ -192,7 +211,7 @@ Rect Main::getmovingRingROI(const Mat &curr_frame)
 					index = i;
 				}
 			}
-			if (contours[index].size() > 70)
+			if (contours[index].size() > 40)
 			{
 				r = boundingRect(contours[index]);
 			}
@@ -212,6 +231,8 @@ void Main::activityDetection(const Mat &prev_frame, const Mat &curr_frame, const
 
 	mvRingROI = getmovingRingROI(curr_frame);
 
+
+	/* For two moving rings creating problem*/
 	Point p1 = Point(prevmvRingROI.x + (prevmvRingROI.width / 2.0), prevmvRingROI.y + prevmvRingROI.height / 2.0);
 	Point p2 = Point(mvRingROI.x + (mvRingROI.width / 2.0), mvRingROI.y + mvRingROI.height / 2.0);
 	double dist1 = sqrt(((p1.x - p2.x)*(p1.x - p2.x)) + ((p1.y - p2.y)*(p1.y - p2.y)));
@@ -221,18 +242,20 @@ void Main::activityDetection(const Mat &prev_frame, const Mat &curr_frame, const
 	{
 		if (firstTimeRingDetection && prevmvRingROI.width > 0 && mvRingROI.width > 0)
 		{
-			updateBackgroundModel = true;
+			updateBackgroundModel2 = true;
 		}
 	}
 
 	if (firstTimeRingDetection)
 		prevmvRingROI = mvRingROI;
 
-	if (updateBackgroundModel)
-	{
-		prevmvRingROI = Rect(0,0,0,0); 
-	}
+	//if (updateBackgroundModel2)
+	//{
+	//	prevmvRingROI = Rect(0,0,0,0); 
+	//}
 	
+
+
 	Mat channel[3];
 	split(curr_frame_hsv, channel);
 
@@ -252,6 +275,24 @@ void Main::activityDetection(const Mat &prev_frame, const Mat &curr_frame, const
 	//Mat test;
 	//cvtColor(fgMaskRing, test, CV_GRAY2BGR);
 	//plot the pegs
+
+	vector<vector<Point> > pegsI;
+	vector<Vec4i> hierarchy_ring;
+	findContours(fgMaskRing, pegsI, hierarchy_ring, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
+	for (int i = 0; i < pegsI.size(); i++)
+	{
+		if (pegsI[i].size() < 35)
+		{
+			Rect r = boundingRect(pegsI[i]);
+			for (int y = r.y; y < r.y + r.height; y++)
+			{
+				for (int x = r.x; x < r.x + r.width; x++)
+				{
+					maskRing.at<uchar>(Point(x, y)) = 0;
+				}
+			}
+		}
+	}
 
 	unordered_map<int, double> graySum;
 	for (auto it = _pegBox.pegs.begin(); it != _pegBox.pegs.end(); ++it)
@@ -291,7 +332,7 @@ void Main::activityDetection(const Mat &prev_frame, const Mat &curr_frame, const
 						if (dist < 150)
 						{
 							pickingCount++;
-							if (pickingCount == 3)
+							if (pickingCount == 1)
 							{
 								pickingCount = 0;
 								status = "picking";
@@ -375,6 +416,7 @@ void Main::activityDetection(const Mat &prev_frame, const Mat &curr_frame, const
 				count2++;
 			}
 		}
+		cout << "count2->" << count2 << endl;
 		if (count2 == 5)
 		{
 			status == "moving";
@@ -623,34 +665,42 @@ void Main::run()
 			}
 			cvtColor(cvarrToMat(img), grey, CV_BGR2GRAY);
 		}
-		tld->processImage(cvarrToMat(img));
+
+		if (TLD_WITH_TRACKER_ONLY)
+		{
+			tld->processImageWithTracker(cvarrToMat(img));
+		}
+		else
+		{
+			tld->processImage(cvarrToMat(img));
+		}
 
 		// if tracking fails then prompt the user to reinitialize the tracking
-		if (tld->currBB == NULL)
-		{
-			if (first_tracking_failed_detection && trackingStart)
-			{
-				if (mvRingROI.width > 0)
-				{
-					Point center_ring = Point(mvRingROI.x + (mvRingROI.width / 2.0), mvRingROI.y + mvRingROI.height / 2.0);
-					if (center_ring.y > mvRingROI.height)
-					{
-						CvRect box;
-						std::string message = "Tracking failed .. Reinitialize tracking by drawing a bounding box and press enter";
-						if (getBBFromUser(img, box, gui, message) == PROGRAM_EXIT)
-						{
-							break;
-						}
-						Rect r = Rect(box);
-						tld->learnPatch(grey, &r);
-					}
-				}
-			}
-			else
-			{
-				first_tracking_failed_detection = true;
-			}
-		}
+		//if (tld->currBB == NULL)
+		//{
+		//	if (first_tracking_failed_detection && trackingStart)
+		//	{
+		//		if (mvRingROI.width > 0)
+		//		{
+		//			Point center_ring = Point(mvRingROI.x + (mvRingROI.width / 2.0), mvRingROI.y + mvRingROI.height / 2.0);
+		//			if (center_ring.y > mvRingROI.height)
+		//			{
+		//				CvRect box;
+		//				std::string message = "Tracking failed .. Reinitialize tracking by drawing a bounding box and press enter";
+		//				if (getBBFromUser(img, box, gui, message) == PROGRAM_EXIT)
+		//				{
+		//					break;
+		//				}
+		//				Rect r = Rect(box);
+		//				tld->learnPatch(grey, &r);
+		//			}
+		//		}
+		//	}
+		//	else
+		//	{
+		//		first_tracking_failed_detection = true;
+		//	}
+		//}
 		/*  ********** Hitting Detection *****************
 		Calculate the adsolute difference between two successive frames
 		divide image into 10x10 subimage
@@ -660,8 +710,6 @@ void Main::run()
 		curr_frame = Mat(img);
 		vector<unsigned int > frameHitData;
 		HittingDetection(prv_frame, curr_frame, frameHitData);
-		hittingDetectionVal = frameHitData.size();
-		hittingData.push_back(frameHitData);
 		// Replace the previous with current frame and reset frameHitData
 
 		/***********************************************************
@@ -748,6 +796,7 @@ void Main::run()
 			CvScalar red = CV_RGB(255, 0, 0);
 			CvScalar green = CV_RGB(0, 255, 0);
 			CvScalar cyan = CV_RGB(255, 0, 255);
+			CvScalar magenta = CV_RGB(0, 255, 255);
 			if (tld->currBB != NULL)
 			{
 				CvScalar rectangleColor = (confident) ? blue : yellow;
@@ -775,8 +824,15 @@ void Main::run()
 			{
 				cvRectangle(img, cvPoint(mvRingROI.x, mvRingROI.y),
 					cvPoint(mvRingROI.br().x, mvRingROI.br().y), cyan, 1, 8, 0);
-				cvPutText(img, "moving ring", cvPoint(mvRingROI.x + mvRingROI.width / 2, mvRingROI.y + mvRingROI.height / 2), &font, cyan);
+				cvPutText(img, "Current moving ring", cvPoint(mvRingROI.x + mvRingROI.width / 2, mvRingROI.y + mvRingROI.height / 2), &font, cyan);
 			}
+			if (prevmvRingROI.width > 0)
+			{
+				cvRectangle(img, cvPoint(prevmvRingROI.x, prevmvRingROI.y),
+					cvPoint(prevmvRingROI.br().x, prevmvRingROI.br().y), magenta, 1, 8, 0);
+				cvPutText(img, "Previous moving ring", cvPoint(prevmvRingROI.x + prevmvRingROI.width / 2, prevmvRingROI.y + prevmvRingROI.height / 2), &font, magenta);
+			}
+
 			int count = 0;
 			for (auto it = _ringBox.rings.begin(); it != _ringBox.rings.end(); ++it)
 			{
@@ -827,18 +883,14 @@ void Main::run()
 					tld->learningEnabled = !tld->learningEnabled;
 					printf("LearningEnabled: %d\n", tld->learningEnabled);
 				}
-
-
 				if (key == 'e')
 				{
 					tld->writeToFile(modelExportFile);
 				}
-
 				if (key == 'i')
 				{
 					tld->readFromFile(modelPath);
 				}
-
 				if (key == 'r')
 				{
 					trackingStart = true;
@@ -848,9 +900,7 @@ void Main::run()
 					{
 						break;
 					}
-
 					Rect r = Rect(box);
-
 					tld->selectObject(grey, &r);
 				}
 

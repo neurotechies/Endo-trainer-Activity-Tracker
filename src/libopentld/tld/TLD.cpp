@@ -168,6 +168,40 @@ void TLD::processImage(const Mat &img)
 
 }
 
+void TLD::processImageWithTracker(const cv::Mat &img)
+{
+	storeCurrentData();
+	Mat grey_frame;
+	cvtColor(img, grey_frame, CV_BGR2GRAY);
+	currImg = grey_frame; // Store new image , right after storeCurrentData();
+
+	if (trackerEnabled)
+	{
+		medianFlowTracker->track(prevImg, currImg, prevBB);
+	}
+	if (currBB)
+	{
+		delete currBB;
+		currBB = NULL;
+	}
+	Rect *trackerBB = medianFlowTracker->trackerBB;
+	if (trackerBB != NULL)
+	{
+		float confTracker = nnClassifier->classifyBB(currImg, trackerBB);
+		currBB = tldCopyRect(trackerBB);
+		currConf = confTracker;
+		if (confTracker > nnClassifier->thetaTP)
+		{
+			valid = true;
+		}
+		else if (wasValid && confTracker > nnClassifier->thetaFP)
+		{
+			valid = true;
+		}
+	}
+}
+
+
 void TLD::fuseHypotheses()
 {
     Rect *trackerBB = medianFlowTracker->trackerBB;
