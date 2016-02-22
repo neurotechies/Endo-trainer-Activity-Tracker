@@ -149,27 +149,30 @@ Rect Main::getmovingRingROI(const Mat &curr_frame)
 	pMOG->operator()(curr_frame, fgMask, 0);
 	if (updateBackgroundModel)
 	{
-		cout << "updating Background Model when all rings stationary \n";
-		waitKey(0);
+		//cout << "updating Background Model when all rings stationary \n";
+		//waitKey(0);
 		pMOG->operator()(curr_frame, fgMask, 0.5);
 		updateBackgroundModel = false;
 	}
 	if (updateBackgroundModel2)
 	{
-		cout << "updating Background Model when distance between previous and current ring is more than 150 \n";
-		waitKey(0);
+		//cout << "prevmvRingROI" << prevmvRingROI << endl;
+		//cout << "mvRingROI" << mvRingROI << endl;
+		//cout << "updating Background Model when distance between previous and current ring is more than 150 \n";
+		//waitKey(0);
 		Mat curr_frame2 = curr_frame.clone();
-		for (int y = prevmvRingROI.y; y < prevmvRingROI.height; y++)
+		for (int y = prevmvRingROI.y; y < prevmvRingROI.y + prevmvRingROI.height; y++)
 		{
-			for (int x = prevmvRingROI.x; x < prevmvRingROI.width; x++)
+			for (int x = prevmvRingROI.x; x < prevmvRingROI.x + prevmvRingROI.width; x++)
 			{
 				curr_frame2.at<Vec3b>(Point(x, y)) = Vec3b(0, 0, 0);
 			}
 		}
-
+		imshow("curr_frame2", curr_frame2);
+		waitKey(0);
 		pMOG->operator()(curr_frame2, fgMask, 0.5);
 		updateBackgroundModel2 = false;
-		prevmvRingROI = Rect(0, 0, 0, 0);
+		prevmvRingROI = Rect(0,0,0,0); 
 	}
 
 	Mat movingToolRing, movingToolRing_hsv;
@@ -243,6 +246,7 @@ void Main::activityDetection(const Mat &prev_frame, const Mat &curr_frame, const
 		if (firstTimeRingDetection && prevmvRingROI.width > 0 && mvRingROI.width > 0)
 		{
 			updateBackgroundModel2 = true;
+			mvRingROI = getmovingRingROI(curr_frame);
 		}
 	}
 
@@ -825,12 +829,6 @@ void Main::run()
 				cvRectangle(img, cvPoint(mvRingROI.x, mvRingROI.y),
 					cvPoint(mvRingROI.br().x, mvRingROI.br().y), cyan, 1, 8, 0);
 				cvPutText(img, "Current moving ring", cvPoint(mvRingROI.x + mvRingROI.width / 2, mvRingROI.y + mvRingROI.height / 2), &font, cyan);
-			}
-			if (prevmvRingROI.width > 0)
-			{
-				cvRectangle(img, cvPoint(prevmvRingROI.x, prevmvRingROI.y),
-					cvPoint(prevmvRingROI.br().x, prevmvRingROI.br().y), magenta, 1, 8, 0);
-				cvPutText(img, "Previous moving ring", cvPoint(prevmvRingROI.x + prevmvRingROI.width / 2, prevmvRingROI.y + prevmvRingROI.height / 2), &font, magenta);
 			}
 
 			int count = 0;
