@@ -88,7 +88,6 @@ public:
 	bool first_tracking_failed_detection;
 	bool trackingStart;
 	int fileWriteCount;
-	int hittingDetectionVal;
 	Rect prevmvRingROI;
 	bool movingROIDetection;
 	int pickingCount;
@@ -136,7 +135,6 @@ public:
 		first_tracking_failed_detection = false;
 		trackingStart = false;
 		fileWriteCount = 0;
-		hittingDetectionVal = 0;
 		movingROIDetection = true;
 		pickingCount = 0;
 		StableFrameCount = 0;

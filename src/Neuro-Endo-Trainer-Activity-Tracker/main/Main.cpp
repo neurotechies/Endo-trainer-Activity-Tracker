@@ -98,6 +98,7 @@ bool Main::AllRingStable(const Mat &prv_frame, const Mat &curr_frame, const Rect
 
 void Main::HittingDetection(const Mat &prv_frame, const Mat &curr_frame, vector<unsigned int> &hittingData)
 {
+	hittingData.clear();
 	// constants
 	int thresh = 50;
 	Mat kernel = (Mat_<uchar>(3, 3) << 0, 1, 0, 1, 1, 1, 0, 1, 0);
@@ -106,7 +107,7 @@ void Main::HittingDetection(const Mat &prv_frame, const Mat &curr_frame, vector<
 	vector<vector<Point> > contours;
 	vector<Vec4i> hierarchy;
 	// vars declaration
-	cv::Size smallSize(smallImage_width, smallImage_height);
+		cv::Size smallSize(smallImage_width, smallImage_height);
 	Mat diff, canny_output, dst;
 
 
@@ -121,6 +122,7 @@ void Main::HittingDetection(const Mat &prv_frame, const Mat &curr_frame, vector<
 	cv::dilate(canny_output, dst, kernel);
 	cv::dilate(dst, dst, kernel);
 	cv::normalize(dst, dst, 0, 255, cv::NORM_MINMAX);
+	//imshow("dst", dst);
 
 	// divide image int 10x10 blocks and calculate contours on each subwindow
 	for (int y = 0; y < dst.rows - smallSize.height+1; y += smallSize.height)
@@ -177,6 +179,7 @@ Rect Main::getmovingRingROI(const Mat &curr_frame)
 
 	Mat movingToolRing, movingToolRing_hsv;
 	curr_frame.copyTo(movingToolRing, fgMask);
+	//imshow("fgMask", fgMask);
 
 	if (!fgMask.empty())
 	{
@@ -241,10 +244,11 @@ void Main::activityDetection(const Mat &prev_frame, const Mat &curr_frame, const
 	double dist1 = sqrt(((p1.x - p2.x)*(p1.x - p2.x)) + ((p1.y - p2.y)*(p1.y - p2.y)));
 
 	
-	if (dist1 > 150)
+	if (dist1 > 150 & (status == "moving" || status == "picking"))
 	{
 		if (firstTimeRingDetection && prevmvRingROI.width > 0 && mvRingROI.width > 0)
 		{
+			// Record this event to penalize the trainee ...
 			updateBackgroundModel2 = true;
 			mvRingROI = getmovingRingROI(curr_frame);
 		}
@@ -320,7 +324,6 @@ void Main::activityDetection(const Mat &prev_frame, const Mat &curr_frame, const
 				count1++;
 			}
 		}
-
 		if (count1 >= 6)
 		{
 			// Determine whether stationary or picking status
@@ -336,12 +339,12 @@ void Main::activityDetection(const Mat &prev_frame, const Mat &curr_frame, const
 						if (dist < 150)
 						{
 							pickingCount++;
-							if (pickingCount == 1)
+							updateBackgroundModel = true;
+							if (pickingCount == 2)
 							{
 								pickingCount = 0;
 								status = "picking";
-								// Find intersection of moving Ring ROI with the first half and determine which
-								// Ring trainee is trying to pick up; then change the code of the ring
+								// Find intersection of moving Ring ROI with the first half and determine which Ring trainee is trying to pick up; then change the code of the ring
 								for (auto it = _pegBox.pegs.begin(); it != _pegBox.pegs.end(); ++it)
 								{
 									int code = it->first;
@@ -369,11 +372,22 @@ void Main::activityDetection(const Mat &prev_frame, const Mat &curr_frame, const
 			}
 		}
 	}
-	
 	else if (status == "picking")
 	{
 		int code = -1;
 
+		for (auto it = graySum.begin(); it != graySum.end(); ++it)
+		{
+			if (it->second > 0.5e6)
+			{
+				count2++;
+			}
+		}
+		if (count2 == 5)
+		{
+			cout << "Trainee has started with one ring but picked another ring. \n Trainee should understand the whole procedure. Scoring for this trainee is not done. Conduct the experiment again with the trainee to give them scores\n";
+			exit(0);
+		}
 		for (auto it = _ringBox.rings.begin(); it != _ringBox.rings.end(); ++it)
 		{
 			if (it->second.status == "picking")
@@ -391,6 +405,7 @@ void Main::activityDetection(const Mat &prev_frame, const Mat &curr_frame, const
 			if (sumPixels == 0)
 			{
 				status = "moving";
+				updateBackgroundModel = true;
 				for (auto it = _ringBox.rings.begin(); it != _ringBox.rings.end(); ++it)
 				{
 					if (it->second.status == "picking")
@@ -413,6 +428,9 @@ void Main::activityDetection(const Mat &prev_frame, const Mat &curr_frame, const
 
 	else if (status == "moving")
 	{
+
+
+
 		for (auto it = graySum.begin(); it != graySum.end(); ++it)
 		{
 			if (it->second > 0.5e6)
@@ -711,9 +729,21 @@ void Main::run()
 		calculate in how many subimages contours are dected
 		* ****************************************************/
 		// Detection for the hitting on the board
+
 		curr_frame = Mat(img);
 		vector<unsigned int > frameHitData;
 		HittingDetection(prv_frame, curr_frame, frameHitData);
+		if (frameHitData.size() > 30)
+		{
+			prv_frame = curr_frame.clone();
+			if (printResults != NULL)
+			{
+				string p = "Hiitting Detected";
+				fprintf(resultsFile, "%d  %s\n", imAcq->currentFrame - 1, p.c_str());
+			}
+			continue;
+		}
+
 		// Replace the previous with current frame and reset frameHitData
 
 		/***********************************************************
@@ -774,7 +804,6 @@ void Main::run()
 					frameHitData.size());
 			}
 		}
-		frameHitData.clear();
 		double toc = (cvGetTickCount() - tic) / cvGetTickFrequency();
 
 		toc = toc / 1000000;
@@ -838,7 +867,7 @@ void Main::run()
 				cvPutText(img, text.c_str(), cvPoint(10, (count++ * 15) + 50), &font, white);
 			}
 			count = 0;
-			std::string text = "Hitting Detection Value ->" + SSTR(hittingDetectionVal);
+			std::string text = "Hitting Detection Value ->" + SSTR(frameHitData.size());
 			cvPutText(img, text.c_str(), Point(10, (6 * 15) + 50), &font, red);
 			if (showForeground)
 			{
