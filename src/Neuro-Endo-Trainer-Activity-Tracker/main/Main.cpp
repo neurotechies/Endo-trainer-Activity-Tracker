@@ -40,7 +40,7 @@ bool Main::AllRingStable(const Mat &prv_frame, const Mat &curr_frame, const Rect
 	// absolute diffrence between successive frames
 	cv::absdiff(prv_frame, curr_frame, diff);
 	cvtColor(diff, mask, CV_BGR2GRAY);
-	
+
 	cv::threshold(mask, mask, 5, 255, THRESH_BINARY); //b1((b1 > 0))= 255;
 
 	curr_frame.copyTo(out1, mask);
@@ -102,12 +102,12 @@ void Main::HittingDetection(const Mat &prv_frame, const Mat &curr_frame, vector<
 	// constants
 	int thresh = 50;
 	Mat kernel = (Mat_<uchar>(3, 3) << 0, 1, 0, 1, 1, 1, 0, 1, 0);
-	int smallImage_width = int(pegGroupROI.width / (float) NO_OF_IMAGES_HITTING_DETECTION);
-	int smallImage_height = int(pegGroupROI.height / (float) NO_OF_IMAGES_HITTING_DETECTION);
+	int smallImage_width = int(pegGroupROI.width / (float)NO_OF_IMAGES_HITTING_DETECTION);
+	int smallImage_height = int(pegGroupROI.height / (float)NO_OF_IMAGES_HITTING_DETECTION);
 	vector<vector<Point> > contours;
 	vector<Vec4i> hierarchy;
 	// vars declaration
-		cv::Size smallSize(smallImage_width, smallImage_height);
+	cv::Size smallSize(smallImage_width, smallImage_height);
 	Mat diff, canny_output, dst;
 
 
@@ -125,9 +125,9 @@ void Main::HittingDetection(const Mat &prv_frame, const Mat &curr_frame, vector<
 	//imshow("dst", dst);
 
 	// divide image int 10x10 blocks and calculate contours on each subwindow
-	for (int y = 0; y < dst.rows - smallSize.height+1; y += smallSize.height)
+	for (int y = 0; y < dst.rows - smallSize.height + 1; y += smallSize.height)
 	{
-		for (int x = 0; x < dst.cols - smallSize.width+1; x += smallSize.width)
+		for (int x = 0; x < dst.cols - smallSize.width + 1; x += smallSize.width)
 		{
 			cv::Rect rect = cv::Rect(x, y, smallSize.width, smallSize.height);
 			Mat temp = dst(rect);
@@ -174,7 +174,7 @@ Rect Main::getmovingRingROI(const Mat &curr_frame)
 		//waitKey(0);
 		pMOG->operator()(curr_frame2, fgMask, 0.5);
 		updateBackgroundModel2 = false;
-		prevmvRingROI = Rect(0,0,0,0); 
+		prevmvRingROI = Rect(0, 0, 0, 0);
 	}
 
 	Mat movingToolRing, movingToolRing_hsv;
@@ -227,7 +227,7 @@ Rect Main::getmovingRingROI(const Mat &curr_frame)
 }
 
 
-void Main::activityDetection(const Mat &prev_frame, const Mat &curr_frame, const Rect &trackingOut)
+bool Main::activityDetection(const Mat &prev_frame, const Mat &curr_frame, const Rect &trackingOut)
 {
 	int count1 = 0, count2 = 0;
 	Mat curr_frame_hsv, fgMaskRing;
@@ -243,7 +243,7 @@ void Main::activityDetection(const Mat &prev_frame, const Mat &curr_frame, const
 	Point p2 = Point(mvRingROI.x + (mvRingROI.width / 2.0), mvRingROI.y + mvRingROI.height / 2.0);
 	double dist1 = sqrt(((p1.x - p2.x)*(p1.x - p2.x)) + ((p1.y - p2.y)*(p1.y - p2.y)));
 
-	
+
 	if (dist1 > 150 & (status == "moving" || status == "picking"))
 	{
 		if (firstTimeRingDetection && prevmvRingROI.width > 0 && mvRingROI.width > 0)
@@ -261,7 +261,7 @@ void Main::activityDetection(const Mat &prev_frame, const Mat &curr_frame, const
 	//{
 	//	prevmvRingROI = Rect(0,0,0,0); 
 	//}
-	
+
 
 
 	Mat channel[3];
@@ -272,7 +272,7 @@ void Main::activityDetection(const Mat &prev_frame, const Mat &curr_frame, const
 	cv::threshold(channel[0], fgMaskRing, hueThreshVal_ring, 255, THRESH_TOZERO_INV); //b1((b1 >= T))= 0; 
 	cv::threshold(fgMaskRing, fgMaskRing, 1, 255, THRESH_BINARY); //b1((b1 > 0))= 255;
 
-	
+
 	erode(fgMaskRing, fgMaskRing, element[2]);
 	dilate(fgMaskRing, fgMaskRing, element[0]);
 	erode(fgMaskRing, fgMaskRing, element[2]);
@@ -385,8 +385,8 @@ void Main::activityDetection(const Mat &prev_frame, const Mat &curr_frame, const
 		}
 		if (count2 == 5)
 		{
-			cout << "Trainee has started with one ring but picked another ring. \n Trainee should understand the whole procedure. Scoring for this trainee is not done. Conduct the experiment again with the trainee to give them scores\n";
-			exit(0);
+			cout << "\nTrainee has started with one ring but picked another ring. \n Trainee should understand the whole procedure. Scoring for this trainee is not done. Conduct the experiment again with the trainee to give them scores\n";
+			return false;
 		}
 		for (auto it = _ringBox.rings.begin(); it != _ringBox.rings.end(); ++it)
 		{
@@ -428,9 +428,6 @@ void Main::activityDetection(const Mat &prev_frame, const Mat &curr_frame, const
 
 	else if (status == "moving")
 	{
-
-
-
 		for (auto it = graySum.begin(); it != graySum.end(); ++it)
 		{
 			if (it->second > 0.5e6)
@@ -443,11 +440,11 @@ void Main::activityDetection(const Mat &prev_frame, const Mat &curr_frame, const
 		{
 			status == "moving";
 		}
-		else if(count2 >= 6)
+		else if (count2 >= 6)
 		{
 			bool v = AllRingStable(prev_frame, curr_frame, mvRingROI);
-			cout << "Ring Stablility -> " << (v?"true":"false") << endl;
-			if(v)
+			cout << "Ring Stablility -> " << (v ? "true" : "false") << endl;
+			if (v)
 			{
 				status = "stationary";
 				updateBackgroundModel = true;
@@ -485,7 +482,7 @@ void Main::activityDetection(const Mat &prev_frame, const Mat &curr_frame, const
 						_ringBox.rings[index_peg].velocity = vel;
 						_ringBox.rings[index_peg].id = id;
 						break;
-						
+
 					}
 				}
 
@@ -497,6 +494,7 @@ void Main::activityDetection(const Mat &prev_frame, const Mat &curr_frame, const
 		}
 	}
 	cout << "status -> " << status << endl << endl;
+	return true;
 }
 
 
@@ -515,7 +513,7 @@ void Main::ringSegmentation(IplImage* img, Mat &fgmask)
 
 	cv::threshold(channel[0], fgmask, hueThreshVal_ring, 255, THRESH_TOZERO_INV); //b1((b1 >= T))= 0; 
 	cv::threshold(fgmask, fgmask, 1, 255, THRESH_BINARY); //b1((b1 > 0))= 255;
-	
+
 	erode(fgmask, fgmask, element[0]);
 	dilate(fgmask, fgmask, element[0]);
 	erode(fgmask, fgmask, element[0]);
@@ -582,7 +580,7 @@ void Main::initializeRingBox(IplImage* img)
 	Mat fgMaskRing;
 	int thresh_val_Ring = getRingthresholdFromUser(img, gui, "Adjust the trackbar above to get all 6 rings and press enter", hueThreshVal_ring, pegGroupROI, fgMaskRing);
 	hueThreshVal_ring = thresh_val_Ring;
-	
+
 	_ringBox.init(fgMaskRing, _pegBox);
 }
 void Main::run()
@@ -592,7 +590,7 @@ void Main::run()
 	IplImage *img1 = cvCloneImage(img);
 	Mat grey(img->height, img->width, CV_8UC1);
 	cvtColor(cvarrToMat(img), grey, CV_BGR2GRAY);
-	
+
 	tld->detectorCascade->imgWidth = grey.cols;
 	tld->detectorCascade->imgHeight = grey.rows;
 	tld->detectorCascade->imgWidthStep = grey.step;
@@ -653,8 +651,8 @@ void Main::run()
 		int pp = 0;
 		for (auto it = _pegBox.pegs.begin(); it != _pegBox.pegs.end(); ++it)
 		{
-			fprintf(resultsFile, "peg %d ->  %d  %d  %d  %d  %d\n", pp + 1, 
-				it->second.roi.x, 
+			fprintf(resultsFile, "peg %d ->  %d  %d  %d  %d  %d\n", pp + 1,
+				it->second.roi.x,
 				it->second.roi.y,
 				it->second.roi.width,
 				it->second.roi.height,
@@ -850,7 +848,6 @@ void Main::run()
 					cvPoint(it->second.roi.br().x, it->second.roi.br().y), green, 1, 8, 0);
 				cvPutText(img, text.c_str(), cvPoint(it->second.center.x, it->second.center.y), &font, blue);
 			}
-
 			cvInitFont(&font, CV_FONT_HERSHEY_SIMPLEX, .5, .5, 0, 1, 8);
 			// plot the moving ring
 			if (mvRingROI.width > 0)
@@ -940,9 +937,7 @@ void Main::run()
 					{
 						break;
 					}
-
 					Rect r = Rect(box);
-
 					tld->learnPatch(grey, &r);
 				}
 			}

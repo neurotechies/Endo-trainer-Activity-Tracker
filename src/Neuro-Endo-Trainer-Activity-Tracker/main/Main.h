@@ -157,7 +157,7 @@ public:
 	void ringSegmentation(IplImage* img, Mat &fgmask);
 	void ringSegmentation(const Mat &img, Mat &fgmask);
 	void HittingDetection(const Mat &prv_frame, const Mat &curr_frame, vector<unsigned int>  &hittingData);
-	void activityDetection(const Mat &prev_frame, const Mat &curr_frame, const Rect &trackingOut);
+	bool activityDetection(const Mat &prev_frame, const Mat &curr_frame, const Rect &trackingOut);
 	bool AllRingStable(const Mat &prv_frame, const Mat &curr_frame, const Rect &movingRing);
 	Rect getmovingRingROI(const Mat &curr_frame);
 
