@@ -27,8 +27,6 @@
 
 namespace nets
 {
-
-	
 	bool RingBox::init(const cv::Mat &inp, const pegBox &pegBox)
 	{
 		assert(pegBox.pegs.size() == 12);

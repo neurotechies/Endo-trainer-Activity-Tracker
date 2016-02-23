@@ -35,7 +35,7 @@
 #define SAVE_OUTPUT 1
 
 #define MODEL_PATH "D:/Official/Programs/endo_tracking/opentld/OpenTLD/Result/model_DrAndre_2_0_Deg_ST_Aux"
-#define  IMACQ_VIDEO_PATH  "E:/data/Endo-trainer/DrSitansu_1_0_DEG_ST_Aux.avi"
+#define  IMACQ_VIDEO_PATH  "D:/Data/Endo-trainer/DrSitansu_1_0_DEG_ST_Aux.avi"
 //#define  PRINT_RESULT_FILE "D:/Official/Programs/endo_tracking/opentld/OpenTLD/Result/Results_DrAnton_1_0_Deg_ST_Aux.txt"
 #define  PRINT_RESULT_FILE NULL
 //#define SAVE_DIRECTORY "D:/Official/Programs/endo_tracking/opentld/OpenTLD/Result/Results_DrAnton_1_0_Deg_ST_Aux.txt"

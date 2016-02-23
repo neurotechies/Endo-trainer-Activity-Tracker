@@ -168,8 +168,8 @@ Rect Main::getmovingRingROI(const Mat &curr_frame)
 				curr_frame2.at<Vec3b>(Point(x, y)) = Vec3b(0, 0, 0);
 			}
 		}
-		imshow("curr_frame2", curr_frame2);
-		waitKey(0);
+		//imshow("curr_frame2", curr_frame2);
+		//waitKey(0);
 		pMOG->operator()(curr_frame2, fgMask, 0.5);
 		updateBackgroundModel2 = false;
 		prevmvRingROI = Rect(0,0,0,0); 
