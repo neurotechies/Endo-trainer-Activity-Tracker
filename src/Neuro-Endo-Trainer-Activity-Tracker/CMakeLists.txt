@@ -21,6 +21,7 @@ add_library(main
 	main/Trajectory.cpp
 	
 	main/ringBox.h
+	main/params.h
     main/pegBox.h
 	main/ContourFeature.hpp
     main/Gui.h
