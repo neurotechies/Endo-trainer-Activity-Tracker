@@ -66,6 +66,7 @@ namespace nets
 			int no = initial_roi.size();
 
 			count = 0;
+			pegs.resize(12);
 			vector<pair<Point2f, int> >center_id(no);
 			std::unordered_map<int, Rect> roi_id;
 			for (int i = 0; i < no; ++i)
@@ -86,6 +87,7 @@ namespace nets
 					Peg p;
 					p.center = Point2f(pts[i].first.y, pts[i].first.x);
 					p.roi = roi_id[pts[i].second];
+					p.code = count;
 					pegs[count] = p;
 					count++;
 				}
@@ -105,7 +107,7 @@ namespace nets
 		for (int i = 0; i < pegs.size(); ++i)
 		{
 			Peg peg = pegs[i];
-			cout << "Code(" << i << ") center (" << peg.center.x << peg.center.y << ")  ROI (" << peg.roi.x << peg.roi.y << peg.roi.width << peg.roi.height << ")\n";
+			cout << "Code(" << peg.code << ") center (" << peg.center.x << peg.center.y << ")  ROI (" << peg.roi.x << peg.roi.y << peg.roi.width << peg.roi.height << ")\n";
 		}
 	}
 
@@ -125,7 +127,6 @@ namespace nets
 	
 	void pegBox::roi_update(const vector<pair<Rect, int> > &rois)
 	{
-		int count = 0;
 		set<int> s1;
 		set<int> s2;
 		set<int> s3;
@@ -158,24 +159,40 @@ namespace nets
 			for (int i = 0; i < rois.size(); ++i)
 			{
 				int code = rois[i].second;
-				Rect r = rois[i].first;
-				pegs[code].roi = r;
+				for (int p = 0; p < pegs.size(); ++p)
+				{
+					if (pegs[p].code == code)
+					{
+						Rect r = rois[i].first;
+						pegs[p].roi = r;
 
-				Point2f cen = pegs[code + 6].center;
-				pegs[code + 6].roi = Rect(cen.x - r.width / 2, cen.y - r.height / 4, r.width, r.height);
-
+						Point2f cen = pegs[p + 6].center;
+						pegs[p + 6].roi = Rect(cen.x - r.width / 2, cen.y - r.height / 4, r.width, r.height);
+					}
+				}
 			}
 		}
 		else if (c1.empty())
 		{
 			for (int i = 0; i < rois.size(); ++i)
 			{
-				int code = rois[i].second;
-				Rect r = rois[i].first;
-				pegs[code].roi = r;
 
-				Point2f cen = pegs[code - 6].center;
-				pegs[code - 6].roi = Rect(cen.x - r.width / 2, cen.y - r.height / 4, r.width, r.height);
+				int code = rois[i].second;
+				for (int p = 0; p < pegs.size(); ++p)
+				{
+					if (pegs[p].code == code)
+					{
+
+						Rect r = rois[i].first;
+						pegs[p].roi = r;
+
+						Point2f cen = pegs[p - 6].center;
+						pegs[p - 6].roi = Rect(cen.x - r.width / 2, cen.y - r.height / 4, r.width, r.height);
+
+					}
+				}
+
+
 			}
 		}
 		else

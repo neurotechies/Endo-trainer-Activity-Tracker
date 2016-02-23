@@ -48,6 +48,7 @@ namespace nets
 		{
 			cv::Rect roi;
 			Point2f center;
+			int code;
 		};
 
 		struct Comparator {
@@ -55,7 +56,7 @@ namespace nets
 		} _comparator;
 	
 	public:
-		unordered_map<int, Peg> pegs;
+		vector<Peg> pegs;
 
 	public:
 		// initialize pegs;

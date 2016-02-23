@@ -27,6 +27,16 @@
 
 namespace nets
 {
+
+	void RingBox::print()
+	{
+		for (int p = 0; p < rings.size(); ++p)
+		{
+		
+				Ring r = rings[p];
+				cout << "Code(" << r.code_pos << ") number (" << p << ") status (" << r.status << ")\n";
+		}
+	}
 	bool RingBox::init(const cv::Mat &inp, const pegBox &pegBox)
 	{
 		assert(pegBox.pegs.size() == 12);
@@ -65,21 +75,21 @@ namespace nets
 			
 			
 			const int size_rings = 6;
+			rings.resize(size_rings);
 			for (int i = 0; i < size_rings; ++i)
 			{
 				Ring r;
 				r.center = center_poly[i];
 				r.radius = radius_poly[i];
 				r.roi = initial_roi[i];
-				r.velocity = 0; 
 				r.status = STATIONARY;
-				r.id = i;
-				for (auto it_peg = pegBox.pegs.begin(); it_peg != pegBox.pegs.end(); ++it_peg)
+				for (int p = 0; p < pegBox.pegs.size(); ++p)
 				{
-					Rect q = it_peg->second.roi;
-					if (util::rectOverlap(r.roi, q))
+					Rect q = pegBox.pegs[p].roi;
+					if ((r.roi & q).width > 0)
 					{
-						rings[it_peg->first] = r;
+						r.code_pos = pegBox.pegs[p].code;
+						rings[i] = r;
 						break;
 					}
 				}	
