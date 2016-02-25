@@ -550,7 +550,6 @@ void TLD::writeToFile(const char *path)
     }
 
     fclose(file);
-	cout << "writing the model is done \n";
 
 }
 

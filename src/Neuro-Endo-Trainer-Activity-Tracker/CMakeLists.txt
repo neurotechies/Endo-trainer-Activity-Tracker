@@ -12,17 +12,13 @@ include_directories(main
 #-------------------------------------------------------------------------------
 # main
 add_library(main
-    main/ringBox.cpp
-	main/pegBox.cpp
 	main/ContourFeature.cpp
     main/Gui.cpp
     main/Main.cpp
 	main/util.cpp
 	main/Trajectory.cpp
 	
-	main/ringBox.h
 	main/params.h
-    main/pegBox.h
 	main/ContourFeature.hpp
     main/Gui.h
     main/Main.h

@@ -45,10 +45,8 @@ int main(int argc, char **argv)
 
     imAcqInit(v);
 
-    if(main->showOutput)
-    {
-        gui->init();
-    }
+    gui->init();
+    
 
     main->run();
 
