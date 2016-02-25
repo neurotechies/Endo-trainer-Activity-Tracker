@@ -324,7 +324,8 @@ bool Main::activityDetection(const Mat &prev_frame, const Mat &curr_frame, const
 				count1++;
 			}
 		}
-		if (count1 >= 6)
+		cout << "Count in stationary condition : " << count1 << endl;
+		if (count1 <= 6)
 		{
 			// Determine whether stationary or picking status
 			if (mvRingROI.width > 0)
@@ -340,10 +341,9 @@ bool Main::activityDetection(const Mat &prev_frame, const Mat &curr_frame, const
 						{
 							pickingCount++;
 							updateBackgroundModel = true;
-							if (pickingCount == 2)
-							{
-								pickingCount = 0;
-								
+							cout << "pickingCount  " << pickingCount << endl;
+							if (pickingCount >= 2)
+							{								
 								// Find intersection of moving Ring ROI with the first half and determine which Ring trainee is trying to pick up; then change the code of the ring
 								for (int i = 0; i < _pegBox.pegs.size(); ++i)
 								{
@@ -352,13 +352,13 @@ bool Main::activityDetection(const Mat &prev_frame, const Mat &curr_frame, const
 									Rect C = roi & mvRingROI;
 									if (C.width > 0)
 									{
-										status = "picking";
 										for (int p = 0; p < _ringBox.rings.size(); ++p)
 										{
 											if (code == _ringBox.rings[p].code_pos)
 											{
-												
+												status = "picking";
 												_ringBox.rings[p].status = status;
+												pickingCount = 0;
 												break;
 											}
 										}
@@ -428,12 +428,20 @@ bool Main::activityDetection(const Mat &prev_frame, const Mat &curr_frame, const
 				if (center_ring.x > 0 && center_ring.y > 0 && trackingOut.x > 0 && trackingOut.y > 0)
 				{
 					dist = sqrt(((center_ring.x - center_tooltip.x)*(center_ring.x - center_tooltip.x)) + ((center_ring.y - center_tooltip.y)*(center_ring.y - center_tooltip.y)));
-					if (dist < 150)
+					if (dist < 200)
 					{
 						status = "picking";
 					}
 					else
 					{
+						for (int i = 0; i < _ringBox.rings.size(); ++i)
+						{
+							if (_ringBox.rings[i].status == "picking")
+							{
+								_ringBox.rings[i].status = "stationary";
+								break;
+							}
+						}
 						status = "stationary";
 						updateBackgroundModel = true;
 					}
@@ -741,7 +749,7 @@ void Main::run()
 				string p = "Hiitting Detected";
 				fprintf(resultsFile, "%d  %s\n", imAcq->currentFrame - 1, p.c_str());
 			}
-			continue;
+			//continue;
 		}
 
 		// Replace the previous with current frame and reset frameHitData
