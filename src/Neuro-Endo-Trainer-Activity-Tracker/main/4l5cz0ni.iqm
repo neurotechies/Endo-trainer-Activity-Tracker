@@ -588,10 +588,6 @@ void Main::run()
 	Mat grey(img->height, img->width, CV_8UC1);
 	cvtColor(cvarrToMat(img), grey, CV_BGR2GRAY);
 
-	//
-	ForegroundDetector *fg = tld->detectorCascade->foregroundDetector;
-	fg->bgImg = grey.clone();
-
 	tld->detectorCascade->imgWidth = grey.cols;
 	tld->detectorCascade->imgHeight = grey.rows;
 	tld->detectorCascade->imgWidthStep = grey.step;
@@ -672,10 +668,12 @@ void Main::run()
 		// get the image
 		cvReleaseImage(&img);
 		img = imAcqGetImg(imAcq);
+
 		if (!reuseFrameOnce)
 		{
 			cvReleaseImage(&img);
 			img = imAcqGetImg(imAcq);
+
 			if (img == NULL)
 			{
 				printf("current image is NULL, assuming end of input.\n");
@@ -683,6 +681,7 @@ void Main::run()
 			}
 			cvtColor(cvarrToMat(img), grey, CV_BGR2GRAY);
 		}
+
 		if (TLD_WITH_TRACKER_ONLY)
 		{
 			tld->processImageWithTracker(cvarrToMat(img));
@@ -691,6 +690,7 @@ void Main::run()
 		{
 			tld->processImage(cvarrToMat(img));
 		}
+
 		// if tracking fails then prompt the user to reinitialize the tracking
 		if (tld->currBB == NULL && (status == "picking" || status == "stationary"))
 		{

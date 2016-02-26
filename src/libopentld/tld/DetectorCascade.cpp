@@ -294,7 +294,6 @@ void DetectorCascade::detect(const Mat &img)
         if(foregroundDetector->isActive())
         {
             bool isInside = false;
-
             for(size_t j = 0; j < detectionResult->fgList->size(); j++)
             {
 
