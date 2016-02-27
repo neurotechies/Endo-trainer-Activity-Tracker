@@ -1,0 +1,50 @@
+pickplace_diag2ndrow-gravity
+Parameters	Value
+Meanx	0.34301
+Meany	-0.91157
+Meanz	-0.21866
+Variancex	0.0019359
+Variancey	0.00093685
+Variancez	0.012054
+Std-Deviationx	0.043998
+Std-Deviationy	0.030608
+Std-Deviationz	0.10979
+Medianx	0.35194
+Mediany	-0.91901
+Medianz	-0.16965
+Minimumx	0.25993
+Minimumy	-0.9562
+Minimumz	-0.45915
+Maximumx	0.42434
+Maximumy	-0.83934
+Maximumz	-0.098778
+RMSx	0.34582
+RMSy	0.91209
+RMSz	0.24465
+AutoCorrcoeffx	115780.2483
+AutoCorrcoeffy	817725.6423
+AutoCorrcoeffz	47049.5976
+Signal Magnitude area	1473.2419
+Power of signalx	0.12568
+Power of signaly	0.84783
+Power of signalz	0.030686
+Sample Differences Powerx	1.3312e-06
+Sample Differences Powery	2.6953e-07
+Sample Differences Powerz	2.8991e-06
+Sum of zero-crossing	1
+Sum of Energy	825.2486
+Signal Vector Magnitude	1.0113
+Entropy	539.2734
+median_acc_freqx	0
+median_acc_freqy	0
+median_acc_freqz	0
+Info_Entropyx	-0.038355-8.6736e-18i
+Info_Entropyy	0.012908-1.2143e-17i
+Info_Entropyz	0.30707
+Power_from_PSDx	0.001225
+Power_from_PSDy	0.0085854
+Power_from_PSDz	0.00055685
+dc_Component	0.34301
+key_coefficientx	1.2229
+key_coefficienty	8.5084
+key_coefficientz	0.61191

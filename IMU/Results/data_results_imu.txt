@@ -1,0 +1,66 @@
+DrNatesan
+
+Mean  0.0003    0.0016   -0.0002
+Variance  0.0000    0.0002    0.0038
+Std-Deviation  0.0071    0.0143    0.0617
+
+Median    -0.0001    0.0002   -0.0074
+Minimum  -0.0897   -0.0661   -0.1258
+Maximum  0.1123    0.1151    0.1882
+
+RMS 0.0071    0.0144    0.0617
+
+Corrcoeff  0.4058    0.0682  -0.0690
+
+Autocorrelation residuals
+3.9183		11.943		 35.272
+
+Signal Magnitude area 62.6280
+
+Power of signal 8.70111705603273e-06	1.81147473543593e-05	0.00356422964096935
+Sample Differences Power  1.05586829147879e-06	2.23257008842964e-06	5.30146764842254e-06
+Sum of zero-crossing  905.000000000007   917.000000000011  99.0000
+Sum of Energy  0.443385299916701   1.84156882101650    33.8088
+Signal Vector Magnitude 0.0041
+
+Frequency Domain
+median_acc_freq   1.8289    0.0708    0.0894
+  
+  
+  
+Britty
+
+ X- axis
+ Sum of zero-crossing 824.000000000001  
+ Sum of Energy 1.27001475125585
+
+ Y-axis
+ Sum of zero-crossing 669.000000000011
+ Sum of Energy 0.917681309324691
+  
+Autocorrelation residuals
+ 9.667    10.011    21.493
+
+
+ Z-axis
+ Sum of zero-crossing 161.0000
+ Sum of Energy 10.4753
+
+ 
+ Vinkle
+ X-axis
+ Sum of zero-crossing  1253.00000000001
+ Sum of Energy  1.57789819545626
+ 
+ Y-axis
+ Sum of zero-crossing  1183.99999999998
+ Sum of Energy 0.654693933540099
+ 
+ 
+ Autocorrelation residuals  
+ 3.9506   9.7466   17.133 
+
+ Z- axis
+ Sum of zero-crossing  523.0000
+ Sum of Energy   5.1056
+ 

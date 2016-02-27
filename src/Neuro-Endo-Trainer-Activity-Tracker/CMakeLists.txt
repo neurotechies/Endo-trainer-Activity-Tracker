@@ -19,7 +19,9 @@ add_library(main
     main/Main.cpp
 	main/util.cpp
 	main/Trajectory.cpp
+	main/Scorer.cpp
 	
+	main/Scorer.h
 	main/ringBox.h
 	main/params.h
     main/pegBox.h

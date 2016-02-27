@@ -1,0 +1,50 @@
+pickplace_2ndrow-raw_acc
+Parameters	Value
+Meanx	2302.8578
+Meany	-7914.3401
+Meanz	-1089.0842
+Variancex	110377.6625
+Variancey	19709.2503
+Variancez	342690.5065
+Std-Deviationx	332.2313
+Std-Deviationy	140.3896
+Std-Deviationz	585.3977
+Medianx	2292.9979
+Mediany	-7929.9857
+Medianz	-1195.9835
+Minimumx	1448.7553
+Minimumy	-8354.7829
+Minimumz	-2615.9217
+Maximumx	3340.8077
+Maximumy	-6894
+Maximumz	69.5398
+RMSx	2326.6838
+RMSy	7915.5843
+RMSz	1236.3514
+AutoCorrcoeffx	11773531917505.95
+AutoCorrcoeffy	139059913862483.5
+AutoCorrcoeffz	2633270303693.114
+Signal Magnitude area	11307530.2455
+Power of signalx	5997340.3767
+Power of signaly	61863637.4251
+Power of signalz	1878634.3059
+Sample Differences Powerx	5024.8341
+Sample Differences Powery	2353.2225
+Sample Differences Powerz	5764.8125
+Sum of zero-crossing	1
+Sum of Energy	93358148323.6344
+Signal Vector Magnitude	69598497.7226
+Entropy	-1834841681110.596
+median_acc_freqx	0
+median_acc_freqy	0
+median_acc_freqz	0
+Info_Entropyx	0.09352
+Info_Entropyy	0.042974
+Info_Entropyz	0.96656+6.9389e-18i
+Power_from_PSDx	28701.2585
+Power_from_PSDy	335025.2112
+Power_from_PSDz	7403.0708
+dc_Component	2302.8578
+key_coefficientx	110699780.0103
+key_coefficienty	1282217218.6009
+key_coefficientz	31190026.4583

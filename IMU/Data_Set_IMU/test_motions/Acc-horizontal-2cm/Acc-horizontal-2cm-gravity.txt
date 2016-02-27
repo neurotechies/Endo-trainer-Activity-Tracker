@@ -1,0 +1,50 @@
+Acc-horizontal-2cm-gravity
+Parameters	Value
+Meanx	-0.11745
+Meany	0.2377
+Meanz	0.94903
+Variancex	0.00085519
+Variancey	0.021982
+Variancez	0.0019403
+Std-Deviationx	0.029244
+Std-Deviationy	0.14826
+Std-Deviationz	0.044049
+Medianx	-0.13017
+Mediany	0.19918
+Medianz	0.96858
+Minimumx	-0.14574
+Minimumy	0.060711
+Minimumz	0.82554
+Maximumx	-0.014574
+Maximumy	0.56291
+Maximumz	0.98349
+RMSx	0.12102
+RMSy	0.28002
+RMSz	0.95005
+AutoCorrcoeffx	1241.5079
+AutoCorrcoeffy	5085.2338
+AutoCorrcoeffz	81059.5315
+Signal Magnitude area	1304.1847
+Power of signalx	0.016388
+Power of signaly	0.048171
+Power of signalz	0.93114
+Sample Differences Powerx	2.0644e-07
+Sample Differences Powery	2.8286e-06
+Sample Differences Powerz	1.8995e-07
+Sum of zero-crossing	0
+Sum of Energy	23.5233
+Signal Vector Magnitude	0.99565
+Entropy	91.4655
+median_acc_freqx	0
+median_acc_freqy	0
+median_acc_freqz	0
+Info_Entropyx	1.178
+Info_Entropyy	-0.07286
+Info_Entropyz	0.359
+Power_from_PSDx	0.0021551
+Power_from_PSDy	0.010574
+Power_from_PSDz	0.13562
+dc_Component	0.11745
+key_coefficientx	0.074809
+key_coefficienty	0.39808
+key_coefficientz	4.6038

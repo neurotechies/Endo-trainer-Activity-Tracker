@@ -1,0 +1,50 @@
+Trivendra_Drill_1
+Parameters	Value
+Meanx	0.0012471
+Meany	0.00018161
+Meanz	0.00019226
+Variancex	0.00022475
+Variancey	0.00043884
+Variancez	0.0013464
+Std-Deviationx	0.014992
+Std-Deviationy	0.020948
+Std-Deviationz	0.036694
+Medianx	2.6377e-05
+Mediany	-4.1454e-05
+Medianz	-0.00049403
+Minimumx	-0.074963
+Minimumy	-0.27443
+Minimumz	-0.40399
+Maximumx	0.1765
+Maximumy	0.43964
+Maximumz	0.41289
+RMSx	0.015043
+RMSy	0.020948
+RMSz	0.036693
+AutoCorrcoeffx	270.7754
+AutoCorrcoeffy	5.7426
+AutoCorrcoeffz	6.4358
+Signal Magnitude area	37.9432
+Power of signalx	3.2204e-05
+Power of signaly	0.00018291
+Power of signalz	0.0002406
+Sample Differences Powerx	3.4968e-06
+Sample Differences Powery	2.6058e-05
+Sample Differences Powerz	2.0788e-05
+Sum of zero-crossing	1767
+Sum of Energy	5.7905
+Signal Vector Magnitude	0.0020115
+Entropy	123.1626
+median_acc_freqx	0.28076
+median_acc_freqy	3.7598
+median_acc_freqz	0.30518
+Info_Entropyx	41.4447+1.76768e-15i
+Info_Entropyy	218.042-6.206841e-15i
+Info_Entropyz	44.1657-9.92262e-16i
+Power_from_PSDx	1.4127
+Power_from_PSDy	2.7247
+Power_from_PSDz	8.3589
+dc_Component	16.4553
+key_coefficientx	0.035992
+key_coefficienty	0.061347
+key_coefficientz	0.21273

@@ -1,0 +1,50 @@
+rotation-panright-slow-10cm-gravity
+Parameters	Value
+Meanx	-0.1108
+Meany	0.18363
+Meanz	0.7561
+Variancex	0.0039364
+Variancey	0.0025829
+Variancez	0.061437
+Std-Deviationx	0.062741
+Std-Deviationy	0.050822
+Std-Deviationz	0.24787
+Medianx	-0.089666
+Mediany	0.18974
+Medianz	0.85779
+Minimumx	-0.27615
+Minimumy	0.10578
+Minimumz	0.30781
+Maximumx	-0.029865
+Maximumy	0.2668
+Maximumz	0.99372
+RMSx	0.1273
+RMSy	0.19052
+RMSz	0.79562
+AutoCorrcoeffx	3332.3778
+AutoCorrcoeffy	9153.0429
+AutoCorrcoeffz	155178.6431
+Signal Magnitude area	1050.5288
+Power of signalx	0.011521
+Power of signaly	0.046678
+Power of signalz	0.4051
+Sample Differences Powerx	4.3155e-06
+Sample Differences Powery	1.7606e-06
+Sample Differences Powerz	1.8371e-05
+Sum of zero-crossing	0
+Sum of Energy	18.9113
+Signal Vector Magnitude	0.68551
+Entropy	184.1585
+median_acc_freqx	0
+median_acc_freqy	0
+median_acc_freqz	0
+Info_Entropyx	1.0213
+Info_Entropyy	0.091856
+Info_Entropyz	-0.20565
+Power_from_PSDx	0.00081284
+Power_from_PSDy	0.0019353
+Power_from_PSDz	0.033448
+dc_Component	0.1108
+key_coefficientx	0.16575
+key_coefficienty	0.37115
+key_coefficientz	6.4581

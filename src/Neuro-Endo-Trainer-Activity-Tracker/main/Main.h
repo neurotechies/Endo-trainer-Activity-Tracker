@@ -30,6 +30,7 @@
 #include "RingBox.h"
 #include "ContourFeature.hpp"
 #include "pegBox.h"
+#include "Scorer.h"
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
@@ -96,6 +97,17 @@ public:
 	int currFrameNo_RingStability;
 	bool update__RingStability;
 
+	// 
+	Activity activity;
+	vector<Activity> scorer;
+	bool No_activity_start = false;
+	bool picking_activity_start = false;
+	bool moving_activity_start = false;
+	bool update_startFrameAndType = true;
+	bool RingHitting = false;
+	bool JerKDetection = false; 
+	int index = -1;
+
 public:
 	Main()
     {
@@ -160,7 +172,7 @@ public:
 	bool activityDetection(const Mat &prev_frame, const Mat &curr_frame, const Rect &trackingOut);
 	bool AllRingStable(const Mat &prv_frame, const Mat &curr_frame, const Rect &movingRing);
 	Rect getmovingRingROI(const Mat &curr_frame);
-
+	void 
 	
 };
 

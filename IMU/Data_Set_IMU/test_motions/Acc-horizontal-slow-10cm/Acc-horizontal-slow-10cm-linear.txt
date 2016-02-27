@@ -1,0 +1,50 @@
+Acc-horizontal-slow-10cm-linear-acc
+Parameters	Value
+Meanx	0.0018783
+Meany	-0.0047999
+Meanz	0.0012243
+Variancex	1.0825e-05
+Variancey	8.1868e-05
+Variancez	0.00010436
+Std-Deviationx	0.0032901
+Std-Deviationy	0.0090481
+Std-Deviationz	0.010216
+Medianx	0.001475
+Mediany	-0.0040613
+Medianz	8.691e-05
+Minimumx	-0.0080972
+Minimumy	-0.029456
+Minimumz	-0.13025
+Maximumx	0.01254
+Maximumy	0.023375
+Maximumz	0.025298
+RMSx	0.0037857
+RMSy	0.010235
+RMSz	0.010279
+AutoCorrcoeffx	0.94304
+AutoCorrcoeffy	6.158
+AutoCorrcoeffz	0.40065
+Signal Magnitude area	15.5821
+Power of signalx	1.2868e-05
+Power of signaly	9.8625e-05
+Power of signalz	3.8649e-05
+Sample Differences Powerx	7.9983e-07
+Sample Differences Powery	6.6348e-06
+Sample Differences Powerz	5.9531e-06
+Sum of zero-crossing	25
+Sum of Energy	0.054155
+Signal Vector Magnitude	0.00022474
+Entropy	0.86826
+median_acc_freqx	0
+median_acc_freqy	0
+median_acc_freqz	0
+Info_Entropyx	6.1846-9.992e-16i
+Info_Entropyy	10.3676+8.88178e-16i
+Info_Entropyz	77.6395+5.32907e-15i
+Power_from_PSDx	5.9699e-07
+Power_from_PSDy	4.312e-06
+Power_from_PSDz	3.9422e-06
+dc_Component	0.0018783
+key_coefficientx	0.00013508
+key_coefficienty	0.00099486
+key_coefficientz	0.00075899

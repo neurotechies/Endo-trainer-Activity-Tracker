@@ -1,0 +1,50 @@
+entry-2times-gravity
+Parameters	Value
+Meanx	0.031047
+Meany	-0.99875
+Meanz	-0.020626
+Variancex	0.00097838
+Variancey	1.2618e-06
+Variancez	0.00016025
+Std-Deviationx	0.031279
+Std-Deviationy	0.0011233
+Std-Deviationz	0.012659
+Medianx	0.020018
+Mediany	-0.99919
+Medianz	-0.022569
+Minimumx	-0.01453
+Minimumy	-0.99999
+Minimumz	-0.054509
+Maximumx	0.093325
+Maximumy	-0.9956
+Maximumz	0.01388
+RMSx	0.044057
+RMSy	0.99875
+RMSz	0.024197
+AutoCorrcoeffx	574.4812
+AutoCorrcoeffy	594499.888
+AutoCorrcoeffz	253.5555
+Signal Magnitude area	1053.5086
+Power of signalx	0.0027175
+Power of signaly	0.99697
+Power of signalz	0.00033974
+Sample Differences Powerx	6.1002e-07
+Sample Differences Powery	1.7458e-09
+Sample Differences Powerz	7.9848e-07
+Sum of zero-crossing	1
+Sum of Energy	770.0785
+Signal Vector Magnitude	1
+Entropy	13.2756
+median_acc_freqx	0
+median_acc_freqy	0
+median_acc_freqz	0
+Info_Entropyx	2.1191
+Info_Entropyy	-0.037616
+Info_Entropyz	0.21999-5.5511e-17i
+Power_from_PSDx	2.9687e-05
+Power_from_PSDy	0.019469
+Power_from_PSDz	1.0084e-05
+dc_Component	0.031047
+key_coefficientx	0.019874
+key_coefficienty	10.198
+key_coefficientz	0.0059506

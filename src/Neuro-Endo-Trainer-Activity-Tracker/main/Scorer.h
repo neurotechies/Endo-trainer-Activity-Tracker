@@ -13,6 +13,7 @@ struct Activity
 		vector<pair<int, int> > hitting;
 		vector<pair<int, pair<int, int>> > trackingData;
 		vector<int> framesForTrackingFailure;
+		vector<int> framesForRingHitting;
 		stationary()
 		{
 			startFrame = -1;
@@ -25,6 +26,7 @@ struct Activity
 			hitting.clear();
 			trackingData.clear();
 			framesForTrackingFailure.clear();
+			framesForRingHitting.clear();
 		}
 	};
 	struct Picking
@@ -98,16 +100,6 @@ struct Activity
 		p.clear();
 		m.clear();
 	}
-};
-
-
-class Scorer
-{
-
-public:
-	vector<Activity> activityCollector;
-	Scorer(){}
-	~Scorer(){}
 };
 
 #endif

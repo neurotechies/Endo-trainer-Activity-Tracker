@@ -1,0 +1,50 @@
+rotation-tiltright-slow-10cm-linear-acc
+Parameters	Value
+Meanx	0.0075085
+Meany	-0.012512
+Meanz	0.025781
+Variancex	9.8735e-05
+Variancey	0.0015261
+Variancez	0.001556
+Std-Deviationx	0.0099366
+Std-Deviationy	0.039065
+Std-Deviationz	0.039446
+Medianx	0.0069782
+Mediany	-0.0075304
+Medianz	0.021449
+Minimumx	-0.013873
+Minimumy	-0.11072
+Minimumz	-0.12421
+Maximumx	0.040225
+Maximumy	0.096009
+Maximumz	0.15105
+RMSx	0.012446
+RMSy	0.04098
+RMSz	0.047088
+AutoCorrcoeffx	12.401
+AutoCorrcoeffy	34.4338
+AutoCorrcoeffz	146.1939
+Signal Magnitude area	79.8617
+Power of signalx	9.2837e-05
+Power of signaly	0.001111
+Power of signalz	0.0025142
+Sample Differences Powerx	7.8097e-06
+Sample Differences Powery	5.7966e-05
+Sample Differences Powerz	0.00032883
+Sum of zero-crossing	21
+Sum of Energy	0.78763
+Signal Vector Magnitude	0.0040516
+Entropy	10.6165
+median_acc_freqx	0
+median_acc_freqy	0
+median_acc_freqz	0
+Info_Entropyx	2.4299+6.9389e-17i
+Info_Entropyy	4.8172-2.2204e-16i
+Info_Entropyz	2.6679-2.2204e-16i
+Power_from_PSDx	5.1255e-06
+Power_from_PSDy	4.5233e-05
+Power_from_PSDz	7.0131e-05
+dc_Component	0.0075085
+key_coefficientx	0.00072673
+key_coefficienty	0.0080719
+key_coefficientz	0.0083209

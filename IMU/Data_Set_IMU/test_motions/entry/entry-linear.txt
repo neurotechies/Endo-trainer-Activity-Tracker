@@ -1,0 +1,50 @@
+entry-linear-acc
+Parameters	Value
+Meanx	-0.0018723
+Meany	-0.0060339
+Meanz	0.0021258
+Variancex	0.00017229
+Variancey	5.476e-05
+Variancez	6.505e-05
+Std-Deviationx	0.013126
+Std-Deviationy	0.0074
+Std-Deviationz	0.0080653
+Medianx	-0.0021582
+Mediany	-0.0063354
+Medianz	0.0012489
+Minimumx	-0.043495
+Minimumy	-0.036759
+Minimumz	-0.031871
+Maximumx	0.039028
+Maximumy	0.11914
+Maximumz	0.041998
+RMSx	0.013255
+RMSy	0.0095467
+RMSz	0.0083388
+AutoCorrcoeffx	13.6177
+AutoCorrcoeffy	141.4387
+AutoCorrcoeffz	17.5561
+Signal Magnitude area	23.1112
+Power of signalx	0.00022361
+Power of signaly	9.3597e-05
+Power of signalz	5.825e-05
+Sample Differences Powerx	6.4103e-06
+Sample Differences Powery	1.1935e-05
+Sample Differences Powerz	1.5336e-05
+Sum of zero-crossing	95
+Sum of Energy	0.17964
+Signal Vector Magnitude	0.00033638
+Entropy	5.3028
+median_acc_freqx	0
+median_acc_freqy	0
+median_acc_freqz	0
+Info_Entropyx	11.4635+1.19696e-16i
+Info_Entropyy	2.873-7.1557e-17i
+Info_Entropyz	12.234+2.47025e-15i
+Power_from_PSDx	2.3949e-07
+Power_from_PSDy	1.6874e-07
+Power_from_PSDz	9.8809e-08
+dc_Component	0.0018723
+key_coefficientx	0.0034794
+key_coefficienty	0.0015168
+key_coefficientz	0.0010354

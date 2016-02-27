@@ -1,0 +1,50 @@
+drnatesan1_endo
+Parameters	Value
+Meanx	-0.00061821
+Meany	0.0013546
+Meanz	0.00034056
+Variancex	8.7518e-05
+Variancey	0.00029158
+Variancez	0.00028032
+Std-Deviationx	0.0093551
+Std-Deviationy	0.017076
+Std-Deviationz	0.016743
+Medianx	4.7245e-05
+Mediany	0.00034626
+Medianz	0.0015163
+Minimumx	-0.07274
+Minimumy	-0.056539
+Minimumz	-0.065266
+Maximumx	0.042268
+Maximumy	0.11292
+Maximumz	0.078913
+RMSx	0.0093749
+RMSy	0.017128
+RMSz	0.016745
+AutoCorrcoeffx	22.8662
+AutoCorrcoeffy	109.7788
+AutoCorrcoeffz	6.9393
+Signal Magnitude area	30.6607
+Power of signalx	5.5271e-05
+Power of signaly	0.00020437
+Power of signalz	0.00028619
+Sample Differences Powerx	3.2717e-06
+Sample Differences Powery	6.4207e-06
+Sample Differences Powerz	1.1889e-05
+Sum of zero-crossing	477
+Sum of Energy	2.2692
+Signal Vector Magnitude	0.00066166
+Entropy	36.2611
+median_acc_freqx	0.45166
+median_acc_freqy	0.20752
+median_acc_freqz	0.25635
+Info_Entropyx	31.1138-3.50414e-16i
+Info_Entropyy	31.0107+5.24795e-16i
+Info_Entropyz	20.9636+4.25875e-16i
+Power_from_PSDx	0.46732
+Power_from_PSDy	1.5627
+Power_from_PSDz	1.4854
+dc_Component	4.7819
+key_coefficientx	0.0069066
+key_coefficienty	0.023476
+key_coefficientz	0.021981

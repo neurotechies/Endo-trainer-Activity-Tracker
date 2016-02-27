@@ -1,0 +1,50 @@
+Acc-horizontal-slow-10cm-gravity
+Parameters	Value
+Meanx	-9.6859e-05
+Meany	-0.046506
+Meanz	0.99284
+Variancex	0.00023707
+Variancey	0.0020732
+Variancez	4.6745e-05
+Std-Deviationx	0.015397
+Std-Deviationy	0.045533
+Std-Deviationz	0.006837
+Medianx	0.0006283
+Mediany	-0.057637
+Medianz	0.99468
+Minimumx	-0.024478
+Minimumy	-0.12525
+Minimumz	0.97816
+Maximumx	0.044901
+Maximumy	0.038762
+Maximumz	0.99907
+RMSx	0.015383
+RMSy	0.065054
+RMSz	0.99286
+AutoCorrcoeffx	0.0025076
+AutoCorrcoeffy	578.0963
+AutoCorrcoeffz	263472.4739
+Signal Magnitude area	1054.5636
+Power of signalx	0.00043796
+Power of signaly	0.0067731
+Power of signalz	0.98542
+Sample Differences Powerx	7.3767e-07
+Sample Differences Powery	4.5718e-06
+Sample Differences Powerz	3.4376e-08
+Sum of zero-crossing	5
+Sum of Energy	2.188
+Signal Vector Magnitude	0.99024
+Entropy	18.7891
+median_acc_freqx	0
+median_acc_freqy	0
+median_acc_freqz	0
+Info_Entropyx	11.6285+2.91434e-16i
+Info_Entropyy	4.1786+1.1102e-16i
+Info_Entropyz	-1.2398
+Power_from_PSDx	8.7672e-06
+Power_from_PSDy	0.00019726
+Power_from_PSDz	0.054963
+dc_Component	9.6859e-05
+key_coefficientx	0.0024139
+key_coefficienty	0.043287
+key_coefficientz	10.0695

@@ -1,0 +1,50 @@
+Acc-elevation-2cm-raw_acc
+Parameters	Value
+Meanx	-1192.1495
+Meany	514.5999
+Meanz	8052.5268
+Variancex	9045.1027
+Variancey	583991.4173
+Variancez	87030.6048
+Std-Deviationx	95.1057
+Std-Deviationy	764.1933
+Std-Deviationz	295.0095
+Medianx	-1198.9175
+Mediany	437.5469
+Medianz	8072.5779
+Minimumx	-1434.5034
+Minimumy	-549.6715
+Minimumz	6607.681
+Maximumx	-349
+Maximumy	6170.0238
+Maximumz	9209.624
+RMSx	1195.9245
+RMSy	920.2488
+RMSz	8057.9109
+AutoCorrcoeffx	127909838766.8203
+AutoCorrcoeffy	23833173997.5245
+AutoCorrcoeffz	5835886903490.402
+Signal Magnitude area	9781758.3007
+Power of signalx	1438679.2437
+Power of signaly	216425.0157
+Power of signalz	65187214.5862
+Sample Differences Powerx	77.817
+Sample Differences Powery	1473.1461
+Sample Differences Powerz	1273.7914
+Sum of zero-crossing	4
+Sum of Energy	254057347.103
+Signal Vector Magnitude	67207021.5261
+Entropy	-360622249933.168
+median_acc_freqx	0
+median_acc_freqy	0
+median_acc_freqz	0
+Info_Entropyx	0.083646+1.1102e-16i
+Info_Entropyy	3.6181+2.2204e-16i
+Info_Entropyz	0.1664
+Power_from_PSDx	214564.0856
+Power_from_PSDy	95002.861
+Power_from_PSDz	9758718.1074
+dc_Component	1192.1495
+key_coefficientx	7308642.7923
+key_coefficienty	3854913.6828
+key_coefficientz	330893323.0841

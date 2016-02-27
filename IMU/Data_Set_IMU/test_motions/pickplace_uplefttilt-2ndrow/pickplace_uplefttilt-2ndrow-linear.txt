@@ -1,0 +1,50 @@
+pickplace_uplefttilt-2ndrow-linear-acc
+Parameters	Value
+Meanx	0.00054324
+Meany	0.00045923
+Meanz	0.013286
+Variancex	6.797e-05
+Variancey	6.3882e-05
+Variancez	0.00014921
+Std-Deviationx	0.0082444
+Std-Deviationy	0.0079926
+Std-Deviationz	0.012215
+Medianx	-0.00034232
+Mediany	0.00080524
+Medianz	0.013659
+Minimumx	-0.020672
+Minimumy	-0.037895
+Minimumz	-0.059197
+Maximumx	0.10779
+Maximumy	0.032837
+Maximumz	0.058659
+RMSx	0.0082585
+RMSy	0.0080022
+RMSz	0.018044
+AutoCorrcoeffx	0.35062
+AutoCorrcoeffy	0.25056
+AutoCorrcoeffz	209.7293
+Signal Magnitude area	26.2799
+Power of signalx	3.9784e-05
+Power of signaly	6.0127e-05
+Power of signalz	0.00029622
+Sample Differences Powerx	3.9389e-06
+Sample Differences Powery	5.0443e-06
+Sample Differences Powerz	9.6481e-06
+Sum of zero-crossing	80
+Sum of Energy	0.069798
+Signal Vector Magnitude	0.00045784
+Entropy	3.8114
+median_acc_freqx	0
+median_acc_freqy	0
+median_acc_freqz	0
+Info_Entropyx	49.1563+1.249e-15i
+Info_Entropyy	16.1513-2.22045e-16i
+Info_Entropyz	2.4631-2.2204e-16i
+Power_from_PSDx	5.4052e-07
+Power_from_PSDy	5.0722e-07
+Power_from_PSDz	3.3174e-06
+dc_Component	0.00054324
+key_coefficientx	0.0011102
+key_coefficienty	0.0011376
+key_coefficientz	0.0062734

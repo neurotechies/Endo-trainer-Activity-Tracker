@@ -1,0 +1,50 @@
+NETS-WS14-DG1
+Parameters	Value
+Meanx	-0.00039761
+Meany	-0.00040542
+Meanz	1.4599e-05
+Variancex	0.00048104
+Variancey	0.0001728
+Variancez	0.0016825
+Std-Deviationx	0.021933
+Std-Deviationy	0.013145
+Std-Deviationz	0.041018
+Medianx	4.1991e-05
+Mediany	0.0002035
+Medianz	-0.00037554
+Minimumx	-0.15351
+Minimumy	-0.16173
+Minimumz	-0.2404
+Maximumx	0.12243
+Maximumy	0.078642
+Maximumz	0.17803
+RMSx	0.021935
+RMSy	0.013151
+RMSz	0.041016
+AutoCorrcoeffx	23.2455
+AutoCorrcoeffy	24.1679
+AutoCorrcoeffz	0.031337
+Signal Magnitude area	46.9108
+Power of signalx	0.00034169
+Power of signaly	5.2715e-05
+Power of signalz	0.00066453
+Sample Differences Powerx	3.5203e-05
+Sample Differences Powery	6.3294e-06
+Sample Differences Powerz	3.1623e-05
+Sum of zero-crossing	1418
+Sum of Energy	2.0972
+Signal Vector Magnitude	0.0023365
+Entropy	147.9969
+median_acc_freqx	2.1973
+median_acc_freqy	0.60425
+median_acc_freqz	0.23193
+Info_Entropyx	78.9815+1.63411e-15i
+Info_Entropyy	126.8742-3.550979e-15i
+Info_Entropyz	31.0771+7.65609e-16i
+Power_from_PSDx	3.2514
+Power_from_PSDy	1.1692
+Power_from_PSDz	11.3655
+dc_Component	4.8214
+key_coefficientx	0.068503
+key_coefficienty	0.026251
+key_coefficientz	0.26523

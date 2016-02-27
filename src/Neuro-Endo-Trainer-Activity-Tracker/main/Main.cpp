@@ -250,6 +250,7 @@ bool Main::activityDetection(const Mat &prev_frame, const Mat &curr_frame, const
 		{
 			// Record this event to penalize the trainee ...
 			updateBackgroundModel2 = true;
+			RingHitting = true;
 			mvRingROI = getmovingRingROI(curr_frame);
 		}
 	}
@@ -311,7 +312,6 @@ bool Main::activityDetection(const Mat &prev_frame, const Mat &curr_frame, const
 				count1++;
 			}
 		}
-		cout << "Count in stationary condition : " << count1 << endl;
 		if (count1 <= 6)
 		{
 			// Determine whether stationary or picking status
@@ -707,6 +707,7 @@ void Main::run()
 						{
 							break;
 						}
+						JerKDetection = true;
 						Rect r = Rect(box);
 						tld->learnPatch(grey, &r);
 					}
@@ -763,7 +764,118 @@ void Main::run()
 		//******************************************************
 		prv_frame = curr_frame.clone();
 
+		// Scoring update;
+		// Get which ring has either picking or stationary status
+		for (int i = 0; i < _ringBox.rings.size(); ++i)
+		{
+			if (_ringBox.rings[i].status == "picking")
+			{
+				index = i;
+				break;
+			}
+			if (_ringBox.rings[i].status == "moving")
+			{
+				index = i;
+				break;
+			}
+		}
+		if (status == "stationary")
+		{
+			if (moving_activity_start)
+			{
+				activity.m.endFrame = imAcq->currentFrame - 2;
+				activity.m.to_peg = _ringBox.rings[index].code_pos;
+				scorer.push_back(activity);
+				activity.clear();
+				moving_activity_start = false;
+				update_startFrameAndType = true;
+			}
+			if (update_startFrameAndType)
+			{
+				activity.type = "No-Activity";
+				activity.s.startFrame = imAcq->currentFrame - 1;
+				update_startFrameAndType = false;
+			}
+			activity.no_of_frames++;
+			activity.s.hitting.push_back(make_pair(imAcq->currentFrame - 1, frameHitData.size()));
+			activity.s.trackingData.push_back(make_pair(imAcq->currentFrame - 1, make_pair(tld->currBB->br().x, tld->currBB->br().y + 40)));
+			No_activity_start = true;
+			if (RingHitting)
+			{
+				activity.s.framesForRingHitting.push_back(imAcq->currentFrame - 1);
+				RingHitting = false;
+			}
+			if (JerKDetection)
+			{
+				activity.s.framesForTrackingFailure.push_back(imAcq->currentFrame - 1);
+				JerKDetection = false;
+			}
+		}
 
+		else if (status == "picking")
+		{
+			if (No_activity_start)
+			{
+				activity.s.endFrame = imAcq->currentFrame - 2;
+				scorer.push_back(activity);
+				activity.clear();
+				No_activity_start = false;
+				update_startFrameAndType = true;
+			}
+			if (update_startFrameAndType)
+			{
+				activity.type = "Activity-Picking";
+				activity.p.startFrame = imAcq->currentFrame - 1;
+				activity.p.from_peg = _ringBox.rings[index].code_pos; // to be updated obj.ring_code_status[index].second;
+				update_startFrameAndType = false;
+			}
+			activity.no_of_frames++;
+			activity.p.hitting.push_back(make_pair(imAcq->currentFrame - 1, frameHitData.size()));
+			activity.p.trackingData.push_back(make_pair(imAcq->currentFrame - 1, make_pair(tld->currBB->br().x, tld->currBB->br().y + 40)));
+			picking_activity_start = true;
+			if (RingHitting)
+			{
+				activity.p.framesForRingHitting.push_back(imAcq->currentFrame - 1);
+				RingHitting = false;
+			}
+			if (JerKDetection)
+			{
+				activity.p.framesForTrackingFailure.push_back(imAcq->currentFrame - 1);
+				JerKDetection = false;
+			}
+		}
+		else if (status == "moving")
+		{
+			if (picking_activity_start)
+			{
+				activity.p.endFrame = imAcq->currentFrame - 2;
+				scorer.push_back(activity);
+				activity.clear();
+				picking_activity_start = false;
+				update_startFrameAndType = true;
+			}
+			if (update_startFrameAndType)
+			{
+				activity.type = "Activity-Moving";
+				activity.m.startFrame = imAcq->currentFrame - 1;
+				activity.m.from_peg = _ringBox.rings[index].code_pos;
+				update_startFrameAndType = false;
+			}
+			activity.no_of_frames++;
+			activity.m.hitting.push_back(make_pair(imAcq->currentFrame - 1, frameHitData.size()));
+			activity.m.trackingData.push_back(make_pair(imAcq->currentFrame - 1, make_pair(tld->currBB->br().x, tld->currBB->br().y + 40)));
+			moving_activity_start = true;
+			if (RingHitting)
+			{
+				activity.m.framesForRingHitting.push_back(imAcq->currentFrame - 1);
+				RingHitting = false;
+			}
+			if (JerKDetection)
+			{
+				activity.m.framesForTrackingFailure.push_back(imAcq->currentFrame - 1);
+				JerKDetection = false;
+			}
+		}
 		// Writing results
 		if (printResults != NULL)
 		{
@@ -947,6 +1059,29 @@ void Main::run()
 			}
 		}
 	}
+
+	// update scrorer for the last event;
+	if (status == "moving")
+	{
+		if (imAcq->currentFrame - 1 > activity.m.startFrame)
+		{
+			activity.m.endFrame = imAcq->currentFrame - 1;
+			scorer.push_back(activity);
+			activity.clear();
+		}
+	}
+	if (status == "stationary")
+	{
+		if (imAcq->currentFrame - 1 > activity.s.startFrame)
+		{
+			activity.s.endFrame = imAcq->currentFrame - 1;
+			scorer.push_back(activity);
+			activity.clear();
+		}
+	}
+
+
+
 
 	cvReleaseImage(&img);
 	img = NULL;

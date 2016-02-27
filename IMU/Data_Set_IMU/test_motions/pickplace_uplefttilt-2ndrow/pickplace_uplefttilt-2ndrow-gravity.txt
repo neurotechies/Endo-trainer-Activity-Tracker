@@ -1,0 +1,50 @@
+pickplace_uplefttilt-2ndrow-gravity
+Parameters	Value
+Meanx	-0.88571
+Meany	-0.28142
+Meanz	-0.37548
+Variancex	0.00090113
+Variancey	0.0035846
+Variancez	0.0024238
+Std-Deviationx	0.030019
+Std-Deviationy	0.059872
+Std-Deviationz	0.049232
+Medianx	-0.89508
+Mediany	-0.28167
+Medianz	-0.37436
+Minimumx	-0.92801
+Minimumy	-0.38208
+Minimumz	-0.45366
+Maximumx	-0.82569
+Maximumy	-0.16266
+Maximumz	-0.26543
+RMSx	0.88622
+RMSy	0.28772
+RMSz	0.37869
+AutoCorrcoeffx	932043.7677
+AutoCorrcoeffy	94097.184
+AutoCorrcoeffz	167501.176
+Signal Magnitude area	1542.6109
+Power of signalx	0.76212
+Power of signaly	0.10185
+Power of signalz	0.14937
+Sample Differences Powerx	1.6327e-06
+Sample Differences Powery	7.6344e-06
+Sample Differences Powerz	2.8582e-06
+Sum of zero-crossing	1
+Sum of Energy	90.2314
+Signal Vector Magnitude	1.0116
+Entropy	720.4868
+median_acc_freqx	0
+median_acc_freqy	0
+median_acc_freqz	0
+Info_Entropyx	-0.35236
+Info_Entropyy	-0.78315
+Info_Entropyz	-0.13773
+Power_from_PSDx	0.0095116
+Power_from_PSDy	0.00098787
+Power_from_PSDz	0.0017272
+dc_Component	0.88571
+key_coefficientx	16.0656
+key_coefficienty	1.6932
+key_coefficientz	2.9341

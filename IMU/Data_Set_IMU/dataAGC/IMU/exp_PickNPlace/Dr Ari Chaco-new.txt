@@ -1,0 +1,50 @@
+Dr Ari Chaco
+Parameters	Value
+Meanx	6.3958e-06
+Meany	-3.0227e-05
+Meanz	-5.9899e-05
+Variancex	0.0012282
+Variancey	0.0020561
+Variancez	0.0018422
+Std-Deviationx	0.035045
+Std-Deviationy	0.045344
+Std-Deviationz	0.042921
+Medianx	-6.9759e-05
+Mediany	-0.0024015
+Medianz	-0.00016925
+Minimumx	-0.13001
+Minimumy	-0.15045
+Minimumz	-0.18075
+Maximumx	0.11935
+Maximumy	0.14007
+Maximumz	0.12914
+RMSx	0.035044
+RMSy	0.045343
+RMSz	0.04292
+AutoCorrcoeffx	0.0096623
+AutoCorrcoeffy	0.21581
+AutoCorrcoeffz	0.84747
+Signal Magnitude area	90.1745
+Power of signalx	0.0017476
+Power of signaly	0.0021874
+Power of signalz	0.002114
+Sample Differences Powerx	4.2414e-07
+Sample Differences Powery	6.5992e-07
+Sample Differences Powerz	1.1233e-06
+Sum of zero-crossing	88
+Sum of Energy	31.5981
+Signal Vector Magnitude	0.0051262
+Entropy	421.8613
+median_acc_freqx	0.12817
+median_acc_freqy	0.14038
+median_acc_freqz	0.14038
+Info_Entropyx	14.5408+7.57027e-17i
+Info_Entropyy	7.2658+3.1409e-16i
+Info_Entropyz	11.8654-1.51463e-16i
+Power_from_PSDx	2.7713e-08
+Power_from_PSDy	4.6395e-08
+Power_from_PSDz	4.1569e-08
+dc_Component	6.3958e-06
+key_coefficientx	0.20118
+key_coefficienty	0.3368
+key_coefficientz	0.30171

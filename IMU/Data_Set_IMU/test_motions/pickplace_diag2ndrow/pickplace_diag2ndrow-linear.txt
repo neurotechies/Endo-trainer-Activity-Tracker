@@ -1,0 +1,50 @@
+pickplace_diag2ndrow-linear-acc
+Parameters	Value
+Meanx	0.0016439
+Meany	-0.011402
+Meanz	0.012161
+Variancex	7.6005e-05
+Variancey	6.6901e-05
+Variancez	0.00015078
+Std-Deviationx	0.0087181
+Std-Deviationy	0.0081793
+Std-Deviationz	0.012279
+Medianx	0.0013904
+Mediany	-0.011761
+Medianz	0.010309
+Minimumx	-0.046265
+Minimumy	-0.028719
+Minimumz	-0.029428
+Maximumx	0.037293
+Maximumy	0.11304
+Maximumz	0.04724
+RMSx	0.0088674
+RMSy	0.01403
+RMSz	0.017278
+AutoCorrcoeffx	2.6595
+AutoCorrcoeffy	127.9405
+AutoCorrcoeffz	145.5432
+Signal Magnitude area	32.5282
+Power of signalx	7.3051e-05
+Power of signaly	0.00014737
+Power of signalz	0.00010446
+Sample Differences Powerx	2.3708e-05
+Sample Differences Powery	9.0816e-06
+Sample Differences Powerz	1.2397e-05
+Sum of zero-crossing	19
+Sum of Energy	0.19527
+Signal Vector Magnitude	0.00057401
+Entropy	4.3922
+median_acc_freqx	0
+median_acc_freqy	0
+median_acc_freqz	0
+Info_Entropyx	16.4331+3.33067e-16i
+Info_Entropyy	1.4432-3.4694e-17i
+Info_Entropyz	0.8328
+Power_from_PSDx	4.2613e-07
+Power_from_PSDy	1.693e-06
+Power_from_PSDz	2.3172e-06
+dc_Component	0.0016439
+key_coefficientx	0.00048819
+key_coefficienty	0.0017928
+key_coefficientz	0.0028661

@@ -1,0 +1,50 @@
+suresh1_endo
+Parameters	Value
+Meanx	0.00043077
+Meany	0.00088679
+Meanz	0.00025462
+Variancex	9.9704e-05
+Variancey	0.00039222
+Variancez	0.0012879
+Std-Deviationx	0.0099852
+Std-Deviationy	0.019805
+Std-Deviationz	0.035887
+Medianx	-0.00039683
+Mediany	0.00022006
+Medianz	-0.0031303
+Minimumx	-0.046794
+Minimumy	-0.33801
+Minimumz	-0.19205
+Maximumx	0.15428
+Maximumy	0.41024
+Maximumz	0.71157
+RMSx	0.0099941
+RMSy	0.019824
+RMSz	0.035887
+AutoCorrcoeffx	32.2834
+AutoCorrcoeffy	136.8129
+AutoCorrcoeffz	11.279
+Signal Magnitude area	38.0606
+Power of signalx	4.7646e-05
+Power of signaly	0.00022607
+Power of signalz	0.0010836
+Sample Differences Powerx	2.2689e-06
+Sample Differences Powery	1.2141e-05
+Sample Differences Powerz	3.0381e-05
+Sum of zero-crossing	932
+Sum of Energy	5.1834
+Signal Vector Magnitude	0.0017807
+Entropy	106.3304
+median_acc_freqx	0.68359
+median_acc_freqy	2.6123
+median_acc_freqz	0.28687
+Info_Entropyx	90.8325-1.90039e-15i
+Info_Entropyy	80.3871+7.61804e-15i
+Info_Entropyz	23.8594-2.35998e-15i
+Power_from_PSDx	0.62127
+Power_from_PSDy	2.4446
+Power_from_PSDz	7.9989
+dc_Component	5.6818
+key_coefficientx	0.015811
+key_coefficienty	0.062581
+key_coefficientz	0.20218

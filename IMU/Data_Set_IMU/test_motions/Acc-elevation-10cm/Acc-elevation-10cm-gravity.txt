@@ -1,0 +1,50 @@
+Acc-elevation-10cm-gravity
+Parameters	Value
+Meanx	-0.29285
+Meany	-0.056754
+Meanz	0.94774
+Variancex	0.0058591
+Variancey	0.0017911
+Variancez	0.00085119
+Std-Deviationx	0.076544
+Std-Deviationy	0.042321
+Std-Deviationz	0.029175
+Medianx	-0.28366
+Mediany	-0.068337
+Medianz	0.95353
+Minimumx	-0.5744
+Minimumy	-0.14156
+Minimumz	0.80974
+Maximumx	-0.16853
+Maximumy	0.078129
+Maximumz	0.9802
+RMSx	0.30266
+RMSy	0.070758
+RMSz	0.94819
+AutoCorrcoeffx	9567.3392
+AutoCorrcoeffy	359.3199
+AutoCorrcoeffz	100201.4052
+Signal Magnitude area	1302.2622
+Power of signalx	0.071786
+Power of signaly	0.0029262
+Power of signalz	0.92146
+Sample Differences Powerx	4.4508e-05
+Sample Differences Powery	7.5568e-06
+Sample Differences Powerz	7.6681e-06
+Sum of zero-crossing	9
+Sum of Energy	1.6722
+Signal Vector Magnitude	0.99568
+Entropy	108.617
+median_acc_freqx	0
+median_acc_freqy	0
+median_acc_freqz	0
+Info_Entropyx	0.81025
+Info_Entropyy	1.3417-1.3878e-16i
+Info_Entropyz	0.22239
+Power_from_PSDx	0.010138
+Power_from_PSDy	0.00048836
+Power_from_PSDz	0.10203
+dc_Component	0.29285
+key_coefficientx	0.467
+key_coefficienty	0.025508
+key_coefficientz	4.586
