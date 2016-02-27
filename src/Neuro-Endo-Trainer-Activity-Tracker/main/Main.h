@@ -172,7 +172,7 @@ public:
 	bool activityDetection(const Mat &prev_frame, const Mat &curr_frame, const Rect &trackingOut);
 	bool AllRingStable(const Mat &prv_frame, const Mat &curr_frame, const Rect &movingRing);
 	Rect getmovingRingROI(const Mat &curr_frame);
-	void 
+	void computeResult(const vector<Activity> &scorer);
 	
 };
 

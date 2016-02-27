@@ -579,6 +579,20 @@ void Main::initializeRingBox(IplImage* img)
 
 	_ringBox.init(fgMaskRing, _pegBox);
 }
+
+void Main::computeResult(const vector<Activity> &scorer)
+{
+	// Hitting Detection
+	for (int i = 0; i < scorer.size(); ++i)
+	{
+		Activity act = scorer[i];
+		if (act.type == "No-Ac")
+		{
+
+		}
+	}
+}
+
 void Main::run()
 {
 	
@@ -1080,7 +1094,7 @@ void Main::run()
 		}
 	}
 
-
+	computeResult(scorer);
 
 
 	cvReleaseImage(&img);
