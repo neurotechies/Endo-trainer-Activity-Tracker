@@ -586,16 +586,40 @@ void Main::computeResult(const vector<Activity> &scorer)
 	for (int i = 0; i < scorer.size(); ++i)
 	{
 		Activity act = scorer[i];
-		if (act.type == "No-Ac")
+		if (act.type == "No-Activity")
 		{
-
+			result.noactivity.no_frames += act.s.endFrame - act.s.startFrame;
 		}
+		else if (act.type == "Picking-Activity")
+		{
+			result.grasping.NoFramesPicking.push_back(make_pair(act.p.from_peg, act.p.endFrame - act.p.startFrame));
+			if (act.p.hitting.size())
+			{
+				for (int i = 0; i < act.p.hitting.size(); ++i)
+				{
+					if (act.p.hitting[i].second >= HITTING_THRESHOLD)
+						result.hitting.hittingData.push_back(make_pair(act.p.hitting[i].first, act.p.hitting[i].second));
+				}
+			}
+		}
+		else if (act.type == "Moving-Activity")
+		{
+			if (act.p.hitting.size())
+			{
+				for (int i = 0; i < act.p.hitting.size(); ++i)
+				{
+					if (act.p.hitting[i].second >= HITTING_THRESHOLD)
+						result.hitting.hittingData.push_back(make_pair(act.p.hitting[i].first, act.p.hitting[i].second));
+				}
+			}
+		}
+	
+	
 	}
 }
 
 void Main::run()
 {
-	
 	// Read the current frame and convert to the grayscale
 	IplImage *img = imAcqGetImg(imAcq);
 	IplImage *img1 = cvCloneImage(img);
@@ -838,7 +862,7 @@ void Main::run()
 			}
 			if (update_startFrameAndType)
 			{
-				activity.type = "Activity-Picking";
+				activity.type = "Picking-Activity";
 				activity.p.startFrame = imAcq->currentFrame - 1;
 				activity.p.from_peg = _ringBox.rings[index].code_pos; // to be updated obj.ring_code_status[index].second;
 				update_startFrameAndType = false;
@@ -870,7 +894,7 @@ void Main::run()
 			}
 			if (update_startFrameAndType)
 			{
-				activity.type = "Activity-Moving";
+				activity.type = "Moving-Activity";
 				activity.m.startFrame = imAcq->currentFrame - 1;
 				activity.m.from_peg = _ringBox.rings[index].code_pos;
 				update_startFrameAndType = false;

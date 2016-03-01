@@ -108,6 +108,9 @@ public:
 	bool JerKDetection = false; 
 	int index = -1;
 
+	// 
+	Result result;
+
 public:
 	Main()
     {
