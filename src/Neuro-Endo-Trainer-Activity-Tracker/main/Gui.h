@@ -41,6 +41,7 @@ public:
     Gui();
     ~Gui();
     void init();
+	void destroy();
 	void showImage(IplImage *image);
 	void showImageByDestroyingWindow(IplImage *image);
     char getKey();

@@ -66,7 +66,10 @@ namespace nets
 	{
 		return cvWaitKey(10);
 	}
-
+	void Gui::destroy()
+	{
+		cvDestroyWindow(m_window_name.c_str());
+	}
 	std::string Gui::windowName()
 	{
 		return m_window_name;

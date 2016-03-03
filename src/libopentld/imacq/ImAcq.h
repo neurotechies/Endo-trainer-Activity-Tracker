@@ -50,6 +50,8 @@ typedef struct
     int camNo;
     double startTime;
     float fps;
+	int width;
+	int height;
 } ImAcq ;
 
 ImAcq *imAcqAlloc();

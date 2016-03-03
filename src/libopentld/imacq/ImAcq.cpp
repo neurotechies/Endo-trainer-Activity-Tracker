@@ -96,7 +96,9 @@ void imAcqInit(ImAcq *imAcq)
                    imAcq->currentFrame, imAcq->lastFrame);
             exit(1);
         }
-
+		IplImage* img = imAcqGetImg(imAcq);
+		imAcq->width = img->width;
+		imAcq->height = img->height;
         // set the video position to the correct frame
         //This produces strange results on some videos and is deactivated for now.
         //imAcqVidSetNextFrameNumber(imAcq, imAcq->currentFrame);

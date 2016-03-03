@@ -24,7 +24,6 @@
 
 
 #include "pegBox.h"
-#include "params.h"
 namespace nets
 {
 	bool pegBox::init(const cv::Mat &inp)
@@ -45,7 +44,7 @@ namespace nets
 
 		for (int i = 0; i < No_of_pegs; ++i)
 		{
-			if (pegsI[i].size() < MIN_PEG_SIZE)//TODO (define min threshold)
+			if (pegsI[i].size() < PEG_SIZE_MIN)//TODO (define min threshold)
 			{
 				markedPegs[i] = false;
 			}

@@ -61,6 +61,8 @@ public:
 	tld::TLD *tld;
 	ImAcq *imAcq;
 	nets::Gui *gui;
+	params parameters;
+
 	bool showOutput;
 	const char *printResults;
 	const char *saveDir;
@@ -96,7 +98,7 @@ public:
 	int prvFrameNo_RingStability;
 	int currFrameNo_RingStability;
 	bool update__RingStability;
-
+	bool update__RingStability2;
 	// 
 	Activity activity;
 	vector<Activity> scorer;
@@ -106,39 +108,42 @@ public:
 	bool update_startFrameAndType = true;
 	bool RingHitting = false;
 	bool JerKDetection = false; 
+	bool trackinReinit = false;
 	int index = -1;
 
 	// 
 	Result result;
 
 public:
-	Main()
-    {
+	Main(){}
+
+	void init()
+	{
 		tld = new tld::TLD();
 		imAcq = NULL;
 		gui = NULL;
-		seed = SEED;
-		showOutput = SHOW_OUTPUT;
-		pegGroupROI = Rect(PEGBOUNDINGBOX_X, PEGBOUNDINGBOX_Y, PEGBOUNDINGBOX_WIDTH, PEGBOUNDINGBOX_HEIGHT);
-		hueThreshVal_ring = HUE_THRESHVAL_RING;
-		pegThresh_valSaturation = PEGSATURATION_MINVALUE;
+		seed = 0;
+		showOutput = parameters.SHOW_OUTPUT;
+		pegGroupROI = Rect(parameters.PEGBOUNDINGBOX_X, parameters.PEGBOUNDINGBOX_Y, parameters.PEGBOUNDINGBOX_WIDTH, parameters.PEGBOUNDINGBOX_HEIGHT);
+		hueThreshVal_ring = parameters.HUE_THRESHVAL_RING;
+		pegThresh_valSaturation = parameters.PEGSATURATION_MINVALUE;
 		status = STATIONARY;
 		element[0] = getStructuringElement(MORPH_ELLIPSE, Size(8, 8), Point(0, 0));
 		element[1] = getStructuringElement(MORPH_ELLIPSE, Size(8, 8), Point(0, 0));
 		element[2] = getStructuringElement(MORPH_ELLIPSE, Size(3, 3), Point(0, 0));
 		element[3] = getStructuringElement(MORPH_ELLIPSE, Size(3, 3), Point(0, 0));
-		printResults = PRINT_RESULT_FILE;
-        saveDir = SAVE_DIRECTORY;
-        threshold = THRESHOLD;
-        showForeground = SHOW_FOREGROUND;
+		printResults = parameters.PRINT_RESULT_FILE.c_str();
+		saveDir = parameters.SAVE_DIRECTORY.c_str();
+		threshold = parameters.THRESHOLD;
+		showForeground = parameters.SHOW_FOREGROUND;
 		reinit = 0;
-        loadModel = LOAD_MODEL;
-		showNotConfident = SHOW_NOT_CONFIDENT;
-		exportModelAfterRun = EXPORT_MODEL_AFTER_RUN;
-        modelExportFile = MODEL_EXPORT_FILE;
+		loadModel = parameters.LOAD_MODEL;
+		showNotConfident = parameters.SHOW_NOT_CONFIDENT;
+		exportModelAfterRun = parameters.EXPORT_MODEL_AFTER_RUN;
+		modelExportFile = parameters.MODEL_EXPORT_FILE.c_str();
 		gui = NULL;
-        modelPath = MODEL_PATH;
-        imAcq = NULL;
+		modelPath = parameters.MODEL_PATH.c_str();
+		imAcq = NULL;
 		pMOG = new BackgroundSubtractorMOG2(20, 100, false);
 		updateBackgroundModel = false;
 		updateBackgroundModel2 = false;
@@ -156,8 +161,8 @@ public:
 		prvFrameNo_RingStability = 0;
 		currFrameNo_RingStability = 0;
 		update__RingStability = true;
+		update__RingStability2 = false;
 	}
-
     ~Main()
     {
 		delete tld;
@@ -176,6 +181,9 @@ public:
 	bool AllRingStable(const Mat &prv_frame, const Mat &curr_frame, const Rect &movingRing);
 	Rect getmovingRingROI(const Mat &curr_frame);
 	void computeResult(const vector<Activity> &scorer);
+	void displayResult(const Result &);
+	void writeResult(const Result &);
+	void testPrintScorer(const vector<Activity> &scorer);
 	
 };
 

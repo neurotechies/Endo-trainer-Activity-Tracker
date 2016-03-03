@@ -65,10 +65,11 @@ bool Main::AllRingStable(const Mat &prv_frame, const Mat &curr_frame, const Rect
 		findContours(mask_out, contours, hierarchy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
 		if (contours.size() == 0)
 		{
-			if (StableFrameCount == STATIONARY_FRAME_COUNT)
+			if (StableFrameCount == parameters.STATIONARY_FRAME_COUNT)
 			{
 				StableFrameCount = 0;
 				retVal = true;
+				update__RingStability2 = true;
 			}
 			else
 			{
@@ -78,7 +79,7 @@ bool Main::AllRingStable(const Mat &prv_frame, const Mat &curr_frame, const Rect
 					update__RingStability = false;
 					StableFrameCount++;
 				}
-				if (imAcq->currentFrame - prvFrameNo_RingStability > CONSECUTIVE_FRAME_COUNT)
+				if (imAcq->currentFrame - prvFrameNo_RingStability > parameters.CONSECUTIVE_FRAME_COUNT)
 				{
 					StableFrameCount = 0;
 					update__RingStability = true;
@@ -91,7 +92,7 @@ bool Main::AllRingStable(const Mat &prv_frame, const Mat &curr_frame, const Rect
 			}
 		}
 	}
-	cout << "StableFrameCount ->" << StableFrameCount << endl;
+	//cout << "StableFrameCount ->" << StableFrameCount << endl;
 	//cout << "prvFrameNo_RingStability ->" << prvFrameNo_RingStability << endl;
 	return retVal;
 }
@@ -102,8 +103,8 @@ void Main::HittingDetection(const Mat &prv_frame, const Mat &curr_frame, vector<
 	// constants
 	int thresh = 50;
 	Mat kernel = (Mat_<uchar>(3, 3) << 0, 1, 0, 1, 1, 1, 0, 1, 0);
-	int smallImage_width = int(pegGroupROI.width / (float)NO_OF_IMAGES_HITTING_DETECTION);
-	int smallImage_height = int(pegGroupROI.height / (float)NO_OF_IMAGES_HITTING_DETECTION);
+	int smallImage_width = int(pegGroupROI.width / (float)parameters.NO_OF_IMAGES_HITTING_DETECTION);
+	int smallImage_height = int(pegGroupROI.height / (float)parameters.NO_OF_IMAGES_HITTING_DETECTION);
 	vector<vector<Point> > contours;
 	vector<Vec4i> hierarchy;
 	// vars declaration
@@ -371,7 +372,7 @@ bool Main::activityDetection(const Mat &prev_frame, const Mat &curr_frame, const
 	else if (status == "picking")
 	{
 		int code = -1, index = -1;
-		_ringBox.print();
+		//_ringBox.print();
 		for (int i = 0; i < _ringBox.rings.size(); ++i)
 		{
 			if (_ringBox.rings[i].status == "picking")
@@ -456,8 +457,11 @@ bool Main::activityDetection(const Mat &prev_frame, const Mat &curr_frame, const
 		else if (count2 >= 6)
 		{
 			bool v = AllRingStable(prev_frame, curr_frame, mvRingROI);
-			cout << "Ring Stablility -> " << (v ? "true" : "false") << endl;
-			if (v)
+			Point center_ring = Point(mvRingROI.x + (mvRingROI.width / 2.0), mvRingROI.y + mvRingROI.height / 2.0);
+			Point center_tooltip = Point(trackingOut.x + trackingOut.width, trackingOut.y + trackingOut.height + 40);
+			dist = sqrt(((center_ring.x - center_tooltip.x)*(center_ring.x - center_tooltip.x)) + ((center_ring.y - center_tooltip.y)*(center_ring.y - center_tooltip.y)));
+			//cout << "Ring Stablility -> " << (v ? "true" : "false") << endl;
+			if (update__RingStability2 && dist > 150 && center_ring.x > 0 && center_ring.y > 0 && trackingOut.x > 0 && trackingOut.y > 0)
 			{
 				int index_peg = 0;
 				for (int i = 0; i < _pegBox.pegs.size(); ++i)
@@ -468,6 +472,7 @@ bool Main::activityDetection(const Mat &prev_frame, const Mat &curr_frame, const
 					if (C.width > 0)
 					{
 						status = "stationary";
+						update__RingStability2 = false;
 						updateBackgroundModel = true;
 						index_peg = i;
 						break;
@@ -489,7 +494,7 @@ bool Main::activityDetection(const Mat &prev_frame, const Mat &curr_frame, const
 			}
 		}
 	}
-	cout << "status -> " << status << endl << endl;
+	cout << "status -> " << status << endl;
 	return true;
 }
 
@@ -579,6 +584,342 @@ void Main::initializeRingBox(IplImage* img)
 
 	_ringBox.init(fgMaskRing, _pegBox);
 }
+void Main::testPrintScorer(const vector<Activity> &scorer)
+{
+	FILE *resultsFile = fopen("E:/data/Endo-trainer/Result/DrAndre_1_0_Deg_ST_Aux_test.txt", "w");
+	fprintf(resultsFile, "Output-File for the video -> %s\n", imAcq->imgPath);
+	for (int i = 0; i < scorer.size(); ++i)
+	{
+		Activity act = scorer[i];
+		fprintf(resultsFile, "%d. Activity -> %s No of frames(%d) \n", i, act.type.c_str(), act.no_of_frames);
+		if (act.type == "No-Activity")
+		{
+			fprintf(resultsFile, "StartFrame - %d, EndFrame - %d \n", act.s.startFrame, act.s.endFrame);
+			if (act.s.hitting.size())
+			{
+				fprintf(resultsFile, "Hitting Result \n");
+				for (int i = 0; i < act.s.hitting.size(); ++i)
+				{
+					fprintf(resultsFile, "Frame %d, Hitting Value -> %d\n", act.s.hitting[i].first, act.s.hitting[i].second);
+				}
+				fprintf(resultsFile, "\n \n");
+			}
+			if (act.s.trackingData.size())
+			{
+				fprintf(resultsFile, "Tracking Result \n");
+				for (int i = 0; i < act.s.trackingData.size(); ++i)
+				{
+					fprintf(resultsFile, "Frame %d, Tracking Value -> %lf %lf\n", act.s.trackingData[i].first, act.s.trackingData[i].second.first, act.s.trackingData[i].second.second);
+				}
+				fprintf(resultsFile, "\n \n");
+			}
+
+			if (act.s.framesForTrackingFailure.size())
+			{
+				fprintf(resultsFile, "These frames has tracking failure \n");
+				for (int i = 0; i < act.s.framesForTrackingFailure.size(); ++i)
+				{
+					fprintf(resultsFile, "%d,%t", act.s.framesForTrackingFailure[i]);
+				}
+				fprintf(resultsFile, "\n \n");
+			}
+
+			if (act.s.framesForRingHitting.size())
+			{
+				fprintf(resultsFile, "These frames has Ring Hitting or wrong placement of the rings\n");
+				for (int i = 0; i < act.s.framesForRingHitting.size(); ++i)
+				{
+					fprintf(resultsFile, "%d,%t", act.s.framesForRingHitting[i]);
+				}
+				fprintf(resultsFile, "\n \n");
+			}
+		}
+		
+		else if (act.type == "Picking-Activity")
+		{
+			fprintf(resultsFile, "StartFrame - %d, EndFrame - %d \n", act.p.startFrame, act.p.endFrame);
+			fprintf(resultsFile, "Picking from the peg No -> %d \n", act.p.from_peg);
+			if (act.p.hitting.size())
+			{
+				fprintf(resultsFile, "Hitting Result \n");
+				for (int i = 0; i < act.p.hitting.size(); ++i)
+				{
+					fprintf(resultsFile, "Frame %d, Hitting Value -> %d\n", act.p.hitting[i].first, act.p.hitting[i].second);
+				}
+				fprintf(resultsFile, "\n\n");
+			}
+			if (act.p.trackingData.size())
+			{
+				fprintf(resultsFile, "Tracking Result \n");
+				for (int i = 0; i < act.p.trackingData.size(); ++i)
+				{
+					fprintf(resultsFile, "Frame %d, Tracking Value -> %lf  %lf\n", act.p.trackingData[i].first, act.p.trackingData[i].second.first, act.p.trackingData[i].second.second);
+				}
+				fprintf(resultsFile, "\n\n");
+			}
+
+			if (act.p.framesForTrackingFailure.size())
+			{
+				fprintf(resultsFile, "These frames has tracking failure \n");
+				for (int i = 0; i < act.p.framesForTrackingFailure.size(); ++i)
+				{
+					fprintf(resultsFile, "%d,%t", act.p.framesForTrackingFailure[i]);
+				}
+				fprintf(resultsFile, "\n\n");
+			}
+
+			if (act.p.framesForRingHitting.size())
+			{
+				fprintf(resultsFile, "These frames has Ring Hitting or wrong placement of the rings\n");
+				for (int i = 0; i < act.p.framesForRingHitting.size(); ++i)
+				{
+					fprintf(resultsFile, "%d,%t", act.p.framesForRingHitting[i]);
+				}
+				fprintf(resultsFile, "\n \n");
+			}
+		
+		}
+		else if (act.type == "Moving-Activity")
+		{
+			fprintf(resultsFile, "StartFrame - %d, EndFrame - %d \n", act.m.startFrame, act.m.endFrame);
+			fprintf(resultsFile, "Moving from the peg->%d to the peg-> %d\n", act.m.from_peg, act.m.to_peg);
+			if (act.m.hitting.size())
+			{
+				fprintf(resultsFile, "Hitting Result \n");
+				for (int i = 0; i < act.m.hitting.size(); ++i)
+				{
+					fprintf(resultsFile, "Frame %d, Hitting Value -> %d\n", act.m.hitting[i].first, act.m.hitting[i].second);
+				}
+				fprintf(resultsFile, "\n\n");
+			}
+			if (act.m.trackingData.size())
+			{
+				fprintf(resultsFile, "Tracking Result \n");
+				for (int i = 0; i < act.m.trackingData.size(); ++i)
+				{
+					fprintf(resultsFile, "Frame %d, Tracking Value -> %lf %lf\n", act.m.trackingData[i].first, act.m.trackingData[i].second.first, act.m.trackingData[i].second.second);
+				}
+				fprintf(resultsFile, "\n\n");
+			}
+
+			if (act.m.framesForTrackingFailure.size())
+			{
+				fprintf(resultsFile, "These frames has tracking failure \n");
+				for (int i = 0; i < act.m.framesForTrackingFailure.size(); ++i)
+				{
+					fprintf(resultsFile, "%d,%t", act.m.framesForTrackingFailure[i]);
+				}
+				fprintf(resultsFile, "\n\n");
+			}
+
+			if (act.m.framesForRingHitting.size())
+			{
+				fprintf(resultsFile, "These frames has Ring Hitting or wrong placement of the rings\n");
+				for (int i = 0; i < act.m.framesForRingHitting.size(); ++i)
+				{
+					fprintf(resultsFile, "%d,%t", act.m.framesForRingHitting[i]);
+				}
+				fprintf(resultsFile, "\n \n");
+			}
+		}
+	}
+	fclose(resultsFile);
+}
+
+void Main::displayResult(const Result &)
+{
+	int ycursor = 30;
+	int xcursor = 10;
+	// display the result
+	Mat drawing = Mat::zeros(Size(imAcq->width, imAcq->height), CV_8UC3);
+	string filename = util::filenameFromPath(imAcq->imgPath);
+	string text = "Scoring sheet for the " + filename;
+	putText(drawing, text, Point2f(100, ycursor), FONT_HERSHEY_COMPLEX_SMALL, 1, Scalar(255, 255, 255));
+	text = "------------------------------------";
+	ycursor = 60;
+	putText(drawing, text, Point2f(100, ycursor), FONT_HERSHEY_COMPLEX_SMALL, 1, Scalar(255, 255, 255));
+
+	text = "1. Hitting";
+	ycursor = 75;
+	putText(drawing, text, Point2f(xcursor, ycursor), FONT_HERSHEY_COMPLEX_SMALL, 0.9, Scalar(255, 255, 255));
+	if (result.hitting.hittingData.size())
+	{
+		ycursor += 5;
+		for (int i = 0; i < result.hitting.hittingData.size(); ++i)
+		{
+			text = "Frame No -> " + SSTR(result.hitting.hittingData[i].first) + ". with intensity-> " + SSTR(result.hitting.hittingData[i].second);
+			ycursor += 15;
+			putText(drawing, text, Point2f(xcursor + 10, ycursor), FONT_HERSHEY_COMPLEX_SMALL, 0.68, Scalar(0, 255, 0));
+		}
+		text = "Hitting Score -> " + SSTR(result.hitting.hittingScore);
+		ycursor += 15;
+		putText(drawing, text, Point2f(xcursor + 20, ycursor), FONT_HERSHEY_COMPLEX_SMALL, 0.68, Scalar(0, 0, 255));
+	}
+	else
+	{
+		text = "No hitting during the whole activity";
+		ycursor += 20;
+		putText(drawing, text, Point2f(xcursor + 10, ycursor), FONT_HERSHEY_COMPLEX_SMALL, 0.7, Scalar(0, 255, 0));
+		text = "Hitting score -> " + SSTR(result.hitting.hittingScore);
+		ycursor += 15;
+		putText(drawing, text, Point2f(xcursor + 20, ycursor), FONT_HERSHEY_COMPLEX_SMALL, 0.7, Scalar(0, 0, 255));
+	}
+
+
+	text = "2. Grasping";
+	ycursor += 20;
+	putText(drawing, text, Point2f(xcursor, ycursor), FONT_HERSHEY_COMPLEX_SMALL, 0.9, Scalar(255, 255, 255));
+	if (result.grasping.NoFramesPicking.size())
+	{
+		ycursor += 5;
+		for (int i = 0; i < result.grasping.NoFramesPicking.size(); ++i)
+		{
+			text = "Peg No(" + SSTR(result.grasping.NoFramesPicking[i].first) + ") no of frames-> " + SSTR(result.grasping.NoFramesPicking[i].second);
+			ycursor += 15;
+			putText(drawing, text, Point2f(xcursor + 10, ycursor), FONT_HERSHEY_COMPLEX_SMALL, 0.7, Scalar(0, 255, 0));
+		}
+		text = "Grasping score -> " + SSTR(result.grasping.grapspingScore);
+		ycursor += 15;
+		putText(drawing, text, Point2f(xcursor + 20, ycursor), FONT_HERSHEY_COMPLEX_SMALL, 0.7, Scalar(0, 0, 255));
+	}
+
+	if (ycursor > imAcq->height-15)
+	{
+		xcursor = 700;
+		ycursor = 75;
+	}
+
+	text = "3. Wavy motion";
+	ycursor += 20;
+	putText(drawing, text, Point2f(xcursor, ycursor), FONT_HERSHEY_COMPLEX_SMALL, 0.9, Scalar(255, 255, 255));
+	if (result.wavymotion.NoFramesMoving.size())
+	{
+		for (int i = 0; i < result.wavymotion.NoFramesMoving.size(); ++i)
+		{
+			text = "Peg(" + SSTR(result.wavymotion.NoFramesMoving[i].first.first) + "," + SSTR(result.wavymotion.NoFramesMoving[i].first.second) + ") Number of frames-> " + SSTR(result.wavymotion.NoFramesMoving[i].second);
+			ycursor += 15;
+			putText(drawing, text, Point2f(xcursor + 10, ycursor), FONT_HERSHEY_COMPLEX_SMALL, 0.7, Scalar(0, 255, 0));
+		}
+		text = "Wavy motion score -> " + SSTR(result.wavymotion.wavyMotionScore);
+		ycursor += 15;
+		putText(drawing, text, Point2f(xcursor + 20, ycursor), FONT_HERSHEY_COMPLEX_SMALL, 0.7, Scalar(0, 0, 255));
+	}
+
+	if (ycursor > imAcq->height - 15)
+	{
+		xcursor = 700;
+		ycursor = 75;
+	}
+
+	text = "4. Ring hitting or wrong way of placement of the ring";
+	ycursor += 20;
+	putText(drawing, text, Point2f(xcursor, ycursor), FONT_HERSHEY_COMPLEX_SMALL, 0.9, Scalar(255, 255, 255));
+	if (result.ringHItting.frameRingHitting.size())
+	{
+		for (int i = 0; i < result.ringHItting.frameRingHitting.size(); ++i)
+		{
+			text = "Activity(\"" + result.ringHItting.frameRingHitting[i].first + "\") Frame No-> " + SSTR(result.ringHItting.frameRingHitting[i].second);
+ 			ycursor += 15;
+			putText(drawing, text, Point2f(xcursor + 10, ycursor), FONT_HERSHEY_COMPLEX_SMALL, 0.7, Scalar(0, 255, 0));
+		}
+		text = "Penalized with the negative score of-> " + SSTR(result.ringHItting.ringHittingScore);
+		ycursor += 15;
+		putText(drawing, text, Point2f(xcursor + 20, ycursor), FONT_HERSHEY_COMPLEX_SMALL, 0.7, Scalar(0, 0, 255));
+	}
+	else
+	{
+		text = "No negative penalty for this event ";
+		ycursor += 15;
+		putText(drawing, text, Point2f(xcursor + 20, ycursor), FONT_HERSHEY_COMPLEX_SMALL, 0.7, Scalar(0, 0, 255));
+	}
+
+	if (ycursor > imAcq->height - 15)
+	{
+		xcursor = 700;
+		ycursor = 75;
+	}
+	text = "4. Sudden movement";
+	ycursor += 20;
+	putText(drawing, text, Point2f(xcursor, ycursor), FONT_HERSHEY_COMPLEX_SMALL, 0.9, Scalar(255, 255, 255));
+	if (result.suddenmovement.frameTrackingFailed.size())
+	{
+		for (int i = 0; i < result.suddenmovement.frameTrackingFailed.size(); ++i)
+		{
+			text = "Activity(\"" + result.suddenmovement.frameTrackingFailed[i].first + "\") Frame No-> " + SSTR(result.suddenmovement.frameTrackingFailed[i].second);
+			ycursor += 15;
+			putText(drawing, text, Point2f(xcursor + 10, ycursor), FONT_HERSHEY_COMPLEX_SMALL, 0.7, Scalar(0, 255, 0));
+		}
+		text = "Penalized with the negative score of-> " + SSTR(result.ringHItting.ringHittingScore);
+		ycursor += 15;
+		putText(drawing, text, Point2f(xcursor + 20, ycursor), FONT_HERSHEY_COMPLEX_SMALL, 0.7, Scalar(0, 0, 255));
+	}
+	else
+	{
+		text = "No negative penalty for this event ";
+		ycursor += 15;
+		putText(drawing, text, Point2f(xcursor + 20, ycursor), FONT_HERSHEY_COMPLEX_SMALL, 0.7, Scalar(0, 0, 255));
+	}
+
+	if (ycursor > imAcq->height - 15)
+	{
+		xcursor = 700;
+		ycursor = 75;
+	}
+	text = "5. Wrong Moves";
+	ycursor += 20;
+	putText(drawing, text, Point2f(xcursor, ycursor), FONT_HERSHEY_COMPLEX_SMALL, 0.9, Scalar(255, 255, 255));
+	if (result.wrongmoves.wrong_moves.size())
+	{
+		for (int i = 0; i < result.wrongmoves.wrong_moves.size(); ++i)
+		{
+			text = "Wrong moves detected from peg -> " + SSTR(result.wrongmoves.wrong_moves[i].first) + " to peg -> " + SSTR(result.wrongmoves.wrong_moves[i].second);
+			ycursor += 15;
+			putText(drawing, text, Point2f(xcursor + 10, ycursor), FONT_HERSHEY_COMPLEX_SMALL, 0.7, Scalar(0, 255, 0));
+		}
+		text = "Penalized with the negative score of-> " + SSTR(result.ringHItting.ringHittingScore);
+		ycursor += 15;
+		putText(drawing, text, Point2f(xcursor + 20, ycursor), FONT_HERSHEY_COMPLEX_SMALL, 0.7, Scalar(0, 0, 255));
+	}
+	else
+	{
+		text = "No negative penalty for this event ";
+		ycursor += 15;
+		putText(drawing, text, Point2f(xcursor + 20, ycursor), FONT_HERSHEY_COMPLEX_SMALL, 0.7, Scalar(0, 0, 255));
+	}
+	if (ycursor > imAcq->height - 15)
+	{
+		xcursor = 700;
+		ycursor = 75;
+	}
+	text = "6. Wasted movements";
+	ycursor += 20;
+	putText(drawing, text, Point2f(xcursor, ycursor), FONT_HERSHEY_COMPLEX_SMALL, 0.9, Scalar(255, 255, 255));
+	text = "Total no of frames in the No-Activity -> " + SSTR(result.noactivity.no_frames);
+	ycursor += 15;
+	putText(drawing, text, Point2f(xcursor + 10, ycursor), FONT_HERSHEY_COMPLEX_SMALL, 0.7, Scalar(0, 255, 0));
+	text = "Penalized with the negative score of-> " + SSTR(result.noactivity.trackingScore);
+	ycursor += 15;
+	putText(drawing, text, Point2f(xcursor + 20, ycursor), FONT_HERSHEY_COMPLEX_SMALL, 0.7, Scalar(0, 0, 255));
+
+	if (ycursor > imAcq->height - 15)
+	{
+		xcursor = 700;
+		ycursor = 75;
+	}
+
+	text = "Total Score ->" + SSTR(result.totalScore);
+	ycursor += 40;
+	putText(drawing, text, Point2f(xcursor, ycursor), FONT_HERSHEY_SCRIPT_COMPLEX, 1.1, Scalar(255, 255, 255));
+
+	imshow("Result for the " + filename, drawing);
+	waitKey(0);
+
+
+}
+void Main::writeResult(const Result &)
+{
+
+}
 
 void Main::computeResult(const vector<Activity> &scorer)
 {
@@ -586,35 +927,125 @@ void Main::computeResult(const vector<Activity> &scorer)
 	for (int i = 0; i < scorer.size(); ++i)
 	{
 		Activity act = scorer[i];
+
+		// for the stationary activity
 		if (act.type == "No-Activity")
 		{
-			result.noactivity.no_frames += act.s.endFrame - act.s.startFrame;
+			result.noactivity.no_frames += act.no_of_frames;
+
+			// check for hitting the board
+			if (act.s.hitting.size())
+			{
+				for (int i = 0; i < act.s.hitting.size(); ++i)
+				{
+					if (act.s.hitting[i].second >= parameters.HITTING_THRESHOLD)
+						result.hitting.hittingData.push_back(make_pair(act.s.hitting[i].first, act.s.hitting[i].second));
+				}
+			}
+			// check for ring hitting or wrong placement of the ring
+			if (act.s.framesForRingHitting.size())
+			{
+				for (int i = 0; i < act.s.framesForRingHitting.size(); ++i)
+				{
+					result.ringHItting.frameRingHitting.push_back(make_pair("No-Activity", act.s.framesForRingHitting[i]));
+				}
+			}
+
+
+			// check for tracking failure or sudden change in the apperance of the tool
+			if (act.s.framesForTrackingFailure.size())
+			{
+				for (int i = 0; i < act.s.framesForTrackingFailure.size(); ++i)
+				{
+					result.suddenmovement.frameTrackingFailed.push_back(make_pair("No-Activity", act.s.framesForTrackingFailure[i]));
+				}
+			}
 		}
+
+
+		// for the picking activity
 		else if (act.type == "Picking-Activity")
 		{
-			result.grasping.NoFramesPicking.push_back(make_pair(act.p.from_peg, act.p.endFrame - act.p.startFrame));
+			result.grasping.NoFramesPicking.push_back(make_pair(act.p.from_peg, act.no_of_frames));
+
+			// check for hitting the board
 			if (act.p.hitting.size())
 			{
 				for (int i = 0; i < act.p.hitting.size(); ++i)
 				{
-					if (act.p.hitting[i].second >= HITTING_THRESHOLD)
+					if (act.p.hitting[i].second >= parameters.HITTING_THRESHOLD)
 						result.hitting.hittingData.push_back(make_pair(act.p.hitting[i].first, act.p.hitting[i].second));
 				}
 			}
+
+			// check for ring hitting or wrong placement of the ring
+			if (act.p.framesForRingHitting.size())
+			{
+				for (int i = 0; i < act.p.framesForRingHitting.size(); ++i)
+				{
+					result.ringHItting.frameRingHitting.push_back(make_pair("Picking-Activity", act.p.framesForRingHitting[i]));
+				}
+			}
+
+
+			// check for tracking failure or sudden change in the apperance of the tool
+			if (act.p.framesForTrackingFailure.size())
+			{
+				for (int i = 0; i < act.p.framesForTrackingFailure.size(); ++i)
+				{
+					result.suddenmovement.frameTrackingFailed.push_back(make_pair("Picking-Activity", act.p.framesForTrackingFailure[i]));
+				}
+			}
+			bool wrongMove = true;
+			for (int i = 0; i < result.wrongmoves.rightMoves.size(); ++i)
+			{
+				if (act.m.from_peg == result.wrongmoves.rightMoves[i].first &&
+					act.m.to_peg == result.wrongmoves.rightMoves[i].second)
+				{
+					wrongMove = false;
+					break;
+				}
+			}
+			if (wrongMove)
+			{
+				result.wrongmoves.wrong_moves.push_back(make_pair(act.m.from_peg, act.m.to_peg));
+				wrongMove = true;
+			}
 		}
+
+
+		// for the moving activity
 		else if (act.type == "Moving-Activity")
 		{
-			if (act.p.hitting.size())
+			result.wavymotion.NoFramesMoving.push_back(make_pair(make_pair(act.m.from_peg, act.m.to_peg), act.no_of_frames));
+
+			// check for hitting the board
+			if (act.m.hitting.size())
 			{
 				for (int i = 0; i < act.p.hitting.size(); ++i)
 				{
-					if (act.p.hitting[i].second >= HITTING_THRESHOLD)
-						result.hitting.hittingData.push_back(make_pair(act.p.hitting[i].first, act.p.hitting[i].second));
+					if (act.m.hitting[i].second >= parameters.HITTING_THRESHOLD)
+						result.hitting.hittingData.push_back(make_pair(act.m.hitting[i].first, act.m.hitting[i].second));
+				}
+			}
+
+			// check for ring hitting or wrong placement of the ring
+			if (act.m.framesForRingHitting.size())
+			{
+				for (int i = 0; i < act.m.framesForRingHitting.size(); ++i)
+				{
+					result.ringHItting.frameRingHitting.push_back(make_pair("Moving-Activity", act.m.framesForRingHitting[i]));
 				}
 			}
 		}
-	
-	
+		// check for tracking failure or sudden change in the apperance of the tool
+		if (act.m.framesForTrackingFailure.size())
+		{
+			for (int i = 0; i < act.m.framesForTrackingFailure.size(); ++i)
+			{
+				result.suddenmovement.frameTrackingFailed.push_back(make_pair("Picking-Activity", act.m.framesForTrackingFailure[i]));
+			}
+		}
 	}
 }
 
@@ -701,17 +1132,12 @@ void Main::run()
 		fprintf(resultsFile, "\n\nFrame-No,      Ring1-Status,      Ring1-Code,      Ring2-Status,      Ring2-Code,      Ring3-Status,      Ring3-Code,      Ring4-Status,      Ring4-Code,      Ring5-Status,      Ring5-Code,      Ring6-Status,      Ring6-Code,      Hitting-Detection-Output,      Tracking-Output,      Tracking-Output-Confidence\n");
 	}
 	gui->showImageByDestroyingWindow(img);
-
-
-
 	while (imAcqHasMoreFrames(imAcq))
 	{
 		double tic = cvGetTickCount();
-		// get the image
-		cvReleaseImage(&img);
-		img = imAcqGetImg(imAcq);
 		if (!reuseFrameOnce)
 		{
+			//cout << "current frame -> " << imAcq->currentFrame - 1 << endl;
 			cvReleaseImage(&img);
 			img = imAcqGetImg(imAcq);
 			if (img == NULL)
@@ -721,7 +1147,7 @@ void Main::run()
 			}
 			cvtColor(cvarrToMat(img), grey, CV_BGR2GRAY);
 		}
-		if (TLD_WITH_TRACKER_ONLY)
+		if (parameters.TLD_WITH_TRACKER_ONLY)
 		{
 			tld->processImageWithTracker(cvarrToMat(img));
 		}
@@ -730,7 +1156,7 @@ void Main::run()
 			tld->processImage(cvarrToMat(img));
 		}
 		// if tracking fails then prompt the user to reinitialize the tracking
-		if (tld->currBB == NULL && (status == "picking" || status == "stationary"))
+		if (tld->currBB == NULL)
 		{
 			if (first_tracking_failed_detection && trackingStart)
 			{
@@ -835,9 +1261,18 @@ void Main::run()
 				update_startFrameAndType = false;
 			}
 			activity.no_of_frames++;
-			activity.s.hitting.push_back(make_pair(imAcq->currentFrame - 1, frameHitData.size()));
-			activity.s.trackingData.push_back(make_pair(imAcq->currentFrame - 1, make_pair(tld->currBB->br().x, tld->currBB->br().y + 40)));
-			No_activity_start = true;
+			if (frameHitData.size() >= parameters.HITTING_THRESHOLD)
+			{
+				activity.s.hitting.push_back(make_pair(imAcq->currentFrame - 1, frameHitData.size()));
+			}
+			if (tld->currBB != NULL)
+			{
+				activity.s.trackingData.push_back(make_pair(imAcq->currentFrame - 1, make_pair(tld->currBB->br().x, tld->currBB->br().y + 40)));
+			}
+			else
+			{
+				activity.s.trackingData.push_back(make_pair(imAcq->currentFrame - 1, make_pair(-1, -1)));
+			}
 			if (RingHitting)
 			{
 				activity.s.framesForRingHitting.push_back(imAcq->currentFrame - 1);
@@ -848,6 +1283,12 @@ void Main::run()
 				activity.s.framesForTrackingFailure.push_back(imAcq->currentFrame - 1);
 				JerKDetection = false;
 			}
+			if (trackinReinit)
+			{
+				activity.s.framesForTrackingReinit.push_back(imAcq->currentFrame - 2);
+				trackinReinit = false;
+			}
+			No_activity_start = true;
 		}
 
 		else if (status == "picking")
@@ -864,12 +1305,22 @@ void Main::run()
 			{
 				activity.type = "Picking-Activity";
 				activity.p.startFrame = imAcq->currentFrame - 1;
-				activity.p.from_peg = _ringBox.rings[index].code_pos; // to be updated obj.ring_code_status[index].second;
+				activity.p.from_peg = _ringBox.rings[index].code_pos; 
 				update_startFrameAndType = false;
 			}
 			activity.no_of_frames++;
-			activity.p.hitting.push_back(make_pair(imAcq->currentFrame - 1, frameHitData.size()));
-			activity.p.trackingData.push_back(make_pair(imAcq->currentFrame - 1, make_pair(tld->currBB->br().x, tld->currBB->br().y + 40)));
+			if (frameHitData.size() >= parameters.HITTING_THRESHOLD)
+			{
+				activity.p.hitting.push_back(make_pair(imAcq->currentFrame - 1, frameHitData.size()));
+			}
+			if (tld->currBB != NULL)
+			{
+				activity.p.trackingData.push_back(make_pair(imAcq->currentFrame - 1, make_pair(tld->currBB->br().x, tld->currBB->br().y + 40)));
+			}
+			else
+			{
+				activity.s.trackingData.push_back(make_pair(imAcq->currentFrame - 1, make_pair(-1, -1)));
+			}
 			picking_activity_start = true;
 			if (RingHitting)
 			{
@@ -880,6 +1331,11 @@ void Main::run()
 			{
 				activity.p.framesForTrackingFailure.push_back(imAcq->currentFrame - 1);
 				JerKDetection = false;
+			}
+			if (trackinReinit)
+			{
+				activity.p.framesForTrackingReinit.push_back(imAcq->currentFrame - 2);
+				trackinReinit = false;
 			}
 		}
 		else if (status == "moving")
@@ -900,8 +1356,18 @@ void Main::run()
 				update_startFrameAndType = false;
 			}
 			activity.no_of_frames++;
-			activity.m.hitting.push_back(make_pair(imAcq->currentFrame - 1, frameHitData.size()));
-			activity.m.trackingData.push_back(make_pair(imAcq->currentFrame - 1, make_pair(tld->currBB->br().x, tld->currBB->br().y + 40)));
+			if (frameHitData.size() >= parameters.HITTING_THRESHOLD)
+			{
+				activity.m.hitting.push_back(make_pair(imAcq->currentFrame - 1, frameHitData.size()));
+			}
+			if (tld->currBB != NULL)
+			{
+				activity.m.trackingData.push_back(make_pair(imAcq->currentFrame - 1, make_pair(tld->currBB->br().x, tld->currBB->br().y + 40)));
+			}
+			else
+			{
+				activity.s.trackingData.push_back(make_pair(imAcq->currentFrame - 1, make_pair(-1, -1)));
+			}
 			moving_activity_start = true;
 			if (RingHitting)
 			{
@@ -912,6 +1378,11 @@ void Main::run()
 			{
 				activity.m.framesForTrackingFailure.push_back(imAcq->currentFrame - 1);
 				JerKDetection = false;
+			}
+			if (trackinReinit)
+			{
+				activity.m.framesForTrackingReinit.push_back(imAcq->currentFrame - 2);
+				trackinReinit = false;
 			}
 		}
 		// Writing results
@@ -1073,6 +1544,7 @@ void Main::run()
 					}
 					Rect r = Rect(box);
 					tld->selectObject(grey, &r);
+					trackinReinit = true;
 				}
 
 				if (key == 'z')
@@ -1086,6 +1558,7 @@ void Main::run()
 					}
 					Rect r = Rect(box);
 					tld->learnPatch(grey, &r);
+					trackinReinit = true;
 				}
 			}
 			if (saveDir != NULL)
@@ -1094,6 +1567,10 @@ void Main::run()
 				sprintf(fileName, "%s/%.5d.png", saveDir, imAcq->currentFrame - 1);
 
 				cvSaveImage(fileName, img);
+			}
+			if (reuseFrameOnce)
+			{
+				reuseFrameOnce = false;
 			}
 		}
 	}
@@ -1117,12 +1594,20 @@ void Main::run()
 			activity.clear();
 		}
 	}
-
-	computeResult(scorer);
-
-
 	cvReleaseImage(&img);
 	img = NULL;
+	gui->destroy();
+
+	// compute the result
+	computeResult(scorer);
+
+	// display the result
+	displayResult(result);
+
+	// write the result
+	writeResult(result);
+
+
 
 	if (exportModelAfterRun)
 	{

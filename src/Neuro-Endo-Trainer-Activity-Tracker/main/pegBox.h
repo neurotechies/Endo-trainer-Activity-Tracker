@@ -38,6 +38,7 @@
 using namespace cv;
 using namespace std;
 
+#define PEG_SIZE_MIN 25
 namespace nets
 {
 

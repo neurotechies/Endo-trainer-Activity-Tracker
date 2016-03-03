@@ -11,8 +11,9 @@ struct Activity
 	{
 		int startFrame, endFrame;
 		vector<pair<int, int> > hitting;
-		vector<pair<int, pair<int, int>> > trackingData;
+		vector<pair<int, pair<double, double> > > trackingData;
 		vector<int> framesForTrackingFailure;
+		vector<int> framesForTrackingReinit;
 		vector<int> framesForRingHitting;
 		stationary()
 		{
@@ -27,6 +28,7 @@ struct Activity
 			trackingData.clear();
 			framesForTrackingFailure.clear();
 			framesForRingHitting.clear();
+			framesForTrackingReinit.clear();
 		}
 	};
 	struct Picking
@@ -34,9 +36,10 @@ struct Activity
 		int startFrame, endFrame;
 		int from_peg;
 		vector<pair<int, int> > hitting;
-		vector<pair<int, pair<int, int> > > trackingData;
+		vector<pair<int, pair<double, double> > > trackingData;
 		vector<int> framesForTrackingFailure;
 		vector<int> framesForRingHitting;
+		vector<int> framesForTrackingReinit;
 		Picking()
 		{
 			startFrame = 0;
@@ -52,15 +55,17 @@ struct Activity
 			trackingData.clear();
 			framesForTrackingFailure.clear();
 			framesForRingHitting.clear();
+			framesForTrackingReinit.clear();
 		}
 	};
 	struct Moving
 	{
 		int startFrame, endFrame, from_peg, to_peg;
 		vector<pair<int, int> > hitting;
-		vector<pair<int, pair<int, int>> > trackingData;
+		vector<pair<int, pair<double, double> > > trackingData;
 		vector<int> framesForTrackingFailure;
 		vector<int> framesForRingHitting;
+		vector<int> framesForTrackingReinit;
 		Moving()
 		{
 			startFrame = 0;
@@ -78,6 +83,7 @@ struct Activity
 			trackingData.clear();
 			framesForTrackingFailure.clear();
 			framesForRingHitting.clear();
+			framesForTrackingReinit.clear();
 		}
 	};
 
@@ -142,7 +148,6 @@ struct Result
 	
 	struct WavyMotion
 	{
-		
 		vector<pair<pair<int, int>, int> > NoFramesMoving; //               to,  from, No of frames  
 		vector<pair<pair<int, int>, double> > trackingMean;//               to,  from, trackingResult  
 		double wavyMotionScore;
@@ -163,7 +168,7 @@ struct Result
 
 	struct RingHitting_wrongPlacement
 	{
-		vector<string> frameRingHitting;
+		vector<pair<string, int> > frameRingHitting;  // activity , frame no
 		double ringHittingScore;
 		RingHitting_wrongPlacement()
 		{
@@ -179,7 +184,7 @@ struct Result
 
 	struct suddenMovement
 	{
-		vector<int> frameTrackingFailed;
+		vector<pair<string, int> > frameTrackingFailed;
 		double suddenMovementScore;
 		suddenMovement()
 		{
@@ -196,6 +201,7 @@ struct Result
 	struct wrongMoves
 	{
 		vector<pair<int, int> > rightMoves;
+		vector<pair<int, int> > wrong_moves;
 		double wrongMovesScore;
 		wrongMoves()
 		{
@@ -208,8 +214,8 @@ struct Result
 			rightMoves.push_back(make_pair(3, 6));
 			rightMoves.push_back(make_pair(0, 9));
 
-			rightMoves.push_back(make_pair(9, 5));
-			rightMoves.push_back(make_pair(6, 2));
+			rightMoves.push_back(make_pair(9, 2));
+			rightMoves.push_back(make_pair(6, 5)); 
 			rightMoves.push_back(make_pair(10, 1));
 			rightMoves.push_back(make_pair(7, 4));
 			rightMoves.push_back(make_pair(11, 0));
@@ -227,8 +233,8 @@ struct Result
 			rightMoves.push_back(make_pair(3, 6));
 			rightMoves.push_back(make_pair(0, 9));
 
-			rightMoves.push_back(make_pair(9, 5));
-			rightMoves.push_back(make_pair(6, 2));
+			rightMoves.push_back(make_pair(9, 2));
+			rightMoves.push_back(make_pair(6, 5));
 			rightMoves.push_back(make_pair(10, 1));
 			rightMoves.push_back(make_pair(7, 4));
 			rightMoves.push_back(make_pair(11, 0));
@@ -238,6 +244,7 @@ struct Result
 	struct No_Activity
 	{
 		int no_frames;
+		vector<vector<pair <double, double > > > trackingData;
 		double trackingScore;
 		No_Activity()
 		{
@@ -248,6 +255,7 @@ struct Result
 		{
 			no_frames = 0;
 			trackingScore = 0;
+			trackingData.clear();
 		}
 	};
 

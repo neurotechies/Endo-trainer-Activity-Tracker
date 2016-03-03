@@ -1,3 +1,0 @@
-This is the matrix: 
-23	46
-56	67

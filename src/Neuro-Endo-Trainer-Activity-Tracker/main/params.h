@@ -1,46 +1,94 @@
 #ifndef PARAMS_Included
 #define PARAMS_Included
-
-#define PEGBOUNDINGBOX_X   160
-#define PEGBOUNDINGBOX_Y    240
-#define PEGBOUNDINGBOX_WIDTH  830
-#define PEGBOUNDINGBOX_HEIGHT  550
-#define PEGSATURATION_MINVALUE  120
-#define MIN_PEG_SIZE  25
-#define HUE_THRESHVAL_RING 20.0
-#define STATIONARY  "stationary"
-#define STABLE_COUNT 5
-#define  IMACQ_IMGS 0 
-#define  IMACQ_CAM 1 
-#define  IMACQ_VID 2 
-#define  IMACQ_LIVESIM 3
-#define  IMACQ_STREAM 4
-#define THRESHOLD 0.5
-#define LEARNING_ENABLED 1
-#define SHOW_OUTPUT 1
-#define SHOW_NOT_CONFIDENT 1
-#define SHOW_COLOR_IMAGE 0
-#define SHOW_FOREGROUND 0
-#define TLD_WITH_TRACKER_ONLY 0
-#define STATIONARY_FRAME_COUNT 15
-#define CONSECUTIVE_FRAME_COUNT 8
-#define NO_OF_IMAGES_HITTING_DETECTION 10
-#define HITTING_THRESHOLD 30
+#include <string>
+using namespace std;
 
 
 
-#define SEED 0
+class params
+{
+public:
+	int PEGBOUNDINGBOX_X;
+	int PEGBOUNDINGBOX_Y;
+	int PEGBOUNDINGBOX_WIDTH;
+	int PEGBOUNDINGBOX_HEIGHT;
+	int PEGSATURATION_MINVALUE;
+	int MIN_PEG_SIZE;
+	double HUE_THRESHVAL_RING;
+	string stationary; 
+	int STABLE_COUNT;
+	int IMACQ_IMGS;
+	int IMACQ_CAM;
+	int IMACQ_VID;
+	int IMACQ_LIVESIM;
+	int IMACQ_STREAM;
+	double THRESHOLD;
+	int LEARNING_ENABLED;
+	int SHOW_OUTPUT;
+	int SHOW_NOT_CONFIDENT;
+	int SHOW_COLOR_IMAGE;
+	int SHOW_FOREGROUND;
+	int TLD_WITH_TRACKER_ONLY;
+	int STATIONARY_FRAME_COUNT;
+	int CONSECUTIVE_FRAME_COUNT;
+	int NO_OF_IMAGES_HITTING_DETECTION;
+	int HITTING_THRESHOLD;
+	int SEED;
+	int LOAD_MODEL;
+	int EXPORT_MODEL_AFTER_RUN;
+	int SAVE_OUTPUT;
+	string MODEL_PATH;
+	string IMACQ_VIDEO_PATH;
+	string PRINT_RESULT_FILE;
+	string SAVE_DIRECTORY;
+	string MODEL_EXPORT_FILE;
+	bool initDone;
+public:
 
-#define LOAD_MODEL 0
-#define EXPORT_MODEL_AFTER_RUN 0
-#define SAVE_OUTPUT 1
+	params(){
+		initDone = false;
+	}
+	~params(){}
+	void init(FileStorage &fs)
+	{
+		PEGBOUNDINGBOX_X = (int)fs["PEGBOUNDINGBOX_X"];
+		PEGBOUNDINGBOX_Y = (int)fs["PEGBOUNDINGBOX_Y"];
+		PEGBOUNDINGBOX_WIDTH = (int)fs["PEGBOUNDINGBOX_WIDTH"];
+		PEGBOUNDINGBOX_HEIGHT = (int)fs["PEGBOUNDINGBOX_HEIGHT"];
+		PEGSATURATION_MINVALUE = (int)fs["PEGSATURATION_MINVALUE"];
+		MIN_PEG_SIZE = (int)fs["MIN_PEG_SIZE"];
+		HUE_THRESHVAL_RING = (double)fs["HUE_THRESHVAL_RING"];
+		stationary = (string)fs["STATIONARY"];
+		STABLE_COUNT = (int)fs["STABLE_COUNT"];
+		IMACQ_IMGS = (int)fs["IMACQ_IMGS"];
+		IMACQ_CAM = (int)fs["IMACQ_CAM"];
+		IMACQ_VID = (int)fs["IMACQ_VID"];
+		IMACQ_LIVESIM = (int)fs["IMACQ_LIVESIM"];
+		IMACQ_STREAM = (int)fs["IMACQ_STREAM"];
+		THRESHOLD = (double)fs["THRESHOLD"];
+		LEARNING_ENABLED = (int)fs["LEARNING_ENABLED"];
+		SHOW_OUTPUT = (int)fs["SHOW_OUTPUT"];
+		SHOW_NOT_CONFIDENT = (int)fs["SHOW_NOT_CONFIDENT"];
+		SHOW_COLOR_IMAGE = (int)fs["SHOW_COLOR_IMAGE"];
+		SHOW_FOREGROUND = (int)fs["SHOW_FOREGROUND"];
+		TLD_WITH_TRACKER_ONLY = (int)fs["TLD_WITH_TRACKER_ONLY"];
+		STATIONARY_FRAME_COUNT = (int)fs["STATIONARY_FRAME_COUNT"];
+		CONSECUTIVE_FRAME_COUNT = (int)fs["CONSECUTIVE_FRAME_COUNT"];
+		NO_OF_IMAGES_HITTING_DETECTION = (int)fs["NO_OF_IMAGES_HITTING_DETECTION"];
+		HITTING_THRESHOLD = (int)fs["HITTING_THRESHOLD"];
+		SEED = (int)fs["SEED"];
+		LOAD_MODEL = (int)fs["LOAD_MODEL"];
+		EXPORT_MODEL_AFTER_RUN = (int)fs["EXPORT_MODEL_AFTER_RUN"];
+		SAVE_OUTPUT = (int)fs["SAVE_OUTPUT"];
+		MODEL_PATH = (string)fs["MODEL_PATH"];
+		IMACQ_VIDEO_PATH = (string)fs["IMACQ_VIDEO_PATH"];
+		PRINT_RESULT_FILE = (string)fs["PRINT_RESULT_FILE"];
+		SAVE_DIRECTORY = (string)fs["SAVE_DIRECTORY"];
+		MODEL_EXPORT_FILE = (string)fs["MODEL_EXPORT_FILE"];
+		initDone = true;
+	}
+};
 
-#define MODEL_PATH "D:/Official/Programs/endo_tracking/opentld/OpenTLD/Result/model_DrAndre_2_0_Deg_ST_Aux"
-#define  IMACQ_VIDEO_PATH  "E:/data/Endo-trainer/DrMarshal_2_0_Deg_ST_Aux.avi"
-//#define  PRINT_RESULT_FILE "D:/Official/Programs/endo_tracking/opentld/OpenTLD/Result/Results_DrAnton_1_0_Deg_ST_Aux.txt"
-#define  PRINT_RESULT_FILE NULL
-//#define SAVE_DIRECTORY "D:/Official/Programs/endo_tracking/opentld/OpenTLD/Result/Results_DrAnton_1_0_Deg_ST_Aux.txt"
-#define SAVE_DIRECTORY NULL
-#define MODEL_EXPORT_FILE "D:/Official/Programs/endo_tracking/opentld/OpenTLD/Result/test"
+
 
 #endif

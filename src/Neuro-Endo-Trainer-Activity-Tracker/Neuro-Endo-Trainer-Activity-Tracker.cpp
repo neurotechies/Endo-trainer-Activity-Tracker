@@ -29,13 +29,29 @@ using nets::Gui;
 
 int main(int argc, char **argv)
 {
+	if (argc != 2)
+	{
+		cout <<  "Please provide the config file \n";
+		return 0;
+	}
+	// Read the config file
+	string filename = argv[1];
+	FileStorage fs;
+	fs.open(filename, FileStorage::READ);
+
+
     Main *main = new Main();
     ImAcq *v = imAcqAlloc();
     Gui *gui = new Gui();
 
+	main->parameters.init(fs);
+	fs.release();
+
+	main->init();
+
     // get the path of the video file
-	v->method = IMACQ_VID;
-	v->imgPath = IMACQ_VIDEO_PATH;
+	v->method = main->parameters.IMACQ_VID;
+	v->imgPath = main->parameters.IMACQ_VIDEO_PATH.c_str();
 
 	main->gui = gui;
     main->imAcq = v;
@@ -56,6 +72,5 @@ int main(int argc, char **argv)
     main = NULL;
     delete gui;
     gui = NULL;
-
     return EXIT_SUCCESS;
 }

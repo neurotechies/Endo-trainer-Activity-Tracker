@@ -450,7 +450,7 @@ void TLD::learn()
 
     detectorCascade->nnClassifier->learn(patches);
 
-    cout << "NN has now " << detectorCascade->nnClassifier->truePositives->size() << " positives and " << detectorCascade->nnClassifier->falsePositives->size() << " negatives.\n";
+    //cout << "NN has now " << detectorCascade->nnClassifier->truePositives->size() << " positives and " << detectorCascade->nnClassifier->falsePositives->size() << " negatives.\n";
 
     delete[] overlap;
 }
@@ -797,7 +797,7 @@ void TLD::learnPatch(const Mat &img, cv::Rect *bb)
 
 	detectorCascade->nnClassifier->learn(patches);
 
-	cout << "NN has now " << detectorCascade->nnClassifier->truePositives->size() << " positives and " << detectorCascade->nnClassifier->falsePositives->size() << " negatives.\n";
+	//cout << "NN has now " << detectorCascade->nnClassifier->truePositives->size() << " positives and " << detectorCascade->nnClassifier->falsePositives->size() << " negatives.\n";
 
 	delete[] overlap;
 }
