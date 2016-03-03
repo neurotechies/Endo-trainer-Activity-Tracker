@@ -918,7 +918,147 @@ void Main::displayResult(const Result &)
 }
 void Main::writeResult(const Result &)
 {
+	FILE *resultsFile = NULL;
+	if (printResults != NULL)
+	{
+		resultsFile = fopen(printResults, "w");
+		if (!resultsFile)
+		{
+			fprintf(stderr, "Error: Unable to create results-file \"%s\"\n", printResults);
+			exit(-1);
+		}
+	}
 
+	string filename = util::filenameFromPath(imAcq->imgPath);
+	string text = "Scoring sheet for the " + filename + "\n";
+	fprintf(resultsFile, text.c_str());
+
+	text = "------------------------------------\n";
+	fprintf(resultsFile, text.c_str());
+
+	text = "1. Hitting\n";
+	fprintf(resultsFile, text.c_str());
+	if (result.hitting.hittingData.size())
+	{
+		for (int i = 0; i < result.hitting.hittingData.size(); ++i)
+		{
+			text = "Frame No -> " + SSTR(result.hitting.hittingData[i].first) + ". with intensity-> " + SSTR(result.hitting.hittingData[i].second) + "\n";
+			fprintf(resultsFile, text.c_str());
+		}
+		text = "Hitting Score -> " + SSTR(result.hitting.hittingScore) + "\n";
+		fprintf(resultsFile, text.c_str());
+	}
+	else
+	{
+		text = "No hitting during the whole activity\n";
+		fprintf(resultsFile, text.c_str());
+		text = "Hitting score -> " + SSTR(result.hitting.hittingScore) + "\n";
+		fprintf(resultsFile, text.c_str());
+	}
+
+
+	text = "2. Grasping\n";
+	fprintf(resultsFile, text.c_str());
+	if (result.grasping.NoFramesPicking.size())
+	{
+		for (int i = 0; i < result.grasping.NoFramesPicking.size(); ++i)
+		{
+			text = "Peg No(" + SSTR(result.grasping.NoFramesPicking[i].first) + ") no of frames-> " + SSTR(result.grasping.NoFramesPicking[i].second) + "\n";
+			fprintf(resultsFile, text.c_str());
+		}
+		text = "Grasping score -> " + SSTR(result.grasping.grapspingScore) + "\n";
+		fprintf(resultsFile, text.c_str());
+	}
+
+	text = "3. Wavy motion\n";
+	fprintf(resultsFile, text.c_str());
+	if (result.wavymotion.NoFramesMoving.size())
+	{
+		for (int i = 0; i < result.wavymotion.NoFramesMoving.size(); ++i)
+		{
+			text = "Peg(" + SSTR(result.wavymotion.NoFramesMoving[i].first.first) + "," + SSTR(result.wavymotion.NoFramesMoving[i].first.second) + ") Number of frames-> " + SSTR(result.wavymotion.NoFramesMoving[i].second) + "\n";
+			fprintf(resultsFile, text.c_str());
+		}
+		text = "Wavy motion score -> " + SSTR(result.wavymotion.wavyMotionScore) + "\n";
+		fprintf(resultsFile, text.c_str());
+	}
+
+
+
+	text = "4. Ring hitting or wrong way of placement of the ring\n";
+	fprintf(resultsFile, text.c_str());
+	if (result.ringHItting.frameRingHitting.size())
+	{
+		for (int i = 0; i < result.ringHItting.frameRingHitting.size(); ++i)
+		{
+			text = "Activity(\"" + result.ringHItting.frameRingHitting[i].first + "\") Frame No-> " + SSTR(result.ringHItting.frameRingHitting[i].second) + "\n";
+			fprintf(resultsFile, text.c_str());
+		}
+		text = "Penalized with the negative score of-> " + SSTR(result.ringHItting.ringHittingScore) + "\n";
+		fprintf(resultsFile, text.c_str());
+	}
+	else
+	{
+		text = "No negative penalty for this event \n";
+		fprintf(resultsFile, text.c_str());
+	}
+
+	text = "4. Sudden movement\n";
+	fprintf(resultsFile, text.c_str());
+	if (result.suddenmovement.frameTrackingFailed.size())
+	{
+		for (int i = 0; i < result.suddenmovement.frameTrackingFailed.size(); ++i)
+		{
+			text = "Activity(\"" + result.suddenmovement.frameTrackingFailed[i].first + "\") Frame No-> " + SSTR(result.suddenmovement.frameTrackingFailed[i].second) + "\n";
+			fprintf(resultsFile, text.c_str());
+		}
+		text = "Penalized with the negative score of-> " + SSTR(result.ringHItting.ringHittingScore) + "\n";
+		fprintf(resultsFile, text.c_str());
+	}
+	else
+	{
+		text = "No negative penalty for this event \n";
+		fprintf(resultsFile, text.c_str());
+	}
+
+
+	text = "5. Wrong Moves \n";
+	fprintf(resultsFile, text.c_str());
+	if (result.wrongmoves.wrong_moves.size())
+	{
+		for (int i = 0; i < result.wrongmoves.wrong_moves.size(); ++i)
+		{
+			text = "Wrong moves detected from peg -> " + SSTR(result.wrongmoves.wrong_moves[i].first) + " to peg -> " + SSTR(result.wrongmoves.wrong_moves[i].second) + "\n";
+			fprintf(resultsFile, text.c_str());
+		}
+		text = "Penalized with the negative score of-> " + SSTR(result.ringHItting.ringHittingScore) + "\n";
+		fprintf(resultsFile, text.c_str());
+	}
+	else
+	{
+		text = "No negative penalty for this event \n";
+		fprintf(resultsFile, text.c_str());
+	}
+
+	text = "6. Wasted movements";
+	fprintf(resultsFile, text.c_str());
+	text = "Total no of frames in the No-Activity -> " + SSTR(result.noactivity.no_frames) + "\n";
+	fprintf(resultsFile, text.c_str());
+	text = "Penalized with the negative score of-> " + SSTR(result.noactivity.trackingScore) + "\n";
+	fprintf(resultsFile, text.c_str());
+
+
+	text = "\n\nTotal Score ->" + SSTR(result.totalScore) + "\n";
+	fprintf(resultsFile, text.c_str());
+
+
+
+
+
+	if (resultsFile)
+	{
+		fclose(resultsFile);
+	}
 }
 
 void Main::computeResult(const vector<Activity> &scorer)
@@ -1089,16 +1229,7 @@ void Main::run()
 	_pegBox.roi_update(roi_rings);
 
 
-	FILE *resultsFile = NULL;
-	if (printResults != NULL)
-	{
-		resultsFile = fopen(printResults, "w");
-		if (!resultsFile)
-		{
-			fprintf(stderr, "Error: Unable to create results-file \"%s\"\n", printResults);
-			exit(-1);
-		}
-	}
+
 
 	bool reuseFrameOnce = false;
 
@@ -1112,25 +1243,7 @@ void Main::run()
 	prv_frame = Mat(img1);
 	//start processing the frames
 
-	if (printResults != NULL)
-	{
-		// 
-		fprintf(resultsFile, "Output-File for the video -> %s\n", imAcq->imgPath);
-		fprintf(resultsFile, "Locations and code of the Pegs (x,y,width,height,code)\n");
-		int pp = 0;
-		for (int i = 0; i < _pegBox.pegs.size(); ++i)
-		{
-			fprintf(resultsFile, "peg %d ->  %d  %d  %d  %d  %d\n", pp + 1,
-				_pegBox.pegs[i].roi.x,
-				_pegBox.pegs[i].roi.y,
-				_pegBox.pegs[i].roi.width,
-				_pegBox.pegs[i].roi.height,
-				_pegBox.pegs[i].code);
 
-		}
-		pp = 0;
-		fprintf(resultsFile, "\n\nFrame-No,      Ring1-Status,      Ring1-Code,      Ring2-Status,      Ring2-Code,      Ring3-Status,      Ring3-Code,      Ring4-Status,      Ring4-Code,      Ring5-Status,      Ring5-Code,      Ring6-Status,      Ring6-Code,      Hitting-Detection-Output,      Tracking-Output,      Tracking-Output-Confidence\n");
-	}
 	gui->showImageByDestroyingWindow(img);
 	while (imAcqHasMoreFrames(imAcq))
 	{
@@ -1196,12 +1309,6 @@ void Main::run()
 		if (frameHitData.size() > 30)
 		{
 			prv_frame = curr_frame.clone();
-			if (printResults != NULL)
-			{
-				string p = "Hiitting Detected";
-				fprintf(resultsFile, "%d  %s\n", imAcq->currentFrame - 1, p.c_str());
-			}
-			//continue;
 		}
 
 		// Replace the previous with current frame and reset frameHitData
@@ -1392,32 +1499,6 @@ void Main::run()
 			for (int i  = 0; i < _ringBox.rings.size(); ++i)
 			{
 				vv.push_back(make_pair(_ringBox.rings[i].status, _ringBox.rings[i].code_pos));
-			}
-			if (tld->currBB != NULL)
-			{
-				fprintf(resultsFile, "%d  %s  %d  %s  %d  %s  %d  %s  %d  %s  %d  %s  %d  %d  %.2d  %.2d  %.2d  %.2d  %lf\n",
-					imAcq->currentFrame - 1,
-					vv[0].first.c_str(), vv[0].second,
-					vv[1].first.c_str(), vv[1].second,
-					vv[2].first.c_str(), vv[2].second,
-					vv[3].first.c_str(), vv[3].second,
-					vv[4].first.c_str(), vv[4].second,
-					vv[5].first.c_str(), vv[5].second,
-					frameHitData.size(),
-					tld->currBB->x, tld->currBB->y, tld->currBB->width, tld->currBB->height,
-					tld->currConf);
-			}
-			else
-			{
-				fprintf(resultsFile, "%d  %s  %d  %s  %d  %s  %d  %s  %d  %s  %d  %s  %d  %d  -1  -1  -1  -1  -1 \n",
-					imAcq->currentFrame - 1,
-					vv[0].first.c_str(), vv[0].second,
-					vv[1].first.c_str(), vv[1].second,
-					vv[2].first.c_str(), vv[2].second,
-					vv[3].first.c_str(), vv[3].second,
-					vv[4].first.c_str(), vv[4].second,
-					vv[5].first.c_str(), vv[5].second,
-					frameHitData.size());
 			}
 		}
 		double toc = (cvGetTickCount() - tic) / cvGetTickFrequency();
@@ -1612,10 +1693,5 @@ void Main::run()
 	if (exportModelAfterRun)
 	{
 		tld->writeToFile(modelExportFile);
-	}
-
-	if (resultsFile)
-	{
-		fclose(resultsFile);
 	}
 }
