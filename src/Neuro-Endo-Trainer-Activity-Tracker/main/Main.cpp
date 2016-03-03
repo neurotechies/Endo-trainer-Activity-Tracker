@@ -586,6 +586,8 @@ void Main::initializeRingBox(IplImage* img)
 }
 void Main::testPrintScorer(const vector<Activity> &scorer)
 {
+	// hardcoded file; please change the path
+
 	FILE *resultsFile = fopen("E:/data/Endo-trainer/Result/DrAndre_1_0_Deg_ST_Aux_test.txt", "w");
 	fprintf(resultsFile, "Output-File for the video -> %s\n", imAcq->imgPath);
 	for (int i = 0; i < scorer.size(); ++i)
@@ -1187,6 +1189,12 @@ void Main::computeResult(const vector<Activity> &scorer)
 			}
 		}
 	}
+
+	// Process the hitting data
+
+
+
+
 }
 
 void Main::run()
@@ -1679,6 +1687,8 @@ void Main::run()
 	img = NULL;
 	gui->destroy();
 
+	// print the result of scorer
+	testPrintScorer(scorer);
 	// compute the result
 	computeResult(scorer);
 
