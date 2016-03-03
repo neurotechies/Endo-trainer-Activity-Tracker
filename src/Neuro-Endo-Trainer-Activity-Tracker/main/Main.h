@@ -132,8 +132,8 @@ public:
 		element[1] = getStructuringElement(MORPH_ELLIPSE, Size(8, 8), Point(0, 0));
 		element[2] = getStructuringElement(MORPH_ELLIPSE, Size(3, 3), Point(0, 0));
 		element[3] = getStructuringElement(MORPH_ELLIPSE, Size(3, 3), Point(0, 0));
-		printResults = parameters.PRINT_RESULT_FILE.c_str();
-		saveDir = parameters.SAVE_DIRECTORY.c_str();
+		printResults = parameters.PRINT_RESULT_FILE == "" ? NULL : parameters.PRINT_RESULT_FILE.c_str();
+		saveDir = parameters.SAVE_DIRECTORY == "" ? NULL : parameters.SAVE_DIRECTORY.c_str();
 		threshold = parameters.THRESHOLD;
 		showForeground = parameters.SHOW_FOREGROUND;
 		reinit = 0;
