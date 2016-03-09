@@ -782,7 +782,7 @@ void Main::displayResult(const Result &)
 				ycursor += 15;
 				putText(drawing, text, Point2f(xcursor + 10, ycursor), FONT_HERSHEY_COMPLEX_SMALL, 0.7, Scalar(0, 255, 0));
 			}
-			text = "Grasping score -> (" + SSTR(result.grasping.grapspingScore) + "+" + SSTR(result.grasping.grapspingTrackingScore) + ")=" + SSTR(result.grasping.grapspingTrackingScore + result.grasping.grapspingScore) + "/10.0";
+			text = "Grasping score -> " + SSTR(result.grasping.grapspingScore) + "/5.0";
 			ycursor += 15;
 			putText(drawing, text, Point2f(xcursor + 20, ycursor), FONT_HERSHEY_COMPLEX_SMALL, 0.7, Scalar(0, 0, 255));
 		}
@@ -811,8 +811,7 @@ void Main::displayResult(const Result &)
 				ycursor += 15;
 				putText(drawing, text, Point2f(xcursor + 10, ycursor), FONT_HERSHEY_COMPLEX_SMALL, 0.7, Scalar(0, 255, 0));
 			}
-			text = "Wavy motion score -> (" + SSTR(result.wavymotion.wavyMotionScore) + "+" + SSTR(result.wavymotion.wavyMotionTrackingScore) + ")=" + SSTR(result.wavymotion.wavyMotionScore + result.wavymotion.wavyMotionTrackingScore) + "/10.0";
-
+			text = "Wavy motion score -> " + SSTR(result.wavymotion.wavyMotionScore) + "/5.0";
 			ycursor += 15;
 			putText(drawing, text, Point2f(xcursor + 20, ycursor), FONT_HERSHEY_COMPLEX_SMALL, 0.7, Scalar(0, 0, 255));
 		}
@@ -949,8 +948,7 @@ void Main::displayResult(const Result &)
 		text = "Total no of frames in the No-Activity -> " + SSTR(result.noactivity.no_frames);
 		ycursor += 15;
 		putText(drawing, text, Point2f(xcursor + 10, ycursor), FONT_HERSHEY_COMPLEX_SMALL, 0.7, Scalar(0, 255, 0));
-		text = "Wasted movements score -> (" + SSTR(result.noactivity.trackingScore) + "+" + SSTR(result.noactivity.trackingScore2) + ")=" + SSTR(result.noactivity.trackingScore + result.noactivity.trackingScore2) + "/10.0";
-
+		text = "Wasted movements score ->" + SSTR(result.noactivity.trackingScore) + "/5.0";
 		ycursor += 15;
 		putText(drawing, text, Point2f(xcursor + 20, ycursor), FONT_HERSHEY_COMPLEX_SMALL, 0.7, Scalar(0, 0, 255));
 
@@ -960,9 +958,10 @@ void Main::displayResult(const Result &)
 			ycursor = 75;
 		}
 
-		text = "Total Score ->" + SSTR(result.totalScore) + "/50.0";
+		text = "Total Score ->" + SSTR(result.totalScore) + "/35.0";
 		ycursor += 40;
 		putText(drawing, text, Point2f(xcursor, ycursor), FONT_HERSHEY_SCRIPT_COMPLEX, 1.1, Scalar(255, 255, 255));
+
 	}
 	else
 	{
@@ -973,9 +972,12 @@ void Main::displayResult(const Result &)
 		ycursor += 20;
 		putText(drawing, text, Point2f(xcursor, ycursor), FONT_HERSHEY_COMPLEX_SMALL, 0.9, Scalar(0, 255, 0));
 	}
+
+	
+	
 	
 	imshow("Result for the " + filename, drawing);
-	char ch = waitKey(0);
+	waitKey(0);
 
 
 }
@@ -1031,7 +1033,7 @@ void Main::writeResult(const Result &)
 				text = "Peg No(" + SSTR(result.grasping.NoFramesPicking[i].first) + ") no of frames-> " + SSTR(result.grasping.NoFramesPicking[i].second) + "\n";
 				fprintf(resultsFile, text.c_str());
 			}
-			text = "Grasping score -> (" + SSTR(result.grasping.grapspingScore) + "+" + SSTR(result.grasping.grapspingTrackingScore) + ")=" + SSTR(result.grasping.grapspingScore + result.grasping.grapspingTrackingScore) + "/10.0";
+			text = "Grasping score -> " + SSTR(result.grasping.grapspingScore) + "/5.0" + "\n";
 			fprintf(resultsFile, text.c_str());
 		}
 
@@ -1044,8 +1046,7 @@ void Main::writeResult(const Result &)
 				text = "Peg(" + SSTR(result.wavymotion.NoFramesMoving[i].first.first) + "," + SSTR(result.wavymotion.NoFramesMoving[i].first.second) + ") Number of frames-> " + SSTR(result.wavymotion.NoFramesMoving[i].second) + "\n";
 				fprintf(resultsFile, text.c_str());
 			}
-			text = "Wavy motion score -> (" + SSTR(result.wavymotion.wavyMotionScore) + "+" + SSTR(result.wavymotion.wavyMotionTrackingScore) + ")=" + SSTR(result.wavymotion.wavyMotionScore + result.wavymotion.wavyMotionTrackingScore) + "/10.0";
-
+			text = "Wavy motion score -> " + SSTR(result.wavymotion.wavyMotionScore) + "/5.0" + "\n";
 			fprintf(resultsFile, text.c_str());
 		}
 
@@ -1110,11 +1111,9 @@ void Main::writeResult(const Result &)
 		fprintf(resultsFile, text.c_str());
 		text = "Total no of frames in the No-Activity -> " + SSTR(result.noactivity.no_frames) + "\n";
 		fprintf(resultsFile, text.c_str());
-		text = "Wasted movements score ->" + SSTR(result.noactivity.trackingScore + result.noactivity.trackingScore2) + "/10.0" + "\n";
-		text = "Wasted movements score -> (" + SSTR(result.noactivity.trackingScore) + "+" + SSTR(result.noactivity.trackingScore2) + ")=" + SSTR(result.noactivity.trackingScore + result.noactivity.trackingScore2) + "/10.0";
-
+		text = "Wasted movements score ->" + SSTR(result.noactivity.trackingScore) + "/5.0" +"\n";
 		fprintf(resultsFile, text.c_str());
-		text = "\n\nTotal Score ->" + SSTR(result.totalScore) + "/50.0";
+		text = "\n\nTotal Score ->" + SSTR(result.totalScore) + "/35.0";
 		fprintf(resultsFile, text.c_str());
 	}
 	else
@@ -1541,116 +1540,18 @@ void Main::processTrackingData()
 {
 	double varX = 0;
 	double varY = 0;
-	double arcLength = 0;
-	double curvatureMax = 0;
-	int curvatureMaxCount = 0;
 	vector<pair <double, double > > x;
 	vector<pair <double, double > > dx;
 	vector<pair <double, double > > ddx;
-	vector<double> Curvature;
-	double scoreNoActivity = 0;
-	double scorePicking = 0;
-	double scoreMoving = 0;
-
 	for (int i = 0; i < result.noactivity.trackingData.size(); ++i)
 	{
 		vector<pair <double, double > > data = result.noactivity.trackingData[i];
 		util::normalize2D(data, x);
 		util::diff2D(x, dx);
 		util::diff2D(dx, ddx);
-		util::var2D(dx, &varX, &varY);
-		util::curvature(dx, ddx, Curvature);
-		util::curvatureMaxnCount(Curvature, &curvatureMax, &curvatureMaxCount);
-		util::arclength(dx, &arcLength);		
-		if (curvatureMax > 450 && curvatureMaxCount > 2 && arcLength > 6 && varX > 0.001 && varY > 0.001)
-		{
-			scoreNoActivity += 0.0;
-		}
-		else if ((curvatureMax > 450 && curvatureMaxCount > 2 && arcLength > 6) || 
-			(curvatureMax > 450 && curvatureMaxCount > 2 && varX > 0.001 && varY > 0.001)||
-			(arcLength > 6 && varX > 0.001 && varY > 0.001))
-		{
-			scoreNoActivity += 2.0;
-		}
-		else if ((curvatureMax > 450 && curvatureMaxCount < 2) || (arcLength > 6) || (varX > 0.001 && varY > 0.001))
-		{
-			scoreNoActivity += 4.0;
-		}
-		else
-		{
-			scoreNoActivity += 5.0;
-		}
+
+
 	}
-	scoreNoActivity /= result.noactivity.trackingData.size();
-
-
-	for (int i = 0; i < result.grasping.trackingData.size(); ++i)
-	{
-		vector<pair <double, double > > data = result.grasping.trackingData[i];
-		util::normalize2D(data, x);
-		util::diff2D(x, dx);
-		util::diff2D(dx, ddx);
-		util::var2D(dx, &varX, &varY);
-		util::curvature(dx, ddx, Curvature);
-		util::curvatureMaxnCount(Curvature, &curvatureMax, &curvatureMaxCount);
-		util::arclength(dx, &arcLength);
-		if (curvatureMax > 320 && curvatureMaxCount > 2 && arcLength > 5 && varX > 0.002 && varY > 0.001)
-		{
-			scorePicking += 0.0;
-		}
-		else if ((curvatureMax > 320 && curvatureMaxCount > 2 && arcLength > 5) ||
-			(curvatureMax > 320 && curvatureMaxCount > 2 && varX > 0.002 && varY > 0.001) ||
-			(arcLength > 5 && varX > 0.002 && varY > 0.001))
-		{
-			scorePicking += 2.0;
-		}
-		else if ((curvatureMax > 320 && curvatureMaxCount < 2) || (arcLength > 5) || (varX > 0.002 && varY > 0.001))
-		{
-			scorePicking += 4.0;
-		}
-		else
-		{
-			scorePicking += 5.0;
-		}
-	}
-	scorePicking /= result.grasping.trackingData.size();
-
-
-	for (int i = 0; i < result.wavymotion.trackingData.size(); ++i)
-	{
-		vector<pair <double, double > > data = result.wavymotion.trackingData[i];
-		util::normalize2D(data, x);
-		util::diff2D(x, dx);
-		util::diff2D(dx, ddx);
-		util::var2D(dx, &varX, &varY);
-		util::curvature(dx, ddx, Curvature);
-		util::curvatureMaxnCount(Curvature, &curvatureMax, &curvatureMaxCount);
-		util::arclength(dx, &arcLength);
-		if (curvatureMax > 450 && curvatureMaxCount > 2 && arcLength > 6 && varX > 0.0001 && varY > 0.0001)
-		{
-			scoreMoving += 0.0;
-		}
-		else if ((curvatureMax > 450 && curvatureMaxCount > 2 && arcLength > 6) ||
-			(curvatureMax > 450 && curvatureMaxCount > 2 && varX > 0.0001 && varY > 0.0001) ||
-			(arcLength > 6 && varX > 0.0001 && varY > 0.0001))
-		{
-			scoreMoving += 2.0;
-		}
-		else if ((curvatureMax > 450 && curvatureMaxCount < 2) || (arcLength > 6) || (varX > 0.0001 && varY > 0.0001))
-		{
-			scoreMoving += 4.0;
-		}
-		else
-		{
-			scoreMoving += 5.0;
-		}
-	}
-	scoreMoving /= result.wavymotion.trackingData.size();
-
-	// update the score in result struct
-	result.noactivity.trackingScore2 = scoreNoActivity;
-	result.grasping.grapspingTrackingScore = scorePicking;
-	result.wavymotion.wavyMotionTrackingScore = scoreMoving;
 }
 
 void Main::run()

@@ -130,38 +130,46 @@ struct Result
 	struct Grasping
 	{
 		vector<pair <int, int> > NoFramesPicking;
+		vector <vector <pair<double, double> > > trackingData;
 		vector<pair <int, double> > trackingMean;
 		double grapspingScore;
+		double grapspingTrackingScore;
 		Grasping()
 		{
 			NoFramesPicking.clear();
 			trackingMean.clear();
 			grapspingScore = 0;
+			grapspingTrackingScore = 0;
 		}
 		void clear()
 		{
 			NoFramesPicking.clear();
 			trackingMean.clear();
 			grapspingScore = 0;
+			grapspingTrackingScore = 0;
 		}
 	};
 	
 	struct WavyMotion
 	{
-		vector<pair<pair<int, int>, int> > NoFramesMoving; //               to,  from, No of frames  
-		vector<pair<pair<int, int>, double> > trackingMean;//               to,  from, trackingResult  
+		vector<pair<pair<int, int>, int> > NoFramesMoving;     //               to,  from, No of frames  
+		vector <vector <pair<double, double> > > trackingData; //           tracking Data
+		vector<pair<pair<int, int>, double> > trackingMean;    //               to,  from, trackingResult  
 		double wavyMotionScore;
+		double wavyMotionTrackingScore;
 		WavyMotion()
 		{
 			NoFramesMoving.clear();
 			trackingMean.clear();
-			wavyMotionScore = 0;
+			wavyMotionScore = 0; 
+			wavyMotionTrackingScore = 0;
 		}
 		void clear()
 		{
 			NoFramesMoving.clear();
 			trackingMean.clear();
 			wavyMotionScore = 0;
+			wavyMotionTrackingScore = 0;
 		}
 
 	};
@@ -246,15 +254,18 @@ struct Result
 		int no_frames;
 		vector<vector<pair <double, double > > > trackingData;
 		double trackingScore;
+		double trackingScore2;
 		No_Activity()
 		{
 			no_frames = 0;
 			trackingScore = 0;
+			trackingScore2 = 0;
 		}
 		void clear()
 		{
 			no_frames = 0;
 			trackingScore = 0;
+			trackingScore2 = 0;
 			trackingData.clear();
 		}
 	};

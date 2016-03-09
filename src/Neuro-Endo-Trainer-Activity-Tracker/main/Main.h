@@ -184,6 +184,7 @@ public:
 	void displayResult(const Result &);
 	void writeResult(const Result &);
 	void testPrintScorer(const vector<Activity> &scorer);
+	void processTrackingData();
 	
 };
 
