@@ -1265,7 +1265,7 @@ void Main::computeResult(const vector<Activity> &scorer)
 		{
 			result.wavymotion.NoFramesMoving.push_back(make_pair(make_pair(act.m.from_peg, act.m.to_peg), act.no_of_frames));
 
-			// 
+			// wrong move
 			bool wrongMove = true;
 			for (int i = 0; i < result.wrongmoves.rightMoves.size(); ++i)
 			{
@@ -1278,6 +1278,7 @@ void Main::computeResult(const vector<Activity> &scorer)
 			}
 			if (wrongMove)
 			{
+				cout << "I am in wrong move \n";
 				result.wrongmoves.wrong_moves.push_back(make_pair(act.m.from_peg, act.m.to_peg));
 				wrongMove = true;
 			}
