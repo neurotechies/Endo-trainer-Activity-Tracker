@@ -171,8 +171,8 @@ Rect Main::getmovingRingROI(const Mat &curr_frame)
 				curr_frame2.at<Vec3b>(Point(x, y)) = Vec3b(0, 0, 0);
 			}
 		}
-		//imshow("curr_frame2", curr_frame2);
-		//waitKey(0);
+		imshow("curr_frame2", curr_frame2);
+		waitKey(0);
 		pMOG->operator()(curr_frame2, fgMask, 0.5);
 		updateBackgroundModel2 = false;
 		prevmvRingROI = Rect(0, 0, 0, 0);
@@ -218,7 +218,7 @@ Rect Main::getmovingRingROI(const Mat &curr_frame)
 					index = i;
 				}
 			}
-			if (contours[index].size() > 30)
+			if (contours[index].size() > 20)
 			{
 				r = boundingRect(contours[index]);
 			}
@@ -234,7 +234,8 @@ bool Main::activityDetection(const Mat &prev_frame, const Mat &curr_frame, const
 	Mat curr_frame_hsv, fgMaskRing;
 	// Do the ring segmentation of the current frame;
 	cvtColor(curr_frame, curr_frame_hsv, CV_BGR2HSV);
-
+	Mat grey(curr_frame.rows, curr_frame.cols, CV_8UC1);
+	cvtColor(curr_frame, grey, CV_BGR2GRAY);
 
 	mvRingROI = getmovingRingROI(curr_frame);
 
@@ -245,13 +246,15 @@ bool Main::activityDetection(const Mat &prev_frame, const Mat &curr_frame, const
 	double dist1 = sqrt(((p1.x - p2.x)*(p1.x - p2.x)) + ((p1.y - p2.y)*(p1.y - p2.y)));
 
 
-	if (dist1 > 100 & (status == "moving" || status == "picking"))
+	if (dist1 > 150 & (status == "moving" || status == "picking"))
 	{
 		if (firstTimeRingDetection && prevmvRingROI.width > 0 && mvRingROI.width > 0)
 		{
 			// Record this event to penalize the trainee ...
 			updateBackgroundModel2 = true;
 			RingHitting = true;
+			//ForegroundDetector *fg = tld->detectorCascade->foregroundDetector;
+			//fg->bgImg = grey.clone();
 			mvRingROI = getmovingRingROI(curr_frame);
 		}
 	}
@@ -330,7 +333,7 @@ bool Main::activityDetection(const Mat &prev_frame, const Mat &curr_frame, const
 							pickingCount++;
 							updateBackgroundModel = true;
 							cout << "pickingCount  " << pickingCount << endl;
-							if (pickingCount >= 3)
+							if (pickingCount >= 2)
 							{								
 								// Find intersection of moving Ring ROI with the first half and determine which Ring trainee is trying to pick up; then change the code of the ring
 								for (int i = 0; i < _pegBox.pegs.size(); ++i)
@@ -475,6 +478,9 @@ bool Main::activityDetection(const Mat &prev_frame, const Mat &curr_frame, const
 						update__RingStability2 = false;
 						updateBackgroundModel = true;
 						index_peg = i;
+						//uodate background model
+						//ForegroundDetector *fg = tld->detectorCascade->foregroundDetector;
+						//fg->bgImg = grey.clone();
 						break;
 					}
 				}
@@ -587,8 +593,8 @@ void Main::initializeRingBox(IplImage* img)
 void Main::testPrintScorer(const vector<Activity> &scorer)
 {
 	// hardcoded file; please change the path
-
-	FILE *resultsFile = fopen("E:/data/Endo-trainer/Result/DrAndre_1_0_Deg_ST_Aux_test.txt", "w");
+	string filename = string(imAcq->imgPath) + ".txt";
+	FILE *resultsFile = fopen(filename.c_str(), "w");
 	fprintf(resultsFile, "Output-File for the video -> %s\n", imAcq->imgPath);
 	for (int i = 0; i < scorer.size(); ++i)
 	{
@@ -966,7 +972,7 @@ void Main::displayResult(const Result &)
 	}
 	else
 	{
-		text = "All the activitis are not analyzed. There should be atleast 10 ring movements to generate a valid score.";
+		text = "All the activities are not analysed. There should be at least 10 ring movements to generate a valid score.";
 		ycursor = 75;
 		putText(drawing, text, Point2f(xcursor, ycursor), FONT_HERSHEY_COMPLEX_SMALL, 0.9, Scalar(0, 255, 0));
 		text = "Provide the proper video for analysis";
@@ -1119,7 +1125,7 @@ void Main::writeResult(const Result &)
 	}
 	else
 	{
-		text = "All the activitis are not analyzed. There should be atleast 10 ring movements to generate a valid score. \n Provide the proper video for analysis\n";
+		text = "All the activities are not analysed. There should be at least 10 ring movements to generate a valid score.. \n Provide the proper video for analysis\n";
 		fprintf(resultsFile, text.c_str());
 	}
 
@@ -1183,6 +1189,7 @@ void Main::computeResult(const vector<Activity> &scorer)
 			}
 			fullData.clear();
 			data.clear();
+
 			//}
 			// check for ring hitting or wrong placement of the ring
 			if (act.s.framesForRingHitting.size())
@@ -1217,38 +1224,18 @@ void Main::computeResult(const vector<Activity> &scorer)
 			}
 
 			
-			//if (act.m.framesForTrackingFailure.size())
+			//if (act.p.framesForTrackingFailure.size())
 			//{
 			//   ***************  TO BE DONE *******************
 			//}
 			//else
 			//{
-			vector< vector<pair<double, double> > > fullData;
 			vector<pair<double, double> > data;
-			bool update = false;
 			for (int i = 0; i < act.p.trackingData.size(); ++i)
 			{
-				if (act.p.trackingData[i].second.first != -1 && act.p.trackingData[i].second.second != -1)
-				{
-					data.push_back(act.p.trackingData[i].second);
-					update = true;
-				}
-				else
-				{
-					if (update)
-					{
-						fullData.push_back(data);
-						data.clear();
-						update = false;
-					}
-				}
+				data.push_back(act.p.trackingData[i].second);
 			}
-			for (int i = 0; i < fullData.size(); ++i)
-			{
-				if (fullData[i].size() > 20)
-					result.grasping.trackingData.push_back(fullData[i]);
-			}
-			fullData.clear();
+			result.grasping.trackingData.push_back(data);
 			data.clear();
 			//}
 			
@@ -1298,7 +1285,7 @@ void Main::computeResult(const vector<Activity> &scorer)
 			// check for hitting the board
 			if (act.m.hitting.size())
 			{
-				for (int i = 0; i < act.p.hitting.size(); ++i)
+				for (int i = 0; i < act.m.hitting.size(); ++i)
 				{
 					if (act.m.hitting[i].second >= parameters.HITTING_THRESHOLD)
 						result.hitting.hittingData.push_back(make_pair(act.m.hitting[i].first, act.m.hitting[i].second));
@@ -1321,32 +1308,12 @@ void Main::computeResult(const vector<Activity> &scorer)
 			//}
 			//else
 			//{
-			vector< vector<pair<double, double> > > fullData;
 			vector<pair<double, double> > data;
-			bool update = false;
 			for (int i = 0; i < act.m.trackingData.size(); ++i)
 			{
-				if (act.m.trackingData[i].second.first != -1 && act.m.trackingData[i].second.second != -1)
-				{
-					data.push_back(act.m.trackingData[i].second);
-					update = true;
-				}
-				else
-				{
-					if (update)
-					{
-						fullData.push_back(data);
-						data.clear();
-						update = false;
-					}
-				}
+				data.push_back(act.m.trackingData[i].second);
 			}
-			for (int i = 0; i < fullData.size(); ++i)
-			{
-				if (fullData[i].size() > 20)
-					result.wavymotion.trackingData.push_back(fullData[i]);
-			}
-			fullData.clear();
+			result.wavymotion.trackingData.push_back(data);
 			data.clear();
 			//}
 
@@ -1355,7 +1322,7 @@ void Main::computeResult(const vector<Activity> &scorer)
 			{
 				for (int i = 0; i < act.m.framesForTrackingFailure.size(); ++i)
 				{
-					result.suddenmovement.frameTrackingFailed.push_back(make_pair("Picking-Activity", act.m.framesForTrackingFailure[i]));
+					result.suddenmovement.frameTrackingFailed.push_back(make_pair("Moving-Activity", act.m.framesForTrackingFailure[i]));
 				}
 			}
 		}
@@ -1438,7 +1405,11 @@ void Main::computeResult(const vector<Activity> &scorer)
 
 	// 4.0 scoring for the suddent movement
 	result.suddenmovement.suddenMovementScore = 5.0;
-	if (result.suddenmovement.frameTrackingFailed.size() > 0 && result.suddenmovement.frameTrackingFailed.size() <= 5)
+	if (result.suddenmovement.frameTrackingFailed.size() == 0)
+	{
+		result.suddenmovement.suddenMovementScore -= 0.0;
+	}
+	else if (result.suddenmovement.frameTrackingFailed.size() > 0 && result.suddenmovement.frameTrackingFailed.size() <= 5)
 	{
 		result.suddenmovement.suddenMovementScore -= 1.0;
 	}
@@ -1461,7 +1432,11 @@ void Main::computeResult(const vector<Activity> &scorer)
 	
 	// 5.0 scoring for the ring hitting or wrong placement of the ring
 	result.ringHItting.ringHittingScore = 5.0;
-	if (result.ringHItting.frameRingHitting.size() > 0 && result.ringHItting.frameRingHitting.size() <= 10)
+	if (result.ringHItting.frameRingHitting.size() == 0)
+	{
+		result.ringHItting.ringHittingScore -= 0.0;
+	}
+	else if (result.ringHItting.frameRingHitting.size() > 0 && result.ringHItting.frameRingHitting.size() <= 10)
 	{
 		result.ringHItting.ringHittingScore -= 0.5;
 	}
@@ -1511,6 +1486,10 @@ void Main::computeResult(const vector<Activity> &scorer)
 
 	// 7.0 scorig for the wrong moves
 	result.wrongmoves.wrongMovesScore = 5.0;
+	if (result.wrongmoves.wrong_moves.size() == 0)
+	{
+		result.wrongmoves.wrongMovesScore -= 0.0;
+	}
 	if (result.wrongmoves.wrong_moves.size() > 0 && result.wrongmoves.wrong_moves.size() <= 2)
 	{
 		result.wrongmoves.wrongMovesScore -= 1.0;
@@ -1661,9 +1640,9 @@ void Main::run()
 	Mat grey(img->height, img->width, CV_8UC1);
 	cvtColor(cvarrToMat(img), grey, CV_BGR2GRAY);
 
-	//
-	ForegroundDetector *fg = tld->detectorCascade->foregroundDetector;
-	fg->bgImg = grey.clone();
+	// update the background image
+	///ForegroundDetector *fg = tld->detectorCascade->foregroundDetector;
+	//fg->bgImg = grey.clone();
 
 	tld->detectorCascade->imgWidth = grey.cols;
 	tld->detectorCascade->imgHeight = grey.rows;
@@ -1937,7 +1916,7 @@ void Main::run()
 			}
 			else
 			{
-				activity.s.trackingData.push_back(make_pair(imAcq->currentFrame - 1, make_pair(-1, -1)));
+				activity.m.trackingData.push_back(make_pair(imAcq->currentFrame - 1, make_pair(-1, -1)));
 			}
 			moving_activity_start = true;
 			if (RingHitting)
@@ -2044,40 +2023,40 @@ void Main::run()
 
 				if (key == 'q') break;
 
-				if (key == 'b')
-				{
+				//if (key == 'b')
+				//{
 
-					ForegroundDetector *fg = tld->detectorCascade->foregroundDetector;
+				//	ForegroundDetector *fg = tld->detectorCascade->foregroundDetector;
 
-					if (fg->bgImg.empty())
-					{
-						fg->bgImg = grey.clone();
-					}
-					else
-					{
-						fg->bgImg.release();
-					}
-				}
+				//	if (fg->bgImg.empty())
+				//	{
+				//		fg->bgImg = grey.clone();
+				//	}
+				//	else
+				//	{
+				//		fg->bgImg.release();
+				//	}
+				//}
 
-				if (key == 'c')
-				{
-					//clear everything
-					tld->release();
-				}
+				//if (key == 'c')
+				//{
+				//	//clear everything
+				//	tld->release();
+				//}
 
-				if (key == 'l')
-				{
-					tld->learningEnabled = !tld->learningEnabled;
-					printf("LearningEnabled: %d\n", tld->learningEnabled);
-				}
-				if (key == 'e')
-				{
-					tld->writeToFile(modelExportFile);
-				}
-				if (key == 'i')
-				{
-					tld->readFromFile(modelPath);
-				}
+				//if (key == 'l')
+				//{
+				//	tld->learningEnabled = !tld->learningEnabled;
+				//	printf("LearningEnabled: %d\n", tld->learningEnabled);
+				//}
+				//if (key == 'e')
+				//{
+				//	tld->writeToFile(modelExportFile);
+				//}
+				//if (key == 'i')
+				//{
+				//	tld->readFromFile(modelPath);
+				//}
 				if (key == 'r')
 				{
 					trackingStart = true;
@@ -2144,7 +2123,7 @@ void Main::run()
 	gui->destroy();
 
 	// print the result of scorer
-	testPrintScorer(scorer);
+	//testPrintScorer(scorer);
 	// compute the result
 	computeResult(scorer);
 
