@@ -46,14 +46,14 @@ DetectorCascade::DetectorCascade()
     imgHeight = -1;
     imgWidth = -1;
 
-    shift = 0.1;
-    minScale = -10;
-    maxScale = 10;
+    shift = 0.05;
+    minScale = -3;
+    maxScale = 3;
     minSize = 25;
     imgWidthStep = -1;
 
     numTrees = 10;
-    numFeatures = 10;
+    numFeatures = 13;
 
     initialised = false;
 
