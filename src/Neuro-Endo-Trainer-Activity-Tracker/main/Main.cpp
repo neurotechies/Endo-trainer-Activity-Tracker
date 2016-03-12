@@ -747,7 +747,7 @@ void Main::displayResult(const Result &)
 	ycursor = 60;
 	putText(drawing, text, Point2f(100, ycursor), FONT_HERSHEY_COMPLEX_SMALL, 1, Scalar(255, 255, 255));
 
-	if (result.wavymotion.NoFramesMoving.size() >= 10)
+	if (result.wavymotion.NoFramesMoving.size() >= 2)
 	{
 		text = "1. Hitting";
 		ycursor = 75;
@@ -1491,7 +1491,7 @@ void Main::computeResult(const vector<Activity> &scorer)
 	{
 		result.wrongmoves.wrongMovesScore -= 0.0;
 	}
-	if (result.wrongmoves.wrong_moves.size() > 0 && result.wrongmoves.wrong_moves.size() <= 2)
+	else if (result.wrongmoves.wrong_moves.size() > 0 && result.wrongmoves.wrong_moves.size() <= 2)
 	{
 		result.wrongmoves.wrongMovesScore -= 1.0;
 	}
@@ -1515,7 +1515,7 @@ void Main::computeResult(const vector<Activity> &scorer)
 	// Total score
 	result.totalScore = result.grasping.grapspingScore + result.hitting.hittingScore + result.noactivity.trackingScore
 		+ result.ringHItting.ringHittingScore + result.suddenmovement.suddenMovementScore + result.wavymotion.wavyMotionScore
-		+ result.wrongmoves.wrongMovesScore;
+		+ result.wrongmoves.wrongMovesScore + result.grasping.grapspingTrackingScore + result.noactivity.trackingScore2 + result.wavymotion.wavyMotionTrackingScore;
 }
 void Main::processTrackingData()
 {
@@ -1542,17 +1542,15 @@ void Main::processTrackingData()
 		util::curvature(dx, ddx, Curvature);
 		util::curvatureMaxnCount(Curvature, &curvatureMax, &curvatureMaxCount);
 		util::arclength(dx, &arcLength);		
-		if (curvatureMax > 450 && curvatureMaxCount > 2 && arcLength > 6 && varX > 0.001 && varY > 0.001)
+		if (curvatureMax > 450 && curvatureMaxCount > 2 && arcLength > 6)
 		{
 			scoreNoActivity += 0.0;
 		}
-		else if ((curvatureMax > 450 && curvatureMaxCount > 2 && arcLength > 6) || 
-			(curvatureMax > 450 && curvatureMaxCount > 2 && varX > 0.001 && varY > 0.001)||
-			(arcLength > 6 && varX > 0.001 && varY > 0.001))
+		else if ((curvatureMax > 450 && curvatureMaxCount > 2 && arcLength > 6))
 		{
 			scoreNoActivity += 2.0;
 		}
-		else if ((curvatureMax > 450 && curvatureMaxCount < 2) || (arcLength > 6) || (varX > 0.001 && varY > 0.001))
+		else if ((curvatureMax > 450 && curvatureMaxCount < 2) || (arcLength > 6) )
 		{
 			scoreNoActivity += 4.0;
 		}
@@ -1574,17 +1572,15 @@ void Main::processTrackingData()
 		util::curvature(dx, ddx, Curvature);
 		util::curvatureMaxnCount(Curvature, &curvatureMax, &curvatureMaxCount);
 		util::arclength(dx, &arcLength);
-		if (curvatureMax > 320 && curvatureMaxCount > 2 && arcLength > 5 && varX > 0.002 && varY > 0.001)
+		if (curvatureMax > 320 && curvatureMaxCount > 2 && arcLength > 5)
 		{
 			scorePicking += 0.0;
 		}
-		else if ((curvatureMax > 320 && curvatureMaxCount > 2 && arcLength > 5) ||
-			(curvatureMax > 320 && curvatureMaxCount > 2 && varX > 0.002 && varY > 0.001) ||
-			(arcLength > 5 && varX > 0.002 && varY > 0.001))
+		else if ((curvatureMax > 320 && curvatureMaxCount > 2 && arcLength > 5))
 		{
 			scorePicking += 2.0;
 		}
-		else if ((curvatureMax > 320 && curvatureMaxCount < 2) || (arcLength > 5) || (varX > 0.002 && varY > 0.001))
+		else if ((curvatureMax > 320 && curvatureMaxCount < 2) || (arcLength > 5))
 		{
 			scorePicking += 4.0;
 		}
@@ -1610,13 +1606,11 @@ void Main::processTrackingData()
 		{
 			scoreMoving += 0.0;
 		}
-		else if ((curvatureMax > 450 && curvatureMaxCount > 2 && arcLength > 6) ||
-			(curvatureMax > 450 && curvatureMaxCount > 2 && varX > 0.0001 && varY > 0.0001) ||
-			(arcLength > 6 && varX > 0.0001 && varY > 0.0001))
+		else if ((curvatureMax > 450 && curvatureMaxCount > 2 && arcLength > 6) )
 		{
 			scoreMoving += 2.0;
 		}
-		else if ((curvatureMax > 450 && curvatureMaxCount < 2) || (arcLength > 6) || (varX > 0.0001 && varY > 0.0001))
+		else if ((curvatureMax > 450 && curvatureMaxCount < 2) || (arcLength > 6) )
 		{
 			scoreMoving += 4.0;
 		}

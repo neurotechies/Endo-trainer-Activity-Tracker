@@ -29,6 +29,8 @@ using nets::Gui;
 
 int main(int argc, char **argv)
 {
+
+
 	if (argc != 2)
 	{
 		cout <<  "Please provide the config file \n";
