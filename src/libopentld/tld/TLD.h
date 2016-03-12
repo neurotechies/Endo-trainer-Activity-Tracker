@@ -49,6 +49,11 @@ public:
     bool learningEnabled;
     bool alternating;
 
+	//bool storePrevBB;
+	//int countDist;
+	//int prevFrameNo;
+	//int currFrameNo;
+
     MedianFlowTracker *medianFlowTracker;
     DetectorCascade *detectorCascade;
     NNClassifier *nnClassifier;
@@ -57,6 +62,7 @@ public:
     cv::Mat prevImg;
     cv::Mat currImg;
     cv::Rect *prevBB;
+	//cv::Rect *prevBB1;
     cv::Rect *currBB;
     float currConf;
     bool learning;

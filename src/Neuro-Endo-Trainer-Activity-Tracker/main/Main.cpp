@@ -36,7 +36,6 @@ bool Main::AllRingStable(const Mat &prv_frame, const Mat &curr_frame, const Rect
 	// vars declaration
 	Mat diff, canny_output, dst, diff_hsv, mask, mask_out, out1;
 
-
 	// absolute diffrence between successive frames
 	cv::absdiff(prv_frame, curr_frame, diff);
 	cvtColor(diff, mask, CV_BGR2GRAY);

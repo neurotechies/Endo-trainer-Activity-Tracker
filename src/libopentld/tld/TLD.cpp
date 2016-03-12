@@ -47,9 +47,14 @@ TLD::TLD()
     learning = false;
     currBB = NULL;
     prevBB = new Rect(0,0,0,0);
-
+	//prevBB1 = NULL;
+	//countDist = 0;
+	//storePrevBB = true;
     detectorCascade = new DetectorCascade();
     nnClassifier = detectorCascade->nnClassifier;
+
+	//prevFrameNo = 0;
+	//currFrameNo = 0;
 
     medianFlowTracker = new MedianFlowTracker();
 }
@@ -147,6 +152,20 @@ void TLD::selectObject(const Mat &img, Rect *bb)
 
 void TLD::processImage(const Mat &img)
 {
+
+	//if (storePrevBB)
+	//{
+	//	if (currBB)
+	//	{
+	//		prevBB1 = new Rect();
+	//		prevBB1->x = currBB->x;
+	//		prevBB1->y = currBB->y;
+	//		prevBB1->width = currBB->width;
+	//		prevBB1->height = currBB->height;
+	//		storePrevBB = false;
+	//	}
+	//}
+
     storeCurrentData();
     Mat grey_frame;
     cvtColor(img, grey_frame, CV_BGR2GRAY);
@@ -164,7 +183,46 @@ void TLD::processImage(const Mat &img)
 
     fuseHypotheses();
 
-    learn();
+	//currFrameNo++;
+	if (currBB != NULL)
+	{
+		// if the height and width doesn't satisfy. send the null
+		if (currBB->height > 100 || currBB->width > 60)
+		{
+			currBB = NULL;
+		}
+		else
+		{
+			learn();
+		}
+	}
+
+	//if (prevBB != NULL && currBB != NULL)
+	//{
+	//	Point p1 = Point(prevBB->x + (prevBB->width / 2.0), prevBB->y + prevBB->height / 2.0);
+	//	Point p2 = Point(currBB->x + (currBB->width / 2.0), currBB->y + currBB->height / 2.0);
+	//	double dist = sqrt(((p1.x - p2.x)*(p1.x - p2.x)) + ((p1.y - p2.y)*(p1.y - p2.y)));
+	//	
+	//	if (abs(dist) < 5)
+	//	{
+	//		if (currFrameNo - prevFrameNo == 1)
+	//		{
+	//			countDist++;
+	//			cout << "count val ->" << countDist << endl;;
+	//			if (countDist > 20)
+	//			{
+	//				currBB = NULL;
+	//				countDist = 0;
+	//				storePrevBB = true;
+	//			}
+	//		}
+	//		else
+	//		{
+	//			countDist = 0;
+	//		}
+	//	}
+	//}
+	//prevFrameNo = currFrameNo;
 
 }
 
