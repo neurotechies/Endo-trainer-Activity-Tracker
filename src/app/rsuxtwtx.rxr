@@ -982,36 +982,13 @@ void Main::displayResult(const Result &)
 			ycursor = 75;
 		}
 
-		text = "8. Negative penality for excess/restraint activities";
-		ycursor += 20;
-		putText(drawing, text, Point2f(xcursor, ycursor), FONT_HERSHEY_COMPLEX_SMALL, 0.9, Scalar(255, 255, 255));
-		if (cutMarksforExtraActivity)
-		{
-			 + "Picking - Events(" + SSTR(NoOfPickingEvents) + ") Moving - Events(" + SSTR(NoOfMovingEvents) + ")";
-			text = "Negative penality of 2 marks"; 
-			ycursor += 15;
-			putText(drawing, text, Point2f(xcursor + 10, ycursor), FONT_HERSHEY_COMPLEX_SMALL, 0.7, Scalar(0, 255, 0));
-			text = "No-Activity-Events(" + SSTR(NoOfStationaryEvents) + ")";
-			ycursor += 15;
-			putText(drawing, text, Point2f(xcursor + 10, ycursor), FONT_HERSHEY_COMPLEX_SMALL, 0.7, Scalar(0, 255, 0));
-			text = "Picking-Events(" + SSTR(NoOfPickingEvents) + ")";
-			ycursor += 15;
-			putText(drawing, text, Point2f(xcursor + 10, ycursor), FONT_HERSHEY_COMPLEX_SMALL, 0.7, Scalar(0, 255, 0));
-			text = "Moving-Events(" + SSTR(NoOfMovingEvents) + ")";
-			ycursor += 15;
-			putText(drawing, text, Point2f(xcursor + 10, ycursor), FONT_HERSHEY_COMPLEX_SMALL, 0.7, Scalar(0, 255, 0));
-		}
-		else
-		{
-			text = "No negative penality";
-			ycursor += 15;
-			putText(drawing, text, Point2f(xcursor + 10, ycursor), FONT_HERSHEY_COMPLEX_SMALL, 0.7, Scalar(0, 255, 0));
-		}
-
 		text = "Total Score ->" + SSTR(result.totalScore) + "/45.0";
 		ycursor += 40;
 		putText(drawing, text, Point2f(xcursor, ycursor), FONT_HERSHEY_SCRIPT_COMPLEX, 1.1, Scalar(255, 255, 255));
+
 	}
+
+
 
 	else
 	{
@@ -1025,12 +1002,7 @@ void Main::displayResult(const Result &)
 
 	imshow("Result for the " + filename, drawing);
 	char ch = waitKey(0);
-	if (printResults != NULL)
-	{
-		string filename = string(printResults) + ".png";
-		imwrite(filename, drawing);
-	}
-	
+
 
 }
 void Main::writeResult(const Result &)
@@ -1166,21 +1138,6 @@ void Main::writeResult(const Result &)
 		fprintf(resultsFile, text.c_str());
 		text = "Wasted movements score -> " + SSTR(result.noactivity.trackingScore) + "/5.0\n";
 		fprintf(resultsFile, text.c_str());
-		
-
-		text = "8. Negative penality for excess/restraint activities\n";
-		fprintf(resultsFile, text.c_str());
-		if (cutMarksforExtraActivity)
-		{
-			text = "Negative penality of 2 marks; No-Activity-Events(" + SSTR(NoOfStationaryEvents) + ") Picking-Events(" + SSTR(NoOfPickingEvents) + ") Moving-Events (" + SSTR(NoOfMovingEvents) + ")\n";
-			fprintf(resultsFile, text.c_str());
-		}
-		else
-		{
-			text = "No negative penality\n";
-			fprintf(resultsFile, text.c_str());
-		}
-		
 		text = "\n\nTotal Score ->" + SSTR(result.totalScore) + "/45.0";
 		fprintf(resultsFile, text.c_str());
 	}
@@ -1585,7 +1542,6 @@ void Main::computeResult(const vector<Activity> &scorer)
 	if (!((NoOfStationaryEvents == 12 || NoOfStationaryEvents == 13) && NoOfPickingEvents == 12 && NoOfMovingEvents == 12))
 	{
 		cutMarksforExtraActivity = true;
-		result.totalScore -= 2.0;
 	}
 
 }

@@ -122,6 +122,7 @@ public:
 	int currFrameNo_RingStability;
 	bool update__RingStability;
 	bool update__RingStability2;
+	
 	// 
 	Activity activity;
 	vector<Activity> scorer;
@@ -136,6 +137,11 @@ public:
 	bool trackinReinit;
 	int index;
 
+	// 
+	int NoOfStationaryEvents;
+	int NoOfPickingEvents;
+	int NoOfMovingEvents;
+	bool cutMarksforExtraActivity;
 
 
     Main()
@@ -219,8 +225,15 @@ public:
 		JerKDetection = false;
 		trackinReinit = false;
 		index = -1;
+		
+		//
+		NoOfStationaryEvents = 0;
+		NoOfPickingEvents = 0;
+		NoOfMovingEvents = 0;
+		cutMarksforExtraActivity = false;
 
-    }
+	
+	}
 
     ~Main()
     {

@@ -70,13 +70,18 @@ namespace tld
 		double meanX = 0; double meanY = 0;
 		double maxX = 0; double maxY = 0;
 		mean2D(indata, &meanX, &meanY);
-		max2D(indata, &maxX, &maxY);
 		
 		outdata.resize(indata.size());
 		for (int i = 0; i < indata.size(); ++i)
 		{
-			outdata[i].first = (indata[i].first - meanX) / maxX;
-			outdata[i].second = (indata[i].second - meanY) / maxY;
+			outdata[i].first = (indata[i].first - meanX);
+			outdata[i].second = (indata[i].second - meanY);
+		}
+		max2D(outdata, &maxX, &maxY);
+		for (int i = 0; i < outdata.size(); ++i)
+		{
+			outdata[i].first = (outdata[i].first) / maxX;
+			outdata[i].second = (outdata[i].second) / maxY;
 		}
 	}
 

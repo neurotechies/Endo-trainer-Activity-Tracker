@@ -987,17 +987,7 @@ void Main::displayResult(const Result &)
 		putText(drawing, text, Point2f(xcursor, ycursor), FONT_HERSHEY_COMPLEX_SMALL, 0.9, Scalar(255, 255, 255));
 		if (cutMarksforExtraActivity)
 		{
-			 + "Picking - Events(" + SSTR(NoOfPickingEvents) + ") Moving - Events(" + SSTR(NoOfMovingEvents) + ")";
-			text = "Negative penality of 2 marks"; 
-			ycursor += 15;
-			putText(drawing, text, Point2f(xcursor + 10, ycursor), FONT_HERSHEY_COMPLEX_SMALL, 0.7, Scalar(0, 255, 0));
-			text = "No-Activity-Events(" + SSTR(NoOfStationaryEvents) + ")";
-			ycursor += 15;
-			putText(drawing, text, Point2f(xcursor + 10, ycursor), FONT_HERSHEY_COMPLEX_SMALL, 0.7, Scalar(0, 255, 0));
-			text = "Picking-Events(" + SSTR(NoOfPickingEvents) + ")";
-			ycursor += 15;
-			putText(drawing, text, Point2f(xcursor + 10, ycursor), FONT_HERSHEY_COMPLEX_SMALL, 0.7, Scalar(0, 255, 0));
-			text = "Moving-Events(" + SSTR(NoOfMovingEvents) + ")";
+			text = "Negative penality of 2 marks; No-Activity-Events(" + SSTR(NoOfStationaryEvents) + ") Picking-Events(" + SSTR(NoOfPickingEvents) + ") Moving-Events (" + SSTR(NoOfMovingEvents) + ")";
 			ycursor += 15;
 			putText(drawing, text, Point2f(xcursor + 10, ycursor), FONT_HERSHEY_COMPLEX_SMALL, 0.7, Scalar(0, 255, 0));
 		}
@@ -1025,12 +1015,7 @@ void Main::displayResult(const Result &)
 
 	imshow("Result for the " + filename, drawing);
 	char ch = waitKey(0);
-	if (printResults != NULL)
-	{
-		string filename = string(printResults) + ".png";
-		imwrite(filename, drawing);
-	}
-	
+
 
 }
 void Main::writeResult(const Result &)

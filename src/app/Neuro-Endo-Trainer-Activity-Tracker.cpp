@@ -25,6 +25,7 @@
 #include "Config.h"
 #include "ImAcq.h"
 #include "Gui.h"
+#include "util.h"
 
 using tld::Config;
 using tld::Gui;
@@ -32,6 +33,30 @@ using tld::Settings;
 
 int main(int argc, char **argv)
 {
+	//// test code 
+	//vector<pair <double, double > > data;
+	//vector<pair <double, double > > data1;
+	//vector<pair <double, double > > data2;
+	//vector<pair <double, double > > data3;
+	//vector<double> data4;
+	//data.push_back(make_pair(1, 2));
+	//data.push_back(make_pair(2, 3));
+	//data.push_back(make_pair(3, 4));
+	//data.push_back(make_pair(4, 5));
+	//data.push_back(make_pair(5, 6));
+	//data.push_back(make_pair(6, 7));
+	//data.push_back(make_pair(7, 8));
+	//data.push_back(make_pair(8, 9));
+	//data.push_back(make_pair(9, 10));
+	//data.push_back(make_pair(10, 11));
+	//double arclength = 0;
+	//util::normalize2D(data, data1);
+	//util::diff2D(data1, data2);
+	//util::diff2D(data2, data3);
+	//util::curvature(data2, data3, data4);
+	//util::arclength(data2, &arclength);
+	// end test code
+
 
     Main *main = new Main();
     Config config;
