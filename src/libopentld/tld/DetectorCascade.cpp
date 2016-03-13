@@ -46,9 +46,9 @@ DetectorCascade::DetectorCascade()
     imgHeight = -1;
     imgWidth = -1;
 
-    shift = 0.05;
-    minScale = -3;
-    maxScale = 3;
+    shift = 0.1;
+    minScale = -10;
+    maxScale = 10;
     minSize = 25;
     imgWidthStep = -1;
 
@@ -294,6 +294,7 @@ void DetectorCascade::detect(const Mat &img)
         if(foregroundDetector->isActive())
         {
             bool isInside = false;
+
             for(size_t j = 0; j < detectionResult->fgList->size(); j++)
             {
 

@@ -1,18 +1,19 @@
+
 include_directories(imacq
-	mftracker
-	tld
-	../3rdparty/cvblobs
+    mftracker
+    tld
+    ../3rdparty/cvblobs
     ${OpenCV_INCLUDE_DIRS})
 link_directories(${OpenCV_LIB_DIR})
 
 add_library(libopentld
     imacq/ImAcq.cpp
-	mftracker/BB.cpp
+    mftracker/BB.cpp
     mftracker/BBPredict.cpp
     mftracker/FBTrack.cpp
     mftracker/Lk.cpp
     mftracker/Median.cpp
-	tld/Clustering.cpp
+    tld/Clustering.cpp
     tld/DetectionResult.cpp
     tld/DetectorCascade.cpp
     tld/EnsembleClassifier.cpp
@@ -22,14 +23,13 @@ add_library(libopentld
     tld/TLD.cpp
     tld/TLDUtil.cpp
     tld/VarianceFilter.cpp
-	
-	imacq/ImAcq.h
-	mftracker/BB.h
+    imacq/ImAcq.h
+    mftracker/BB.h
     mftracker/BBPredict.h
     mftracker/FBTrack.h
     mftracker/Lk.h
     mftracker/Median.h
-	tld/Clustering.h
+    tld/Clustering.h
     tld/DetectionResult.h
     tld/DetectorCascade.h
     tld/EnsembleClassifier.h

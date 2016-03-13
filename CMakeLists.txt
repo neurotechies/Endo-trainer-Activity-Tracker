@@ -10,11 +10,13 @@
 # 1) go to the binary folder and type "make" to build the project
 # 2) (optional) type "make install all" to install the files into the install
 #    directory
+# 3) (optional) type "make package" to create a package of the install folder
+#    (.tgz file if GENERATE_DEB_PACKAGE=false, .deb file if GENERATE_DEB_PACKAGE=true)
 #
 # Microsoft Visual C++:
 # 1) open the .sln file
 # 2) change the mode to "Release" -> only Release is supported!
-# 3) build the project "ALL_BUILD" to build the Neuro-Endo-Trainer-Activity-Tracker project
+# 3) build the project "ALL_BUILD" to build the opentld project
 # 4) build the project "INSTALL" to install the files into the install
 #    directory
 # 5) build the project "PACKAGE" to create an NSIS-installer (NSIS is required)
@@ -42,7 +44,8 @@ if(NOT CMAKE_BUILD_TYPE)
         FORCE)
 endif(NOT CMAKE_BUILD_TYPE)
 
-option(WITH_OPENMP "Use OpenMP." OFF)
+
+option(WITH_OPENMP "Use OpenMP." ON)
 
 if(WITH_OPENMP)
 	find_package(OpenMP REQUIRED)
@@ -52,6 +55,13 @@ if(WITH_OPENMP)
 	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
 endif(WITH_OPENMP)
 
+if(WIN32)
+	add_definitions(-DLIBCONFIGXX_STATIC -DLIBCONFIG_STATIC) #Needed when linking libconfig statically
+endif(WIN32)
+
+if(APPLE)
+	add_definitions(-DHAVE_XLOCALE_H)
+endif(APPLE)
 
 if(NOT MSVC)
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC")
@@ -61,8 +71,11 @@ endif(NOT MSVC)
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
 set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)
 
-add_subdirectory(src/Neuro-Endo-Trainer-Activity-Tracker)
-add_subdirectory(src/libopentld)
+#-------------------------------------------------------------------------------
+#add subdirectories
 add_subdirectory(src/3rdparty/cvblobs)
+add_subdirectory(src/3rdparty/libconfig)
+add_subdirectory(src/libopentld)
+add_subdirectory(src/app)
 
 configure_file("${PROJECT_SOURCE_DIR}/OpenTLDConfig.cmake.in" "${PROJECT_BINARY_DIR}/OpenTLDConfig.cmake" @ONLY)

@@ -1,26 +1,21 @@
-/*  Copyright 2016 Neurosurgery Education and Training School, AIIMS
+/*  Copyright 2011 AIT Austrian Institute of Technology
 *
-*   This file is part of Neuro-Endo-Trainer-Activity-Tracker.
+*   This file is part of OpenTLD.
 *
-*   Neuro-Endo-Trainer-Activity-Tracker is free software: you can redistribute it and/or modify
+*   OpenTLD is free software: you can redistribute it and/or modify
 *   it under the terms of the GNU General Public License as published by
 *    the Free Software Foundation, either version 3 of the License, or
 *   (at your option) any later version.
 *
-*   Neuro-Endo-Trainer-Activity-Tracker is distributed in the hope that it will be useful,
+*   OpenTLD is distributed in the hope that it will be useful,
 *   but WITHOUT ANY WARRANTY; without even the implied warranty of
 *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 *   GNU General Public License for more details.
 *
 *   You should have received a copy of the GNU General Public License
-*   along with Neuro-Endo-Trainer-Activity-Tracker.  If not, see <http://www.gnu.org/licenses/>.
+*   along with OpenTLD.  If not, see <http://www.gnu.org/licenses/>.
 *
 */
-
-/**
-* @author britty baby and vinkle srivastav
-*/
-
 
 #include "ImAcq.h"
 
@@ -96,6 +91,7 @@ void imAcqInit(ImAcq *imAcq)
                    imAcq->currentFrame, imAcq->lastFrame);
             exit(1);
         }
+
 		IplImage* img = imAcqGetImg(imAcq);
 		imAcq->width = img->width;
 		imAcq->height = img->height;

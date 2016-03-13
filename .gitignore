@@ -9,6 +9,4 @@ TODO
 cmake_install.cmake
 *.a
 build/
-tld-tracker-test/
-IMU/
 

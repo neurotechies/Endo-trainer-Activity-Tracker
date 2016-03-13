@@ -17,39 +17,52 @@
 *
 */
 
-/*
- * ForegroundDetector.h
- *
- *  Created on: Nov 16, 2011
- *      Author: Georg Nebehay
- */
+/**
+  * @author Georg Nebehay
+  */
 
-#ifndef FOREGROUNDDETECTOR_H_
-#define FOREGROUNDDETECTOR_H_
+#include "Main.h"
+#include "Config.h"
+#include "ImAcq.h"
+#include "Gui.h"
 
-#include <vector>
+using tld::Config;
+using tld::Gui;
+using tld::Settings;
 
-#include <opencv/cv.hpp>
-
-#include "DetectionResult.h"
-
-namespace tld
+int main(int argc, char **argv)
 {
 
-class ForegroundDetector
-{
-public:
-    int fgThreshold;
-    int minBlobSize;
-    cv::Mat bgImg;
-    DetectionResult *detectionResult;
+    Main *main = new Main();
+    Config config;
+    ImAcq *imAcq = imAcqAlloc();
+    Gui *gui = new Gui();
 
-    ForegroundDetector();
-    virtual ~ForegroundDetector();
-    void release();
-    void nextIteration(const cv::Mat &img);
-    bool isActive();
-};
+    main->gui = gui;
+    main->imAcq = imAcq;
 
-} /* namespace tld */
-#endif /* FOREGROUNDDETECTOR_H_ */
+    if(config.init(argc, argv) == PROGRAM_EXIT)
+    {
+        return EXIT_FAILURE;
+    }
+
+    config.configure(main);
+
+    srand(main->seed);
+
+    imAcqInit(imAcq);
+
+    if(main->showOutput)
+    {
+        gui->init();
+    }
+
+    main->run();
+
+    delete main;
+    main = NULL;
+    delete gui;
+    gui = NULL;
+
+    return EXIT_SUCCESS;
+}
