@@ -20,7 +20,7 @@ struct Activity
 			startFrame = -1;
 			endFrame = -1;
 		}
-		void stationary::clear()
+		void clear()
 		{
 			startFrame = -1;
 			endFrame = -1;
@@ -46,7 +46,7 @@ struct Activity
 			endFrame = 0;
 			from_peg = 0;
 		}
-		void Picking::clear()
+		void clear()
 		{
 			startFrame = 0;
 			endFrame = 0;
