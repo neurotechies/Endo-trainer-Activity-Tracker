@@ -47,7 +47,8 @@ namespace tld
 	void Gui::init()
 	{
 		cvNamedWindow(m_window_name.c_str(), WINDOW_NORMAL);
-		cvMoveWindow(m_window_name.c_str(), 100, 100);
+		cvResizeWindow(m_window_name.c_str(), 1200, 750);
+		cvMoveWindow(m_window_name.c_str(), 10, 10);
 	}
 
 	void Gui::showImage(IplImage *image)
@@ -59,7 +60,8 @@ namespace tld
 	{
 		cvDestroyWindow(m_window_name.c_str());
 		cvNamedWindow(m_window_name.c_str(), WINDOW_NORMAL);
-		cvMoveWindow(m_window_name.c_str(), 100, 100);
+		cvResizeWindow(m_window_name.c_str(), 1200, 750);
+		cvMoveWindow(m_window_name.c_str(), 10, 10);
 		cvShowImage(m_window_name.c_str(), image);
 	}
 	char Gui::getKey()
@@ -123,7 +125,8 @@ namespace tld
 		
 		cvDestroyWindow(window_name.c_str());
 		cvNamedWindow(window_name.c_str(), WINDOW_NORMAL);
-		cvMoveWindow(window_name.c_str(), 100, 100);
+		cvResizeWindow(window_name.c_str(), 1200, 750);
+		cvMoveWindow(window_name.c_str(), 10, 10);
 		
 		img0 = (IplImage *)cvClone(img);
 		rect = cvRect(-1, -1, -1, -1);
@@ -181,7 +184,8 @@ namespace tld
 		window_name = gui->windowName();
 		cvDestroyWindow(window_name.c_str());
 		cvNamedWindow(window_name.c_str(), WINDOW_NORMAL);
-		cvMoveWindow(window_name.c_str(), 100, 100);
+		cvResizeWindow(window_name.c_str(), 1200, 750);
+		cvMoveWindow(window_name.c_str(), 10, 10);
 
 		img0 = (IplImage *)cvClone(img);
 		char TrackbarName[50];
@@ -293,7 +297,8 @@ namespace tld
 		window_name = gui->windowName();
 		cvDestroyWindow(window_name.c_str());
 		cvNamedWindow(window_name.c_str(), WINDOW_NORMAL);
-		cvMoveWindow(window_name.c_str(), 100, 100);
+		cvResizeWindow(window_name.c_str(), 1200, 750);
+		cvMoveWindow(window_name.c_str(), 10, 10);
 
 		img0 = (IplImage *)cvClone(img);
 		char TrackbarName[50];
