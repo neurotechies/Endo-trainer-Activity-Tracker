@@ -1023,6 +1023,7 @@ void Main::displayResult(const Result &)
 		putText(drawing, text, Point2f(xcursor, ycursor), FONT_HERSHEY_COMPLEX_SMALL, 0.9, Scalar(0, 255, 0));
 	}
 	namedWindow("Result for the " + filename, WINDOW_NORMAL);
+	cv::resizeWindow("Result for the " + filename, 1200, 750);
 	imshow("Result for the " + filename, drawing);
 	char ch = waitKey(0);
 	if (printResults != NULL)
