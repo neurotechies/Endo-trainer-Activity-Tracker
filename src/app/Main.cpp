@@ -101,7 +101,7 @@ bool Main::AllRingStable(const Mat &prv_frame, const Mat &curr_frame, const Rect
 			}
 		}
 	}
-	cout << "StableFrameCount ->" << StableFrameCount << endl;
+	//cout << "StableFrameCount ->" << StableFrameCount << endl;
 	//cout << "prvFrameNo_RingStability ->" << prvFrameNo_RingStability << endl;
 	return retVal;
 }
@@ -342,7 +342,7 @@ bool Main::activityDetection(const Mat &prev_frame, const Mat &curr_frame, const
 						{
 							pickingCount++;
 							updateBackgroundModel = true;
-							cout << "pickingCount  " << pickingCount << endl;
+							//cout << "pickingCount  " << pickingCount << endl;
 							if (pickingCount >= 2)
 							{
 								// Find intersection of moving Ring ROI with the first half and determine which Ring trainee is trying to pick up; then change the code of the ring
@@ -462,7 +462,7 @@ bool Main::activityDetection(const Mat &prev_frame, const Mat &curr_frame, const
 				count2++;
 			}
 		}
-		cout << "count2->" << count2 << endl;
+		//cout << "count2->" << count2 << endl;
 		if (count2 == 5)
 		{
 			status == "moving";
@@ -473,8 +473,8 @@ bool Main::activityDetection(const Mat &prev_frame, const Mat &curr_frame, const
 			Point center_ring = Point(mvRingROI.x + (mvRingROI.width / 2.0), mvRingROI.y + mvRingROI.height / 2.0);
 			Point center_tooltip = Point(trackingOut.x + trackingOut.width, trackingOut.y + trackingOut.height + 40);
 			dist = sqrt(((center_ring.x - center_tooltip.x)*(center_ring.x - center_tooltip.x)) + ((center_ring.y - center_tooltip.y)*(center_ring.y - center_tooltip.y)));
-			cout << "Ring Stablility -> " << (v ? "true" : "false") << endl;
-			cout << "dist -> " << dist << endl;
+			//cout << "Ring Stablility -> " << (v ? "true" : "false") << endl;
+			//cout << "dist -> " << dist << endl;
 			if (update__RingStability2 && dist > 150 && center_ring.x > 0 && center_ring.y > 0 && trackingOut.x > 0 && trackingOut.y > 0)
 			{
 				int index_peg = 0;
@@ -1022,7 +1022,7 @@ void Main::displayResult(const Result &)
 		ycursor += 20;
 		putText(drawing, text, Point2f(xcursor, ycursor), FONT_HERSHEY_COMPLEX_SMALL, 0.9, Scalar(0, 255, 0));
 	}
-
+	namedWindow("Result for the " + filename, WINDOW_NORMAL);
 	imshow("Result for the " + filename, drawing);
 	char ch = waitKey(0);
 	if (printResults != NULL)

@@ -46,7 +46,7 @@ namespace tld
 
 	void Gui::init()
 	{
-		cvNamedWindow(m_window_name.c_str(), CV_WINDOW_AUTOSIZE);
+		cvNamedWindow(m_window_name.c_str(), WINDOW_NORMAL);
 		cvMoveWindow(m_window_name.c_str(), 100, 100);
 	}
 
@@ -58,7 +58,7 @@ namespace tld
 	void Gui::showImageByDestroyingWindow(IplImage *image)
 	{
 		cvDestroyWindow(m_window_name.c_str());
-		cvNamedWindow(m_window_name.c_str(), CV_WINDOW_AUTOSIZE);
+		cvNamedWindow(m_window_name.c_str(), WINDOW_NORMAL);
 		cvMoveWindow(m_window_name.c_str(), 100, 100);
 		cvShowImage(m_window_name.c_str(), image);
 	}
@@ -122,7 +122,7 @@ namespace tld
 		window_name = gui->windowName();
 		
 		cvDestroyWindow(window_name.c_str());
-		cvNamedWindow(window_name.c_str(), CV_WINDOW_AUTOSIZE);
+		cvNamedWindow(window_name.c_str(), WINDOW_NORMAL);
 		cvMoveWindow(window_name.c_str(), 100, 100);
 		
 		img0 = (IplImage *)cvClone(img);
@@ -180,7 +180,7 @@ namespace tld
 
 		window_name = gui->windowName();
 		cvDestroyWindow(window_name.c_str());
-		cvNamedWindow(window_name.c_str(), CV_WINDOW_AUTOSIZE);
+		cvNamedWindow(window_name.c_str(), WINDOW_NORMAL);
 		cvMoveWindow(window_name.c_str(), 100, 100);
 
 		img0 = (IplImage *)cvClone(img);
@@ -292,7 +292,7 @@ namespace tld
 		
 		window_name = gui->windowName();
 		cvDestroyWindow(window_name.c_str());
-		cvNamedWindow(window_name.c_str(), CV_WINDOW_AUTOSIZE);
+		cvNamedWindow(window_name.c_str(), WINDOW_NORMAL);
 		cvMoveWindow(window_name.c_str(), 100, 100);
 
 		img0 = (IplImage *)cvClone(img);
